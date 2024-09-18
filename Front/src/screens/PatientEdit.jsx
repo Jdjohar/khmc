@@ -46,7 +46,7 @@ const PatientEdit = () => {
     useEffect(() => {
         const fetchPatient = async () => {
           try {
-            const response = await fetch(`http://localhost:3001/api/patients/${id}`);
+            const response = await fetch(`https://khmc.onrender.com/api/patients/${id}`);
             const data = await response.json();
             setPatients(data);
             setFormData(data);
@@ -73,7 +73,7 @@ const PatientEdit = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-          const response = await fetch(`http://localhost:3001/api/patients/${id}`, {
+          const response = await fetch(`https://khmc.onrender.com/api/patients/${id}`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',

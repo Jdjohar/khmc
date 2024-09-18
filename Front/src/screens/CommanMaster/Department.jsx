@@ -19,7 +19,7 @@ const Department = () => {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/department');
+        const response = await fetch('https://khmc.onrender.com/api/department');
         const data = await response.json();
         setDepartments(data); // Set the response data in departments
         setLoading(false); // Stop the loading state
@@ -66,7 +66,7 @@ const Department = () => {
       // If a department is selected, update the department
       try {
         const response = await fetch(
-          `http://localhost:3001/api/department/${selectedDepartId}`,
+          `https://khmc.onrender.com/api/department/${selectedDepartId}`,
           {
             method: 'PUT',
             headers: {
@@ -105,7 +105,7 @@ const Department = () => {
     } else {
       // Add a new department
       try {
-        const response = await fetch('http://localhost:3001/api/department', {
+        const response = await fetch('https://khmc.onrender.com/api/department', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -140,7 +140,7 @@ const Department = () => {
     if (selectedDepartId) {
       try {
         const response = await fetch(
-          `http://localhost:3001/api/department/${selectedDepartId}`,
+          `https://khmc.onrender.com/api/department/${selectedDepartId}`,
           {
             method: 'DELETE', // Use DELETE for deleting the department
             headers: {

@@ -31,7 +31,7 @@ app.use((req, res, next) => {
   // res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
   const corsWhitelist = [
     "http://localhost:5173",
-    "https://invoice-al.vercel.app",
+    "https://khmc.vercel.app",
 ];
 if (corsWhitelist.indexOf(req.headers.origin) !== -1) {
     res.setHeader('Access-Control-Allow-Origin', req.headers.origin);

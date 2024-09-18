@@ -12,7 +12,7 @@ const PatientList = () => {
     useEffect(() => {
         const fetchPatients = async () => {
             try {
-                const response = await fetch("http://localhost:3001/api/patients");
+                const response = await fetch("https://khmc.onrender.com/api/patients");
                 const data = await response.json();
                 setPatients(data); // Set the response data in the patients state
                 setLoading(false); // Stop the loading state

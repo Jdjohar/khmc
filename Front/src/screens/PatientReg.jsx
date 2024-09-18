@@ -41,7 +41,7 @@ const [patients, setPatients] = useState([]);
 const [isModalOpen, setIsModalOpen] = useState(false);
     const fetchSequenceNumbers = async () => {
         try {
-            const response = await fetch('http://localhost:3001/api/patientsNumber');
+            const response = await fetch('https://khmc.onrender.com/api/patientsNumber');
             if (response.ok) {
                 const data = await response.json();
 
@@ -93,11 +93,11 @@ const [isModalOpen, setIsModalOpen] = useState(false);
             try {
                 // Run all API requests in parallel
                 const [genderResponse, religionResponse, departmentResponse, doctorResponse, reffbyResponse] = await Promise.all([
-                    fetch("http://localhost:3001/api/category"),
-                    fetch("http://localhost:3001/api/religion"),
-                    fetch("http://localhost:3001/api/department"),
-                    fetch("http://localhost:3001/api/doctor"),
-                    fetch("http://localhost:3001/api/reffby"),
+                    fetch("https://khmc.onrender.com/api/category"),
+                    fetch("https://khmc.onrender.com/api/religion"),
+                    fetch("https://khmc.onrender.com/api/department"),
+                    fetch("https://khmc.onrender.com/api/doctor"),
+                    fetch("https://khmc.onrender.com/api/reffby"),
                 ]);
 
                 // Parse the JSON responses
@@ -214,7 +214,7 @@ const [isModalOpen, setIsModalOpen] = useState(false);
         setLoading(true);
         try {
             // Make a GET request with query parameters
-            const response = await fetch(`http://localhost:3001/api/patientsearch?uhid=${OldformData.uhid}&mobile=${OldformData.mobile}`);
+            const response = await fetch(`https://khmc.onrender.com/api/patientsearch?uhid=${OldformData.uhid}&mobile=${OldformData.mobile}`);
             const data = await response.json();
             console.log("Data",data);
             
@@ -266,7 +266,7 @@ const [isModalOpen, setIsModalOpen] = useState(false);
         e.preventDefault();
 
         try {
-            const response = await fetch('http://localhost:3001/api/patients', {
+            const response = await fetch('https://khmc.onrender.com/api/patients', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
