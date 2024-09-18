@@ -1,0 +1,185 @@
+
+.table {
+
+  width: 100%;
+  margin-bottom: 1rem;
+  vertical-align: top;
+  border-color: var(--bs-table-border-color);
+}
+table {
+  caption-side: bottom;
+  border-collapse: collapse;
+}
+.table{
+  margin-bottom: 0;
+}
+.table > thead {
+  vertical-align: bottom;
+}
+.table > :not(:first-child), .jsgrid .jsgrid-table > :not(:first-child) {
+  border-top: none;
+}
+.table > tbody {
+  vertical-align: inherit;
+}
+.table th, .table td {
+  vertical-align: middle;
+  font-size: 0.875rem;
+  line-height: 1;
+  white-space: nowrap;
+  padding: 0.9375rem;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Ensure it's on top */
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+  text-align: center;
+  position: relative;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+ul li {
+  margin: 10px 0;
+}
+
+ul li button {
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.mega-menu {
+  width: 600px !important; /* Customize the width of the mega menu */
+}
+
+.mega-menu .dropdown-header {
+  font-weight: bold;
+  color: #000;
+}
+
+
+.container {
+
+  height: 100%; /* Ensure the container takes full height */
+
+}
+
+
+.table {
+  width: 100%; /* Ensure the table takes the full width */
+  /* height: 100%; /* Ensure the table takes the full height of its container    */
+}
+
+.table-responsive {
+  height: 100%; /* Ensure the responsive wrapper takes full height */
+  overflow-y: auto; /* Add vertical scroll if content exceeds the height */
+}
+/* Variable values added */
+:root {
+  --type1-medium: Arial, sans-serif;       /* Replace with desired font */
+  --default-font-size: 16px;               /* Default font size */
+  --table-cell-padding: 12px;              /* Padding for table cells */
+  --border-color: #dee2e6;                 /* Border color */
+  --body-color: #212529;                   /* Text color */
+  --card-bg: #f8f9fa;                      /* Background color for table */
+}
+
+/* Tables */
+.table {
+  margin-bottom: 0;
+}
+
+.table thead th {
+  border-top: 0;
+  border-bottom-width: 1px;
+  font-family: var(--type1-medium);
+  font-weight: normal;
+}
+
+.table thead th i {
+  margin-left: 0.325rem;
+}
+
+.table th, .table td {
+  vertical-align: middle;
+  font-size: var(--default-font-size);
+  line-height: 1;
+  white-space: nowrap;
+  padding: var(--table-cell-padding);
+}
+
+.table th img, .table td img {
+  width: 36px;
+  height: 36px;
+  border-radius: 100%;
+}
+
+.table th img.img-45-30, .table td img.img-45-30 {
+  width: 45px;
+  height: 30px;
+}
+
+.table th .badge, .table td .badge {
+  margin-bottom: 0;
+}
+
+.table.table-borderless {
+  border: none;
+}
+
+.table.table-borderless tr, 
+.table.table-borderless td, 
+.table.table-borderless th {
+  border: none;
+}
+
+.table > :not(:last-child) > :last-child > *, 
+.jsgrid .jsgrid-table > :not(:last-child) > :last-child > * {
+  border-bottom-color: var(--border-color);
+}
+
+.table > :not(:first-child), 
+.jsgrid .jsgrid-table > :not(:first-child) {
+  border-top: none;
+}
+
+.table-hover thead th td {
+  color: var(--body-color);
+  background-color: var(--card-bg);
+}
+
+.table-hover tbody tr:hover td {
+  color: gray;
+}
