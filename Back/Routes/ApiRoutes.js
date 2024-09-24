@@ -15,12 +15,24 @@ const Category = require('../models/Category')
 const Bank = require('../models/Bank')
 const Doctor = require('../models/Doctor')
 const Reffby = require('../models/Reffby')
+const Ward = require('../models/Ward')
+const Bed = require('../models/Bed')
+const Bill = require('../models/Receipts')
+const Ledger = require('../models/ledger')
 const crypto = require('crypto');
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+
+
+
+
+// Configure multer for file handling
+const upload = multer({ storage: multer.memoryStorage() }); // Using memory storage
+
+
 
 
 // CREATE a new patient (POST)
@@ -49,14 +61,17 @@ router.get('/patients', async (req, res) => {
 
 
 // Route to get patient by either UHID or mobile number
-router.get('/patientsearch', async (req, res) => {
+router.post('/patientsearch', async (req, res) => {
     console.log("start");
-    
-    const { uhid, mobile } = req.query;  // Extract UHID and mobile from query parameters
-    console.log("UHid",uhid, "Mobile",mobile );
+
+    // Extract UHID and mobile from the request body (since this is a POST request)
+    const { uhid, mobile } = req.body;
+    console.log("UHID:", uhid, "Mobile:", mobile);
+
     try {
-        // Search for patient by UHID or Mobile number
+        // Create a query object to find by either UHID or Mobile number
         let query = {};
+        
         if (uhid) {
             query.uhid = uhid;
         } else if (mobile) {
@@ -65,14 +80,17 @@ router.get('/patientsearch', async (req, res) => {
             return res.status(400).json({ error: 'Please provide UHID or Mobile number for search' });
         }
 
-        console.log("UHid",uhid, "Mobile",mobile );
-        
-        const patient = await Patient.find(query);  // Fetch the patient from MongoDB
+        console.log("Query:", query);
+
+        // Fetch the patient from MongoDB using findOne (assuming UHID or mobile is unique)
+        const patient = await Patient.find(query);
+
         if (!patient) {
             return res.status(404).json({ message: 'Patient not found' });
         }
 
-        res.json(patient);  // Return the patient details as JSON
+        // Return the patient details as JSON
+        res.json(patient);
     } catch (error) {
         console.error('Error fetching patient:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -86,7 +104,7 @@ router.get('/patientsearch', async (req, res) => {
 router.get('/patientsNumber', async (req, res) => {
     try {
         // Find patients and project only UHID and OPD No
-        const patients = await Patient.find({}, 'uhid opdno'); // Projection with 'uhid opdno'
+        const patients = await Patient.find({}, 'uhid opdno sno'); // Projection with 'uhid opdno'
         
         res.status(200).json(patients);
     } catch (err) {
@@ -127,6 +145,74 @@ router.put('/patients/:id', async (req, res) => {
 router.delete('/patients/:id', async (req, res) => {
     try {
         const deletedPatient = await Patient.findByIdAndDelete(req.params.id);
+        if (!deletedPatient) {
+            return res.status(404).json({ message: 'Patient not found' });
+        }
+        res.status(200).json({ message: 'Patient deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+
+// CREATE a new patient (POST)
+router.post('/ledger', async (req, res) => {
+    try {
+        const newPatient = new Ledger(req.body);
+        const savedPatient = await newPatient.save();
+        res.status(201).json({ 
+            success: true,
+            data:savedPatient
+         });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// READ all patients (GET)
+router.get('/ledger', async (req, res) => {
+    try {
+        const patients = await Ledger.find();
+        res.status(200).json(patients);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// READ a single patient by ID (GET)
+router.get('/ledger/:id', async (req, res) => {
+    try {
+        const patient = await Ledger.findById(req.params.id);
+        if (!patient) {
+            return res.status(404).json({ message: 'Patient not found' });
+        }
+        res.status(200).json(patient);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// UPDATE a patient by ID (PUT)
+router.put('/ledger/:id', async (req, res) => {
+    try {
+        const updatedPatient = await Ledger.findByIdAndUpdate(req.params.id, req.body, {
+            new: true, // Return the updated document
+            runValidators: true // Ensure the data is valid
+        });
+        if (!updatedPatient) {
+            return res.status(404).json({ message: 'Patient not found' });
+        }
+        res.status(200).json(updatedPatient);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// DELETE a patient by ID (DELETE)
+router.delete('/ledger/:id', async (req, res) => {
+    try {
+        const deletedPatient = await Ledger.findByIdAndDelete(req.params.id);
         if (!deletedPatient) {
             return res.status(404).json({ message: 'Patient not found' });
         }
@@ -681,6 +767,206 @@ router.delete('/reffby/:id', async (req, res) => {
         res.status(200).json({ message: 'Reffby deleted successfully' });
     } catch (err) {
         res.status(500).json({ error: err.message });
+    }
+});
+
+
+// READ all wards (GET)
+router.get('/wards', async (req, res) => {
+    try {
+        const wards = await Ward.find();
+        res.status(200).json(wards);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// CREATE a new ward (POST)
+router.post('/wards', async (req, res) => {
+    const ward = new Ward({
+        wardname: req.body.wardname,
+        floorno: req.body.floorno
+    });
+
+    try {
+        const savedWard = await ward.save();
+        res.status(201).json(savedWard);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// READ a specific ward by ID (GET)
+router.get('/wards/:id', async (req, res) => {
+    try {
+        const ward = await Ward.findById(req.params.id);
+        if (!ward) return res.status(404).json({ error: 'Ward not found' });
+        res.status(200).json(ward);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// UPDATE a ward by ID (PUT)
+router.put('/wards/:id', async (req, res) => {
+    try {
+        const updatedWard = await Ward.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!updatedWard) return res.status(404).json({ error: 'Ward not found' });
+        res.status(200).json(updatedWard);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// DELETE a ward by ID (DELETE)
+router.delete('/wards/:id', async (req, res) => {
+    try {
+        const deletedWard = await Ward.findByIdAndDelete(req.params.id);
+        if (!deletedWard) return res.status(404).json({ error: 'Ward not found' });
+        res.status(204).send(); // No content to send back
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+router.post('/beds', async (req, res) => {
+    const { ward, department, bedname, rate, gst, hsncode, slotStart, slotCount, inclusiveTax, otRoom, default: isDefault, alwaysAvailable } = req.body;
+
+    // Check if the Ward exists
+    const foundWard = await Ward.findById(ward);
+    if (!foundWard) {
+        return res.status(400).json({ error: 'Ward not found' });
+    }
+
+    const bed = new Bed({
+        ward,
+        department,
+        bedname,
+        rate,
+        gst,
+        hsncode,
+        slotStart,
+        slotCount,
+        options: {
+            inclusiveTax,
+            otRoom,
+            default: isDefault,
+            alwaysAvailable
+        }
+    });
+
+    try {
+        const savedBed = await bed.save();
+        res.status(201).json(savedBed);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+
+// READ all beds (GET)
+router.get('/beds', async (req, res) => {
+    try {
+        const beds = await Bed.find();
+        res.status(200).json(beds);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+
+// READ a specific bed by ID (GET)
+router.get('/beds/:id', async (req, res) => {
+    try {
+        const bed = await Bed.findById(req.params.id);
+        if (!bed) return res.status(404).json({ error: 'Bed not found' });
+        res.status(200).json(bed);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// UPDATE a bed by ID (PUT)
+router.put('/beds/:id', async (req, res) => {
+    try {
+        const updatedBed = await Bed.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!updatedBed) return res.status(404).json({ error: 'Bed not found' });
+        res.status(200).json(updatedBed);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// DELETE a bed by ID (DELETE)
+router.delete('/beds/:id', async (req, res) => {
+    try {
+        const deletedBed = await Bed.findByIdAndDelete(req.params.id);
+        if (!deletedBed) return res.status(404).json({ error: 'Bed not found' });
+        res.status(204).send(); // No content to send back
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Create a new bill (receipt)
+router.post('/bills', async (req, res) => {
+    try {
+        const newBill = new Bill(req.body);  // Create a new instance of Bill with request data
+        const savedBill = await newBill.save();  // Save the bill to the database
+        res.status(201).json(savedBill);  // Send back the saved bill
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Get all bills
+router.get('/bills', async (req, res) => {
+    try {
+        const bills = await Bill.find();  // Fetch all bills, populate patient details
+        res.status(200).json(bills);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get a single bill by ID
+router.get('/bills/:id', async (req, res) => {
+    try {
+        const bill = await Bill.findById(req.params.id).populate('patientId');
+        if (!bill) {
+            return res.status(404).json({ error: 'Bill not found' });
+        }
+        res.status(200).json(bill);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Update a bill by ID
+router.put('/bills/:id', async (req, res) => {
+    try {
+        const updatedBill = await Bill.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!updatedBill) {
+            return res.status(404).json({ error: 'Bill not found' });
+        }
+        res.status(200).json(updatedBill);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Delete a bill by ID
+router.delete('/bills/:id', async (req, res) => {
+    try {
+        const deletedBill = await Bill.findByIdAndDelete(req.params.id);
+        if (!deletedBill) {
+            return res.status(404).json({ error: 'Bill not found' });
+        }
+        res.status(200).json({ message: 'Bill deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 });
 

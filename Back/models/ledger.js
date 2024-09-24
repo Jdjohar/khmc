@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const PatientSchema = new Schema({
+const LedgerSchema = new Schema({
+
+    patientId: { type: mongoose.Schema.Types.ObjectId, ref: 'Patient', required: true },
+    visitDate: { type: Date, default: Date.now },
     date: {
         type: Date,
         required: true,
@@ -141,6 +144,6 @@ const PatientSchema = new Schema({
         type: Date,
         default: Date.now
     }
-});
+})
 
-module.exports = mongoose.model('patient', PatientSchema);
+module.exports = mongoose.model('ledger', LedgerSchema);

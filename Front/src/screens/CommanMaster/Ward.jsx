@@ -1,8 +1,128 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Topbar from '../../component/TopNavBar';
 import SideNavbar from '../../component/SideNavbar';
+import { useNavigate } from 'react-router-dom';
 
 const Ward = () => {
+  const [wards, setWards] = useState([]);
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    wardname: '',
+    floorno: '',
+  });
+  const [selectedWardId, setSelectedWardId] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchWards = async () => {
+      try {
+        const response = await fetch("https://khmc.onrender.com/api/wards");
+        const data = await response.json();
+        console.log(data);
+        
+        setWards(data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchWards();
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (selectedWardId) {
+      // Update existing ward
+      try {
+        const response = await fetch(`https://khmc.onrender.com/api/wards/${selectedWardId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+
+        if (response.ok) {
+          const updatedWard = await response.json();
+          setWards((prevWards) =>
+            prevWards.map((ward) => (ward._id === selectedWardId ? updatedWard : ward))
+          );
+          alert('Ward updated successfully!');
+          navigate("/master/ward");
+        } else {
+          alert('Failed to update ward');
+        }
+      } catch (error) {
+        console.error('Error updating ward:', error);
+      }
+    } else {
+      // Add new ward
+      try {
+        const response = await fetch('https://khmc.onrender.com/api/wards', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+
+        if (response.ok) {
+          const newWard = await response.json();
+          setWards(newWard);
+          alert('Ward added successfully!');
+          navigate("/master/ward")
+        } else {
+          alert('Failed to add ward');
+        }
+      } catch (error) {
+        console.error('Error adding ward:', error);
+      }
+    }
+
+    // Clear form
+    setFormData({
+      wardname: '',
+      floorno: '',
+    });
+    setSelectedWardId(null);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await fetch(`https://khmc.onrender.com/api/wards/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setWards((prevWards) => prevWards.filter((ward) => ward._id !== id));
+        alert('Ward deleted successfully!');
+      } else {
+        alert('Failed to delete ward');
+      }
+    } catch (error) {
+      console.error('Error deleting ward:', error);
+    }
+  };
+
+  const handleRowClick = (ward) => {
+    setFormData({
+      wardname: ward.wardname,
+      floorno: ward.floorno,
+    });
+    setSelectedWardId(ward._id);
+  };
+
   return (
     <>
       <Topbar />
@@ -38,23 +158,24 @@ const Ward = () => {
                           <th>Floor Number</th>
                           <th>Action</th>
                         </tr>
-                      </thead>
+                      </thead>{console.log("wards", wards)
+                      }
                       <tbody>
-                        <tr>
-                          <td>Ward 1</td>
-                          <td>1</td>
-                          <td>Edit/Delete</td>
-                        </tr>
-                        <tr>
-                          <td>Ward 2</td>
-                          <td>2</td>
-                          <td>Edit/Delete</td>
-                        </tr>
-                        <tr>
-                          <td>Ward 3</td>
-                          <td>3</td>
-                          <td>Edit/Delete</td>
-                        </tr>
+                        {loading ? (
+                          <tr>
+                            <td colSpan="3">Loading...</td>
+                          </tr>
+                        ) : (
+                          Array.isArray(wards) && wards.map((ward) => (
+                            <tr key={ward._id} onClick={() => handleRowClick(ward)} style={{ cursor: 'pointer' }}>
+                              <td>{ward.wardname}</td>
+                              <td>{ward.floorno}</td>
+                              <td>
+                                <button className="btn btn-danger" onClick={() => handleDelete(ward._id)}>Delete</button>
+                              </td>
+                            </tr>
+                          ))
+                        )}
                       </tbody>
                     </table>
                   </div>
@@ -64,7 +185,7 @@ const Ward = () => {
               <div className="col-8 grid-margin stretch-card">
                 <div className="card">
                   <div className="card-body">
-                    <form className="forms-sample">
+                    <form className="forms-sample" onSubmit={handleSubmit}>
                       <div className="form-group row">
                         <div className="col-6 mt-3">
                           <label htmlFor="wardname">Ward Name</label>
@@ -72,25 +193,36 @@ const Ward = () => {
                             type="text"
                             className="form-control"
                             id="wardname"
+                            name="wardname"
+                            value={formData.wardname}
+                            onChange={handleChange}
                             placeholder="Enter Ward Name"
                           />
                         </div>
 
                         <div className="col-6 mt-3">
-                          <label htmlFor="floornumber">Floor Number</label>
+                          <label htmlFor="floorno">Floor Number</label>
                           <input
                             type="text"
                             className="form-control"
-                            id="floornumber"
+                            id="floorno"
+                            name="floorno"
+                            value={formData.floorno}
+                            onChange={handleChange}
                             placeholder="Enter Floor Number"
                           />
                         </div>
                       </div>
 
                       <button type="submit" className="btn btn-gradient-primary me-2">
-                        Submit
+                        {selectedWardId ? 'Update' : 'Submit'}
                       </button>
-                      <button className="btn btn-light">Cancel</button>
+                      <button className="btn btn-light" type="button" onClick={() => {
+                        setFormData({ wardname: '', floorno: '' });
+                        setSelectedWardId(null);
+                      }}>
+                        Cancel
+                      </button>
                     </form>
                   </div>
                 </div>
