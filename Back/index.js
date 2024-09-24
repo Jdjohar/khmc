@@ -14,21 +14,9 @@ app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
 job.start(); 
 
-// Start the cron job
-// app.use((req,res,next)=>{
-//   // res.setHeader("Access-Control-Allow-Origin","https://grit.homes");
-//   // res.setHeader("Access-Control-Allow-Origin","https://mycabinets.vercel.app");
-//   res.setHeader("Access-Control-Allow-Origin","http://localhost:3000");
-//   res.header(
-//     "Access-Control-Allow-Headers",
-//     "Origin, X-Requested-With, Content-Type, Accept"
-//   );
-//   next();
-// })
 
 app.use((req, res, next) => {
-  // res.setHeader("Access-Control-Allow-Origin", "https://restro-wbno.vercel.app");
-  // res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+
   const corsWhitelist = [
     "http://localhost:5173",
     "https://khmc.vercel.app",
