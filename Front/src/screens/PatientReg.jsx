@@ -12,7 +12,7 @@ const Modal = ({ isOpen, onClose, patients }) => {
     const fetchLatestOpdNo = async () => {
         try {
             // Make an API call to fetch the patient numbers
-            const response = await fetch('https://khmc.onrender.com/api/patientsNumber');
+            const response = await fetch('https://khmc.onrender.com/api/patientslogsNumber');
             
             // Check if the request was successful
             if (!response.ok) {
@@ -93,6 +93,7 @@ const PatientReg = () => {
     const [patientType, setPatientType] = useState(''); // State to track the selected patient type
     const [error, setError] = useState('')
     const [Loading, setLoading] = useState('')
+    const [FetchBtnLoading, setFetchBtnLoading] = useState('')
     const [btnLoading, setbtnLoading] = useState('')
     const [Gender, setGender] = useState('')
     const [BillNumber, setBillNumber] = useState('')
@@ -219,6 +220,7 @@ const PatientReg = () => {
 
     }
 
+    
     const navigate = useNavigate();
     const fetchSequenceNumbers = async () => {
         setLoading(true);
@@ -257,11 +259,11 @@ const PatientReg = () => {
 
                 // Update form data based on patient type
                 if (patientType === 'new') {
-
+                    const fetchOPDnumber = await fetchLatestOpdNo()
                     setFormData((prevData) => ({
                         ...prevData, // Spread the previous data
                         uhid: `${nextUhid}`,  // Update UHID
-                        opdno: `${nextOpdno}`, // Update OPD No
+                        opdno: fetchOPDnumber, // Update OPD No
                         sno: sno  // Update Serial Number
                     }));
 
@@ -285,6 +287,39 @@ const PatientReg = () => {
     };
 
    
+    const fetchLatestOpdNo = async () => {
+        try {
+            // Make an API call to fetch the patient numbers
+            const response = await fetch('https://khmc.onrender.com/api/patientslogsNumber');
+            
+            // Check if the request was successful
+            if (!response.ok) {
+                throw new Error('Failed to fetch patient numbers');
+            }
+    
+            // Parse the response as JSON
+            const data = await response.json();
+    
+            // Check if data is not empty
+            if (data.length === 0) {
+                throw new Error('No patient data available');
+            }
+    
+            // Extract the latest opdno (from the last entry in the list)
+            // Extract the latest opdno and add 1 to it
+        const latestOpdno = parseInt(data[data.length - 1].opdno) + 1;
+        console.log('New OPD No:', latestOpdno);
+    
+
+    
+            // Return the latest opdno
+            return latestOpdno;
+        } catch (error) {
+            console.error('Error fetching the latest OPD number:', error.message);
+            return null; // Return null in case of an error
+        }
+    };
+
     
     // Function to upload PDF to Cloudinary
     const uploadPdfToCloudinary = async (pdfBlob, fileName) => {
@@ -438,7 +473,7 @@ const PatientReg = () => {
         // Select form data based on patient type
         const selectedFormData = patientType === 'new' ? formData : OldformData;
 
-        console.log(selectedFormData, "selectedFormData");
+        console.log(typeof selectedFormData.emergencyfee, "selectedFormData");
         const applyFee = selectedFormData.visitType == 'Emergency' ? selectedDoctor.emergencyfee.toString() : selectedDoctor.consfee.toString()
 
         const doc = new jsPDF();
@@ -706,7 +741,7 @@ const PatientReg = () => {
             setError('Please enter either UHID or Mobile Number.');
             return;
         }
-        setLoading(true);
+        setFetchBtnLoading(true);
         try {
 
             console.log(findFormData, "Data Old", findFormData.uhid, findFormData.mobile);
@@ -726,9 +761,17 @@ const PatientReg = () => {
                 if (data.length > 1) {
                     setPatients(data); // Store all the patients if more than one is returned
                     setIsModalOpen(true); // Open the modal for selection
+                    setFetchBtnLoading(false);
                 } else {
-                    setoldFormData(data[0]); // Automatically fill the form with the first patient's data
+                    console.log(await fetchLatestOpdNo(), "Elese Part Check")
+                    const fetchOPDnumber = await fetchLatestOpdNo()
+                    setoldFormData(() =>({
+                        ...data[0],
+                        opdno: fetchOPDnumber
+                    })); // Automatically fill the form with the first patient's data
+                    // setoldFormData(data[0]); // Automatically fill the form with the first patient's data
                     setDataFetched(true);
+                    setFetchBtnLoading(false);
                 }
             } else {
                 setError('No patients found.');
@@ -775,20 +818,22 @@ const PatientReg = () => {
     const oldEntriesSubmit = async (e) => {
         e.preventDefault();
         setbtnLoading(true);
-
+    
         const selectedFormData = patientType === 'new' ? formData : OldformData;
+    
         try {
             // Generate PDFs
             const prescriptionPdfBlob = generatePrescriptionPdf(selectedFormData);
             const tokenPdfBlob = generateTokenPdf(selectedFormData);
             const receiptPdfBlob = generateReceiptPdf(selectedFormData);
-
+    
             // Upload PDFs to Cloudinary
             const prescriptionPdfUrl = await uploadPdfToCloudinary(prescriptionPdfBlob, 'prescription.pdf');
             const tokenPdfUrl = await uploadPdfToCloudinary(tokenPdfBlob, 'token.pdf');
             const receiptPdfUrl = await uploadPdfToCloudinary(receiptPdfBlob, 'receipt.pdf');
-
+    
             console.log(OldformData, "selectedFormData");
+    
             // Create documents array with URLs and document types
             const documents = [
                 {
@@ -807,39 +852,38 @@ const PatientReg = () => {
                     uploadedAt: new Date(),
                 },
             ];
-
-
+    
+            console.log(selectedFormData, "From old Entries");
+    
+            // Create a copy of selectedFormData and remove the _id key
+            const { _id, ...formDataWithoutId } = selectedFormData;
+    
             // Submit form data with Cloudinary URLs
-            const response = await fetch('https://khmc.onrender.com/api/ledger', {
+            const response = await fetch('https://khmc.onrender.com/api/patientlogs', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    ...selectedFormData,
+                    ...formDataWithoutId, // Send the formData without _id
                     documents,
-                    patientId:selectedFormData._id
+                    patientId: _id // Pass _id separately if needed
                 }),
             });
-
+    
             if (response.ok) {
                 const patientData = await response.json();
                 console.log("patientData", patientData);
-                createBill(patientData.data._id)
-                // await createBill(patientId);
-                alert('Patient data submitted in Ladger successfully!');
-                // navigate("/master/patientlist");
+                createBill(patientData.data._id);
+                alert('Patient data submitted in Ledger successfully!');
             } else {
                 alert('Failed to submit patient data');
             }
         } catch (error) {
             console.error('Error submitting patient data:', error);
+        } finally {
+            setbtnLoading(false);
         }
-        finally {
-            setbtnLoading(false)
-        }
-        
-        
     }
     // Handle form submission
     const handleSubmit = async (e) => {
@@ -881,6 +925,7 @@ const PatientReg = () => {
                     uploadedAt: new Date(),
                 },
             ];
+            
 
 
             // Submit form data with Cloudinary URLs
@@ -966,7 +1011,7 @@ const PatientReg = () => {
                                                         {dataFetched
                                                             ?
                                                             <>
-                                                                <div className="col-4 mt-3">
+                                                                {/* <div className="col-4 mt-3">
                                                                     <label htmlFor="uhid">UHID f</label>
                                                                     <input
                                                                         type="text"
@@ -991,7 +1036,7 @@ const PatientReg = () => {
                                                                         onChange={oldhandleChange}
                                                                         placeholder="Enter Mobile Number"
                                                                     />
-                                                                </div>
+                                                                </div> */}
                                                             </>
 
                                                             :
@@ -1444,9 +1489,9 @@ const PatientReg = () => {
                                                                 type="button"
                                                                 className="btn btn-primary mt-4"
                                                                 onClick={fetchPatientData}
-                                                                disabled={Loading}
+                                                                disabled={FetchBtnLoading}
                                                             >
-                                                                {Loading ? 'Fetching...' : 'Fetch Data'}
+                                                                {FetchBtnLoading ? 'Fetching...' : 'Fetch Data'}
                                                             </button>
                                                         </div>
                                                     </div>

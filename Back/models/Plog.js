@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const LedgerSchema = new Schema({
+const PlogSchema = new Schema({
 
     patientId: { type: mongoose.Schema.Types.ObjectId, ref: 'Patient', required: true },
     visitDate: { type: Date, default: Date.now },
@@ -146,4 +146,4 @@ const LedgerSchema = new Schema({
     }
 })
 
-module.exports = mongoose.model('ledger', LedgerSchema);
+module.exports = mongoose.model('plog', PlogSchema);

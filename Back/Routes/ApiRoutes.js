@@ -18,7 +18,7 @@ const Reffby = require('../models/Reffby')
 const Ward = require('../models/Ward')
 const Bed = require('../models/Bed')
 const Bill = require('../models/Receipts')
-const Ledger = require('../models/ledger')
+const Plog = require('../models/Plog')
 const crypto = require('crypto');
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
@@ -157,9 +157,9 @@ router.delete('/patients/:id', async (req, res) => {
 
 
 // CREATE a new patient (POST)
-router.post('/ledger', async (req, res) => {
+router.post('/patientlogs', async (req, res) => {
     try {
-        const newPatient = new Ledger(req.body);
+        const newPatient = new Plog(req.body);
         const savedPatient = await newPatient.save();
         res.status(201).json({ 
             success: true,
@@ -170,10 +170,21 @@ router.post('/ledger', async (req, res) => {
     }
 });
 
-// READ all patients (GET)
-router.get('/ledger', async (req, res) => {
+router.get('/patientslogsNumber', async (req, res) => {
     try {
-        const patients = await Ledger.find();
+        // Find patients and project only UHID and OPD No
+        const patientslog = await Plog.find({}, 'opdno sno'); // Projection with 'uhid opdno'
+        
+        res.status(200).json(patientslog);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// READ all patients (GET)
+router.get('/patientlogs', async (req, res) => {
+    try {
+        const patients = await Plog.find();
         res.status(200).json(patients);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -181,9 +192,9 @@ router.get('/ledger', async (req, res) => {
 });
 
 // READ a single patient by ID (GET)
-router.get('/ledger/:id', async (req, res) => {
+router.get('/patientlogs/:id', async (req, res) => {
     try {
-        const patient = await Ledger.findById(req.params.id);
+        const patient = await Plog.findById(req.params.id);
         if (!patient) {
             return res.status(404).json({ message: 'Patient not found' });
         }
@@ -194,9 +205,9 @@ router.get('/ledger/:id', async (req, res) => {
 });
 
 // UPDATE a patient by ID (PUT)
-router.put('/ledger/:id', async (req, res) => {
+router.put('/patientlogs/:id', async (req, res) => {
     try {
-        const updatedPatient = await Ledger.findByIdAndUpdate(req.params.id, req.body, {
+        const updatedPatient = await Plog.findByIdAndUpdate(req.params.id, req.body, {
             new: true, // Return the updated document
             runValidators: true // Ensure the data is valid
         });
@@ -210,9 +221,9 @@ router.put('/ledger/:id', async (req, res) => {
 });
 
 // DELETE a patient by ID (DELETE)
-router.delete('/ledger/:id', async (req, res) => {
+router.delete('/patientlogs/:id', async (req, res) => {
     try {
-        const deletedPatient = await Ledger.findByIdAndDelete(req.params.id);
+        const deletedPatient = await Plog.findByIdAndDelete(req.params.id);
         if (!deletedPatient) {
             return res.status(404).json({ message: 'Patient not found' });
         }
