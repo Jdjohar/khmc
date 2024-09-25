@@ -1011,7 +1011,9 @@ const PatientReg = () => {
                 const patientData = await response.json();
                 console.log("patientData", patientData);
                 createBill(patientData.data._id);
-    
+                const { _id, ...formDataWithoutId } = patientData.data;
+                console.log("formDataWithoutId:",_id, formDataWithoutId);
+                
                 // After successful patient creation, log entry in patient logs
                 await fetch('https://khmc.onrender.com/api/patientlogs', {
                     method: 'POST',
@@ -1019,9 +1021,9 @@ const PatientReg = () => {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        patientId: patientData.data._id, // Assuming patientData includes the patient ID
-                        action: 'Patient created', // Log action type
-                        timestamp: new Date(),
+                        patientId: _id, // Assuming patientData includes the patient ID
+                        ...formDataWithoutId, // Log action type
+                       
                     }),
                 });
     
