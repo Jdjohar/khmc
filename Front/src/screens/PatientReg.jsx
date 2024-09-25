@@ -886,27 +886,96 @@ const PatientReg = () => {
         }
     }
     // Handle form submission
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+    //     setbtnLoading(true);
+
+    //     // Select form data based on patient type
+    //     const selectedFormData = patientType === 'new' ? formData : OldformData;
+
+    //     try {
+    //         // Generate PDFs
+    //         const prescriptionPdfBlob = generatePrescriptionPdf(selectedFormData);
+    //         const tokenPdfBlob = generateTokenPdf(selectedFormData);
+    //         const receiptPdfBlob = generateReceiptPdf(selectedFormData);
+
+    //         // Upload PDFs to Cloudinary
+    //         const prescriptionPdfUrl = await uploadPdfToCloudinary(prescriptionPdfBlob, 'prescription.pdf');
+    //         const tokenPdfUrl = await uploadPdfToCloudinary(tokenPdfBlob, 'token.pdf');
+    //         const receiptPdfUrl = await uploadPdfToCloudinary(receiptPdfBlob, 'token.pdf');
+
+    //         console.log(selectedFormData, "selectedFormData");
+    //         // Create documents array with URLs and document types
+    //         const documents = [
+    //             {
+    //                 url: prescriptionPdfUrl,
+    //                 documentType: 'prescription',
+    //                 uploadedAt: new Date(),
+    //             },
+    //             {
+    //                 url: tokenPdfUrl,
+    //                 documentType: 'token',
+    //                 uploadedAt: new Date(),
+    //             },
+    //             {
+    //                 url: receiptPdfUrl,
+    //                 documentType: 'receipt',
+    //                 uploadedAt: new Date(),
+    //             },
+    //         ];
+            
+
+
+    //         // Submit form data with Cloudinary URLs
+    //         const response = await fetch('https://khmc.onrender.com/api/patients', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify({
+    //                 ...selectedFormData,
+    //                 documents,
+    //             }),
+    //         });
+
+    //         if (response.ok) {
+    //             const patientData = await response.json();
+    //             console.log("patientData", patientData);
+    //             createBill(patientData.data._id)
+    //             // await createBill(patientId);
+    //             alert('Patient data submitted successfully!');
+    //             // navigate("/master/patientlist");
+    //         } else {
+    //             alert('Failed to submit patient data');
+    //         }
+    //     } catch (error) {
+    //         console.error('Error submitting patient data:', error);
+    //     }
+    //     finally {
+    //         setbtnLoading(false)
+    //     }
+    // };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setbtnLoading(true);
-
-
-
+    
         // Select form data based on patient type
         const selectedFormData = patientType === 'new' ? formData : OldformData;
-
+    
         try {
             // Generate PDFs
             const prescriptionPdfBlob = generatePrescriptionPdf(selectedFormData);
             const tokenPdfBlob = generateTokenPdf(selectedFormData);
             const receiptPdfBlob = generateReceiptPdf(selectedFormData);
-
+    
             // Upload PDFs to Cloudinary
             const prescriptionPdfUrl = await uploadPdfToCloudinary(prescriptionPdfBlob, 'prescription.pdf');
             const tokenPdfUrl = await uploadPdfToCloudinary(tokenPdfBlob, 'token.pdf');
-            const receiptPdfUrl = await uploadPdfToCloudinary(receiptPdfBlob, 'token.pdf');
-
+            const receiptPdfUrl = await uploadPdfToCloudinary(receiptPdfBlob, 'receipt.pdf'); // corrected file name here
+    
             console.log(selectedFormData, "selectedFormData");
+    
             // Create documents array with URLs and document types
             const documents = [
                 {
@@ -925,10 +994,8 @@ const PatientReg = () => {
                     uploadedAt: new Date(),
                 },
             ];
-            
-
-
-            // Submit form data with Cloudinary URLs
+    
+            // Submit form data to patients API
             const response = await fetch('https://khmc.onrender.com/api/patients', {
                 method: 'POST',
                 headers: {
@@ -939,26 +1006,35 @@ const PatientReg = () => {
                     documents,
                 }),
             });
-
+    
             if (response.ok) {
                 const patientData = await response.json();
                 console.log("patientData", patientData);
-                createBill(patientData.data._id)
-                // await createBill(patientId);
-                alert('Patient data submitted successfully!');
-                // navigate("/master/patientlist");
+                createBill(patientData.data._id);
+    
+                // After successful patient creation, log entry in patient logs
+                await fetch('https://khmc.onrender.com/api/patientlogs', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        patientId: patientData.data._id, // Assuming patientData includes the patient ID
+                        action: 'Patient created', // Log action type
+                        timestamp: new Date(),
+                    }),
+                });
+    
+                alert('Patient data and log submitted successfully!');
             } else {
                 alert('Failed to submit patient data');
             }
         } catch (error) {
             console.error('Error submitting patient data:', error);
-        }
-        finally {
-            setbtnLoading(false)
+        } finally {
+            setbtnLoading(false);
         }
     };
-
-
 
     return (
         <>
