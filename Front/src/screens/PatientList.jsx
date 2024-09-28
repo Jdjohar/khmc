@@ -74,7 +74,7 @@ const PatientList = () => {
                                             <table class="table">
                                                 <thead>
                                                     <tr>
-                                                        <th>Option</th>
+                                                        <th>Action</th>
                                                         <th>UHID</th>
                                                         <th>OPD No</th>
                                                         <th>Mobile</th>
@@ -130,25 +130,20 @@ const PatientList = () => {
                                                                                     
                                                                                     <a href={`/master/patientEdit/${patient._id}`}
                                                                                     className="dropdown-item" > Edit Patient </a></li>
-                                                                                <li className="dropdown-item">Go For Pathology Test</li>
-                                                                                <li className="dropdown-item">Go For Radiology Test</li>
-                                                                                <li className="dropdown-item">Go For Result</li>
-                                                                                <li className="dropdown-item">Go For Pharma Billing</li>
-                                                                                <li className="dropdown-item">Create Sale Bill</li>
+
+                                                                                <li className="dropdown-item">Print Bill</li>
+                                                                                <li className="dropdown-item">Print Prescription</li>
+                                                                                <li className="dropdown-item">Lab</li>
+                                                                                <li className="dropdown-item">Ultra Sound</li>
+                                                                                <li className="dropdown-item">Edit</li>
                                                                             </div>
                                                                             <div className="col-lg-4">
-                                                                                <li className="dropdown-item">Mark Completed</li>
-                                                                                <li className="dropdown-item">Delete Registration</li>
-                                                                                <li className="dropdown-item">Edit Registration</li>
+                                                                                <li className="dropdown-item">Delete</li>
+                                                                                <li className="dropdown-item">Ladger Daycare Bill</li>
+                                                                                <li className="dropdown-item">WhatsApp Bill & Prescription</li>
 
                                                                             </div>
-                                                                            <div className="col-lg-4">
-                                                                                <li className="dropdown-item">Rec. Payment</li>
-                                                                                <li className="dropdown-item">Refund</li>
-                                                                                <li className="dropdown-item">Opem payment</li>
-                                                                                <li className="dropdown-item">Opem payment List</li>
-                                                                                <li className="dropdown-item">Mark as paid</li>
-                                                                            </div>
+                                                                           
                                                                         </div>
                                                                     </ul>
                                                                 </div>

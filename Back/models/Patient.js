@@ -29,7 +29,7 @@ const PatientSchema = new Schema({
     },
     status: {
         type: String,
-        required: true
+        required: false
     },
     patientName: {
         type: String,
@@ -37,10 +37,12 @@ const PatientSchema = new Schema({
     },
     gStatus: {
         type: String,  // Guardian status
+        required: true
 
     },
     guardianName: {
         type: String,
+        required: true
 
     },
     guardianNumber: {
@@ -49,11 +51,12 @@ const PatientSchema = new Schema({
     },
     address: {
         type: String,
+        required: true
 
     },
     city: {
         type: String,
-        required: true
+
     },
     gender: {
         type: String,
@@ -77,15 +80,15 @@ const PatientSchema = new Schema({
     },
     type: {
         type: String,  // Type of patient (inpatient/outpatient)
-        required: true
+
     },
     department: {
         type: String,
-        required: true
+        required: false
     },
     refTo: {
         type: String,  // Referred to another department/doctor
-        required: false
+        required: true
     },
     identStatus: {  // Identification Status
         type: String,
@@ -97,11 +100,11 @@ const PatientSchema = new Schema({
     },
     visitType: {
         type: String,  // E.g., first-time, follow-up, etc.
-        required: true
+        required: false
     },
     paymentType: {
         type: String,  // E.g., Cash, Credit, Insurance
-        required: true
+        required: false
     },
     discountType: {
         type: String,  // E.g., Senior Citizen, Corporate
