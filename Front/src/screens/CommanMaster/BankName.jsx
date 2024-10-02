@@ -15,7 +15,7 @@ const BankName = () => {
   useEffect(() => {
     const fetchbank = async () => {
       try {
-        const response = await fetch("https://khmc.onrender.com/api/bank");
+        const response = await fetch("https://khmc-xdlm.onrender.com/api/bank");
         const data = await response.json();
         
 
@@ -63,7 +63,7 @@ const BankName = () => {
 
       // If a bank is selected, update the bank
       try {
-        const response = await fetch(`https://khmc.onrender.com/api/bank/${selectedBankId}`, {
+        const response = await fetch(`https://khmc-xdlm.onrender.com/api/bank/${selectedBankId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
@@ -96,7 +96,7 @@ const BankName = () => {
     } else {
       // If no bank is selected, add a new bank
       try {
-        const response = await fetch('https://khmc.onrender.com/api/bank', {
+        const response = await fetch('https://khmc-xdlm.onrender.com/api/bank', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -129,7 +129,7 @@ const BankName = () => {
   const handleDelete = async () => {
     if (selectedBankId) {
       try {
-        const response = await fetch(`https://khmc.onrender.com/api/bank/${selectedBankId}`, {
+        const response = await fetch(`https://khmc-xdlm.onrender.com/api/bank/${selectedBankId}`, {
           method: 'DELETE', // Use DELETE for deleting the bank
           headers: {
             'Content-Type': 'application/json'

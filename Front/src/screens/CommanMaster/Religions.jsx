@@ -16,7 +16,7 @@ const Religions = () => {
   useEffect(() => {
     const fetchReligion = async () => {
       try {
-        const response = await fetch("https://khmc.onrender.com/api/religion");
+        const response = await fetch("https://khmc-xdlm.onrender.com/api/religion");
         const data = await response.json();
         console.log(data);
 
@@ -43,7 +43,7 @@ const Religions = () => {
   const handleDelete = async () => {
     if (SelectedreligionId) {
       try {
-        const response = await fetch(`https://khmc.onrender.com/api/religion/${SelectedreligionId}`, {
+        const response = await fetch(`https://khmc-xdlm.onrender.com/api/religion/${SelectedreligionId}`, {
           method: 'DELETE', // Use DELETE for deleting the state
           headers: {
             'Content-Type': 'application/json'
@@ -93,7 +93,7 @@ const Religions = () => {
 
       // If a state is selected, update the state
       try {
-        const response = await fetch(`https://khmc.onrender.com/api/religion/${SelectedreligionId}`, {
+        const response = await fetch(`https://khmc-xdlm.onrender.com/api/religion/${SelectedreligionId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
@@ -126,7 +126,7 @@ const Religions = () => {
     } else {
       // If no state is selected, add a new state
       try {
-        const response = await fetch('https://khmc.onrender.com/api/religion', {
+        const response = await fetch('https://khmc-xdlm.onrender.com/api/religion', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

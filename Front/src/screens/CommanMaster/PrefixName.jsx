@@ -19,7 +19,7 @@ const PrefixName = () => {
   useEffect(() => {
     const fetchprefix = async () => {
       try {
-        const response = await fetch("https://khmc.onrender.com/api/prefix");
+        const response = await fetch("https://khmc-xdlm.onrender.com/api/prefix");
         const data = await response.json();
         console.log(data);
 
@@ -53,7 +53,7 @@ const PrefixName = () => {
 
       // If a Prefixis selected, update the state
       try {
-        const response = await fetch(`https://khmc.onrender.com/api/prefix/${selectedprefixId}`, {
+        const response = await fetch(`https://khmc-xdlm.onrender.com/api/prefix/${selectedprefixId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
@@ -88,7 +88,7 @@ const PrefixName = () => {
     } else {
       // If no Prefixis selected, add a new state
       try {
-        const response = await fetch('https://khmc.onrender.com/api/prefix', {
+        const response = await fetch('https://khmc-xdlm.onrender.com/api/prefix', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -123,7 +123,7 @@ const PrefixName = () => {
   const handleDelete = async () => {
     if (selectedprefixId) {
       try {
-        const response = await fetch(`https://khmc.onrender.com/api/prefix/${selectedprefixId}`, {
+        const response = await fetch(`https://khmc-xdlm.onrender.com/api/prefix/${selectedprefixId}`, {
           method: 'DELETE', // Use DELETE for deleting the state
           headers: {
             'Content-Type': 'application/json'

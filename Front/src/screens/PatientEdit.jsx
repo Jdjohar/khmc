@@ -53,7 +53,7 @@ const PatientEdit = () => {
     useEffect(() => {
         const fetchPatient = async () => {
             try {
-                const response = await fetch(`https://khmc.onrender.com/api/patients/${id}`);
+                const response = await fetch(`https://khmc-xdlm.onrender.com/api/patients/${id}`);
                 const data = await response.json();
                 setPatients(data);
                 setFormData(data);
@@ -69,11 +69,11 @@ const PatientEdit = () => {
             try {
                 // Run all API requests in parallel
                 const [genderResponse, religionResponse, departmentResponse, doctorResponse, reffbyResponse] = await Promise.all([
-                    fetch("https://khmc.onrender.com/api/category"),
-                    fetch("https://khmc.onrender.com/api/religion"),
-                    fetch("https://khmc.onrender.com/api/department"),
-                    fetch("https://khmc.onrender.com/api/doctor"),
-                    fetch("https://khmc.onrender.com/api/reffby"),
+                    fetch("https://khmc-xdlm.onrender.com/api/category"),
+                    fetch("https://khmc-xdlm.onrender.com/api/religion"),
+                    fetch("https://khmc-xdlm.onrender.com/api/department"),
+                    fetch("https://khmc-xdlm.onrender.com/api/doctor"),
+                    fetch("https://khmc-xdlm.onrender.com/api/reffby"),
                 ]);
 
                 // Parse the JSON responses
@@ -126,7 +126,7 @@ const PatientEdit = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`https://khmc.onrender.com/api/patients/${id}`, {
+            const response = await fetch(`https://khmc-xdlm.onrender.com/api/patients/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

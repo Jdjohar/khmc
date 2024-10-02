@@ -51,9 +51,9 @@ const Reffby = () => {
       try {
         // Run both API requests in parallel
         const [reffbyResponse, departmentResponse, bankResponse] = await Promise.all([
-          fetch("https://khmc.onrender.com/api/reffby"),
-          fetch("https://khmc.onrender.com/api/bank"),
-          fetch("https://khmc.onrender.com/api/department")
+          fetch("https://khmc-xdlm.onrender.com/api/reffby"),
+          fetch("https://khmc-xdlm.onrender.com/api/bank"),
+          fetch("https://khmc-xdlm.onrender.com/api/department")
         ]);
 
         // Parse the JSON responses
@@ -142,7 +142,7 @@ const Reffby = () => {
     e.preventDefault();
     if (selectedReffbyId) {
       try {
-        const response = await fetch(`https://khmc.onrender.com/api/reffby/${selectedReffbyId}`, {
+        const response = await fetch(`https://khmc-xdlm.onrender.com/api/reffby/${selectedReffbyId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
@@ -196,7 +196,7 @@ const Reffby = () => {
 
 
       try {
-        const response = await fetch('https://khmc.onrender.com/api/reffby', {
+        const response = await fetch('https://khmc-xdlm.onrender.com/api/reffby', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -249,7 +249,7 @@ const Reffby = () => {
   const handleDelete = async () => {
     if (selectedReffbyId) {
       try {
-        const response = await fetch(`https://khmc.onrender.com/api/reffby/${selectedReffbyId}`, {
+        const response = await fetch(`https://khmc-xdlm.onrender.com/api/reffby/${selectedReffbyId}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json'

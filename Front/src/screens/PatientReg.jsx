@@ -12,7 +12,7 @@ const Modal = ({ isOpen, onClose, patients }) => {
     const fetchLatestOpdNo = async () => {
         try {
             // Make an API call to fetch the patient numbers
-            const response = await fetch('https://khmc.onrender.com/api/patientslogsNumber');
+            const response = await fetch('https://khmc-xdlm.onrender.com/api/patientslogsNumber');
 
             // Check if the request was successful
             if (!response.ok) {
@@ -188,7 +188,7 @@ const PatientReg = () => {
     const billnogen = async () => {
         try {
             // Fetch existing bills to determine the latest billNo
-            const billsResponse = await fetch('https://khmc.onrender.com/api/bills');
+            const billsResponse = await fetch('https://khmc-xdlm.onrender.com/api/bills');
             if (!billsResponse.ok) {
                 throw new Error('Failed to fetch existing bills');
             }
@@ -225,7 +225,7 @@ const PatientReg = () => {
     const fetchSequenceNumbers = async () => {
         setLoading(true);
         try {
-            const response = await fetch('https://khmc.onrender.com/api/patientsNumber');
+            const response = await fetch('https://khmc-xdlm.onrender.com/api/patientsNumber');
             if (response.ok) {
                 const data = await response.json();
                 let nextUhid = 11001; // Default UHID
@@ -290,7 +290,7 @@ const PatientReg = () => {
     const fetchLatestOpdNo = async () => {
         try {
             // Make an API call to fetch the patient numbers
-            const response = await fetch('https://khmc.onrender.com/api/patientslogsNumber');
+            const response = await fetch('https://khmc-xdlm.onrender.com/api/patientslogsNumber');
 
             // Check if the request was successful
             if (!response.ok) {
@@ -603,7 +603,7 @@ const PatientReg = () => {
             };
 
             // Send the request to create the bill
-            const response = await fetch('https://khmc.onrender.com/api/bills', {
+            const response = await fetch('https://khmc-xdlm.onrender.com/api/bills', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -680,11 +680,11 @@ const PatientReg = () => {
             try {
                 // Run all API requests in parallel
                 const [genderResponse, religionResponse, departmentResponse, doctorResponse, reffbyResponse] = await Promise.all([
-                    fetch("https://khmc.onrender.com/api/category"),
-                    fetch("https://khmc.onrender.com/api/religion"),
-                    fetch("https://khmc.onrender.com/api/department"),
-                    fetch("https://khmc.onrender.com/api/doctor"),
-                    fetch("https://khmc.onrender.com/api/reffby"),
+                    fetch("https://khmc-xdlm.onrender.com/api/category"),
+                    fetch("https://khmc-xdlm.onrender.com/api/religion"),
+                    fetch("https://khmc-xdlm.onrender.com/api/department"),
+                    fetch("https://khmc-xdlm.onrender.com/api/doctor"),
+                    fetch("https://khmc-xdlm.onrender.com/api/reffby"),
                 ]);
 
                 // Parse the JSON responses
@@ -747,7 +747,7 @@ const PatientReg = () => {
             console.log(findFormData, "Data Old", findFormData.uhid, findFormData.mobile);
 
             // Make a POST request with the form data (UHID or Mobile)
-            const response = await fetch('https://khmc.onrender.com/api/patientsearch', {
+            const response = await fetch('https://khmc-xdlm.onrender.com/api/patientsearch', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -859,7 +859,7 @@ const PatientReg = () => {
             const { _id, ...formDataWithoutId } = selectedFormData;
 
             // Submit form data with Cloudinary URLs
-            const response = await fetch('https://khmc.onrender.com/api/patientlogs', {
+            const response = await fetch('https://khmc-xdlm.onrender.com/api/patientlogs', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -927,7 +927,7 @@ const PatientReg = () => {
 
 
     //         // Submit form data with Cloudinary URLs
-    //         const response = await fetch('https://khmc.onrender.com/api/patients', {
+    //         const response = await fetch('https://khmc-xdlm.onrender.com/api/patients', {
     //             method: 'POST',
     //             headers: {
     //                 'Content-Type': 'application/json',
@@ -996,7 +996,7 @@ const PatientReg = () => {
             ];
 
             // Submit form data to patients API
-            const response = await fetch('https://khmc.onrender.com/api/patients', {
+            const response = await fetch('https://khmc-xdlm.onrender.com/api/patients', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1015,7 +1015,7 @@ const PatientReg = () => {
                 console.log("formDataWithoutId:", _id, formDataWithoutId);
 
                 // After successful patient creation, log entry in patient logs
-                await fetch('https://khmc.onrender.com/api/patientlogs', {
+                await fetch('https://khmc-xdlm.onrender.com/api/patientlogs', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
