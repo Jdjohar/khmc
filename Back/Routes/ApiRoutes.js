@@ -170,6 +170,7 @@ router.post('/patientlogs', async (req, res) => {
     }
 });
 
+//patients
 router.get('/patientslogsNumber', async (req, res) => {
     try {
         // Find patients and project only UHID and OPD No
