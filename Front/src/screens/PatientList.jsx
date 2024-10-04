@@ -68,10 +68,10 @@ const PatientList = () => {
                         <div className="row">
                             <div className="col-12 grid-margin stretch-card">
                                 <div className="card">
-                                    <div class="card-body">
-                                        <h4 class="card-title">Patient List</h4>
-                                        <div class="table-responsive">
-                                            <table class="table">
+                                    <div className="card-body">
+                                        <h4 className="card-title">Patient List</h4>
+                                        <div className="table-responsive">
+                                            <table className="table">
                                                 <thead>
                                                     <tr>
                                                         <th>Action</th>

@@ -182,8 +182,8 @@ const Religions = () => {
               <div className="col-4 grid-margin stretch-card">
                 <div className="card">
                   <div className="card-body">
-                    <h4 class="card-title">Religion List</h4>
-                    <table class="table">
+                    <h4 className="card-title">Religion List</h4>
+                    <table className="table">
                       <thead>
                         <tr>
                           <th>Religion Name</th>

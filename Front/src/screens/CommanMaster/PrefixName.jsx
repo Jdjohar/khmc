@@ -194,7 +194,7 @@ const PrefixName = () => {
                 <div className="card">
                   <div className="card-body">
 
-                    <table class="table">
+                    <table className="table">
                       <thead>
                         <tr>
                           <th>PrefixName</th>

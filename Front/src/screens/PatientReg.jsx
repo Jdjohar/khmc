@@ -1218,7 +1218,7 @@ const PatientReg = () => {
                                                                     <label for="exampleInputName1">Email</label>
                                                                     <input
                                                                         type="email"
-                                                                        class="form-control"
+                                                                        className="form-control"
                                                                         value={OldformData.email}
                                                                         onChange={oldhandleChange}
                                                                         name='email'
@@ -1298,18 +1298,18 @@ const PatientReg = () => {
                                                                     <label for="GuardianNumber">Guardian Number</label>
                                                                     <input
                                                                         type="text"
-                                                                        class="form-control"
+                                                                        className="form-control"
                                                                         id="GuardianNumber"
                                                                         value={OldformData.guardianNumber}
                                                                         name='guardianNumber'
                                                                         onChange={oldhandleChange}
                                                                         placeholder="Enter Guardian Number" />
                                                                 </div>
-                                                                <div class="col-12 mt-3">
+                                                                <div className="col-12 mt-3">
                                                                     <label for="address">Address</label>
                                                                     <input
                                                                         type="text"
-                                                                        class="form-control"
+                                                                        className="form-control"
                                                                         id="address"
                                                                         name='address'
                                                                         value={OldformData.address}
@@ -1320,7 +1320,7 @@ const PatientReg = () => {
                                                                     <label for="city">City</label>
                                                                     <input
                                                                         type="text"
-                                                                        class="form-control"
+                                                                        className="form-control"
                                                                         id="city"
                                                                         name='city'
                                                                         value={OldformData.city}
@@ -1547,13 +1547,13 @@ const PatientReg = () => {
 
                                                                 </div>
 
-                                                                <div class="col-12 mt-3">
+                                                                <div className="col-12 mt-3">
                                                                     <label for="city">Remarks</label>
                                                                     <textarea
                                                                         onChange={oldhandleChange}
                                                                         name='remarks'
                                                                         value={OldformData.remarks}
-                                                                        class="form-control"
+                                                                        className="form-control"
                                                                         id="city" ></textarea>
                                                                 </div>
 
@@ -1616,24 +1616,24 @@ const PatientReg = () => {
 
                                                         <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
                                                             <label for="exampleInputName1">UHID</label>
-                                                            <div class="input-group">
-                                                                <div class="input-group-prepend">
+                                                            <div className="input-group">
+                                                                <div className="input-group-prepend">
 
                                                                 </div>
 
-                                                                <input type="text" disabled value="KHMC/" class="form-control" />
+                                                                <input type="text" disabled value="KHMC/" className="form-control" />
                                                                 <input type="text"
                                                                     value={formData.uhid}
                                                                     name="uhid"
                                                                     onChange={handleChange}
-                                                                    class="form-control" />
+                                                                    className="form-control" />
                                                             </div>
 
                                                         </div>
                                                         <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
                                                             <label for="exampleInputName1">OPD No</label>
-                                                            <div class="input-group">
-                                                                <div class="input-group-prepend">
+                                                            <div className="input-group">
+                                                                <div className="input-group-prepend">
 
                                                                 </div>
 
@@ -1643,10 +1643,10 @@ const PatientReg = () => {
                                                                     disabled
                                                                     value={formData.uhidprefix}
                                                                     onChange={handleChange}
-                                                                    class="form-control"
+                                                                    className="form-control"
                                                                 />
                                                                 <input type="text"
-                                                                    class="form-control"
+                                                                    className="form-control"
                                                                     value={formData.opdno}
                                                                     name='opdno'
                                                                     onChange={handleChange}
@@ -1659,7 +1659,7 @@ const PatientReg = () => {
                                                             <label for="exampleInputName1">Email</label>
                                                             <input
                                                                 type="email"
-                                                                class="form-control"
+                                                                className="form-control"
                                                                 value={formData.email}
                                                                 onChange={handleChange}
                                                                 name='email'
@@ -1739,18 +1739,18 @@ const PatientReg = () => {
                                                             <label for="GuardianNumber">Guardian Number</label>
                                                             <input
                                                                 type="text"
-                                                                class="form-control"
+                                                                className="form-control"
                                                                 id="GuardianNumber"
                                                                 value={formData.guardianNumber}
                                                                 name='guardianNumber'
                                                                 onChange={handleChange}
                                                                 placeholder="Enter Guardian Number" />
                                                         </div>
-                                                        <div class="col-12 mt-3">
+                                                        <div className="col-12 mt-3">
                                                             <label for="address">Address <span className='text-danger'>*</span></label>
                                                             <input
                                                                 type="text"
-                                                                class="form-control"
+                                                                className="form-control"
                                                                 id="address"
                                                                 name='address'
                                                                 value={formData.address}
@@ -1761,7 +1761,7 @@ const PatientReg = () => {
                                                             <label for="city">City</label>
                                                             <input
                                                                 type="text"
-                                                                class="form-control"
+                                                                className="form-control"
                                                                 id="city"
                                                                 name='city'
                                                                 value={formData.city}
@@ -1988,13 +1988,13 @@ const PatientReg = () => {
 
                                                         </div>
 
-                                                        <div class="col-12 mt-3">
+                                                        <div className="col-12 mt-3">
                                                             <label for="city">Remarks</label>
                                                             <textarea
                                                                 onChange={handleChange}
                                                                 name='remarks'
                                                                 value={formData.remarks}
-                                                                class="form-control"
+                                                                className="form-control"
                                                                 id="city" ></textarea>
                                                         </div>
                                                     </div>

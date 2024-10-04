@@ -28,34 +28,34 @@ const Dashboard = () => {
                 </ul>
               </nav>
             </div>
-            <div class="row">
-              <div class="col-md-4 stretch-card grid-margin">
-                <div class="card bg-gradient-danger card-img-holder text-white">
-                  <div class="card-body">
-                    <img src={circle} class="card-img-absolute" alt="circle-image" />
-                    <h4 class="font-weight-normal mb-3">Today Appointment <i class="mdi mdi-bookmark-outline mdi-24px float-end"></i></h4>
-                    <h2 class="mb-5">24</h2>
-                    <h6 class="card-text"></h6>
+            <div className="row">
+              <div className="col-md-4 stretch-card grid-margin">
+                <div className="card bg-gradient-danger card-img-holder text-white">
+                  <div className="card-body">
+                    <img src={circle} className="card-img-absolute" alt="circle-image" />
+                    <h4 className="font-weight-normal mb-3">Today Appointment <i className="mdi mdi-bookmark-outline mdi-24px float-end"></i></h4>
+                    <h2 className="mb-5">24</h2>
+                    <h6 className="card-text"></h6>
                   </div>
                 </div>
               </div>
-              <div class="col-md-4 stretch-card grid-margin">
-                <div class="card bg-gradient-info card-img-holder text-white">
-                  <div class="card-body">
-                    <img src={circle} class="card-img-absolute" alt="circle-image" />
-                    <h4 class="font-weight-normal mb-3">Today Registration <i class="mdi mdi-bookmark-outline mdi-24px float-end"></i>
+              <div className="col-md-4 stretch-card grid-margin">
+                <div className="card bg-gradient-info card-img-holder text-white">
+                  <div className="card-body">
+                    <img src={circle} className="card-img-absolute" alt="circle-image" />
+                    <h4 className="font-weight-normal mb-3">Today Registration <i className="mdi mdi-bookmark-outline mdi-24px float-end"></i>
                     </h4>
-                    <h2 class="mb-5">14</h2>
+                    <h2 className="mb-5">14</h2>
                   </div>
                 </div>
               </div>
-              <div class="col-md-4 stretch-card grid-margin">
-                <div class="card bg-gradient-success card-img-holder text-white">
-                  <div class="card-body">
-                    <img src={circle} class="card-img-absolute" alt="circle-image" />
-                    <h4 class="font-weight-normal mb-3">Today Re-Visit <i class="mdi mdi-diamond mdi-24px float-end"></i>
+              <div className="col-md-4 stretch-card grid-margin">
+                <div className="card bg-gradient-success card-img-holder text-white">
+                  <div className="card-body">
+                    <img src={circle} className="card-img-absolute" alt="circle-image" />
+                    <h4 className="font-weight-normal mb-3">Today Re-Visit <i className="mdi mdi-diamond mdi-24px float-end"></i>
                     </h4>
-                    <h2 class="mb-5">10</h2>
+                    <h2 className="mb-5">10</h2>
                     
                   </div>
                 </div>

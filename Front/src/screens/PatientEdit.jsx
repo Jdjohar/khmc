@@ -208,27 +208,27 @@ const PatientEdit = () => {
                                                         id="date" />
                                                 </div>
 
-                                                <div class="col-4 mt-3">
+                                                <div className="col-4 mt-3">
                                                     <label for="exampleInputName1">UHID</label>
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend">
+                                                    <div className="input-group">
+                                                        <div className="input-group-prepend">
 
                                                         </div>
 
-                                                        <input type="text" value="KHMC/" disabled class="form-control" />
+                                                        <input type="text" value="KHMC/" disabled className="form-control" />
                                                         <input type="text"
                                                             value={formData.uhid}
                                                             name="uhid"
                                                             
                                                             onChange={handleChange}
-                                                            class="form-control" />
+                                                            className="form-control" />
                                                     </div>
 
                                                 </div>
-                                                <div class="col-4 mt-3">
+                                                <div className="col-4 mt-3">
                                                     <label for="exampleInputName1">OPD No</label>
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend">
+                                                    <div className="input-group">
+                                                        <div className="input-group-prepend">
 
                                                         </div>
 
@@ -239,10 +239,10 @@ const PatientEdit = () => {
                                                             disabled
                                                             value="KHMC/"
                                                             onChange={handleChange}
-                                                            class="form-control"
+                                                            className="form-control"
                                                         />
                                                         <input type="text"
-                                                            class="form-control"
+                                                            className="form-control"
                                                             value={formData.opdno}
                                                             
                                                             name='opdno'
@@ -252,11 +252,11 @@ const PatientEdit = () => {
 
                                                 </div>
 
-                                                <div class="col-4 mt-3">
+                                                <div className="col-4 mt-3">
                                                     <label for="exampleInputName1">Email</label>
                                                     <input
                                                         type="email"
-                                                        class="form-control"
+                                                        className="form-control"
                                                         value={formData.email}
                                                         onChange={handleChange}
                                                         name='email'
@@ -264,7 +264,7 @@ const PatientEdit = () => {
                                                         placeholder="Enter email" />
 
                                                 </div>
-                                                <div class="col-4 mt-3">
+                                                <div className="col-4 mt-3">
                                                     <div className="mb-3 d-flex">
                                                         <div className="me-2" style={{ width: '30%' }}>
                                                             <label htmlFor="status" className="form-label">Status</label>
@@ -297,7 +297,7 @@ const PatientEdit = () => {
                                                 </div>
 
 
-                                                <div class="col-4 mt-3">
+                                                <div className="col-4 mt-3">
                                                     <div className="mb-3 d-flex">
                                                         <div className="me-2" style={{ width: '30%' }}>
                                                             <label htmlFor="status" className="form-label">Status</label>
@@ -331,40 +331,40 @@ const PatientEdit = () => {
 
                                                 </div>
 
-                                                <div class="col-4 mt-3">
+                                                <div className="col-4 mt-3">
                                                     <label for="GuardianNumber">Guardian Number</label>
                                                     <input
                                                         type="text"
-                                                        class="form-control"
+                                                        className="form-control"
                                                         id="GuardianNumber"
                                                         value={formData.guardianNumber}
                                                         name='guardianNumber'
                                                         onChange={handleChange}
                                                         placeholder="Enter Guardian Number" />
                                                 </div>
-                                                <div class="col-12 mt-3">
+                                                <div className="col-12 mt-3">
                                                     <label for="address">Address</label>
                                                     <input
                                                         type="text"
-                                                        class="form-control"
+                                                        className="form-control"
                                                         id="address"
                                                         name='address'
                                                         value={formData.address}
                                                         onChange={handleChange}
                                                         placeholder="Enter full address" />
                                                 </div>
-                                                <div class="col-4 mt-3">
+                                                <div className="col-4 mt-3">
                                                     <label for="city">City</label>
                                                     <input
                                                         type="text"
-                                                        class="form-control"
+                                                        className="form-control"
                                                         id="city"
                                                         name='city'
                                                         value={formData.city}
                                                         onChange={handleChange}
                                                         placeholder="Enter city name" />
                                                 </div>
-                                                <div class="col-4 mt-3">
+                                                <div className="col-4 mt-3">
                                                     <label for="exampleInputName1">Gender</label>
                                                     <select
                                                         value={formData.gender}
@@ -380,7 +380,7 @@ const PatientEdit = () => {
 
                                                     </select>
                                                 </div>
-                                                <div class="col-4 mt-3">
+                                                <div className="col-4 mt-3">
                                                     <label for="exampleInputName1">Religion</label>
                                                     <select
                                                         value={formData.religion}
@@ -396,7 +396,7 @@ const PatientEdit = () => {
 
                                                     </select>
                                                 </div>
-                                                <div class="col-4 mt-3">
+                                                <div className="col-4 mt-3">
                                                     <div className="mb-3 d-flex">
                                                         <div className="me-2" style={{ width: '30%' }}>
                                                             <label htmlFor="status" className="form-label">Age</label>
@@ -425,7 +425,7 @@ const PatientEdit = () => {
 
                                                 </div>
 
-                                                <div class="col-4 mt-3">
+                                                <div className="col-4 mt-3">
                                                     <label for="exampleInputName1">Ref By</label>
                                                     <select
                                                         value={formData.refBy}
@@ -442,7 +442,7 @@ const PatientEdit = () => {
                                                     </select>
                                                 </div>
 
-                                                <div class="col-4 mt-3">
+                                                <div className="col-4 mt-3">
                                                     <label for="exampleInputName1">Type</label>
                                                     <select
                                                         value={formData.type}
@@ -455,7 +455,7 @@ const PatientEdit = () => {
                                                         <option value='Tele Medicine'>Tele Medicine</option>
                                                     </select>
                                                 </div>
-                                                <div class="col-4 mt-3">
+                                                <div className="col-4 mt-3">
                                                     <label for="exampleInputName1">Department</label>
                                                     <select
                                                         value={formData.department}
@@ -470,7 +470,7 @@ const PatientEdit = () => {
                                                                         ))}
                                                     </select>
                                                 </div>
-                                                <div class="col-4 mt-3">
+                                                <div className="col-4 mt-3">
                                                     <label for="exampleInputName1">Reff To</label>
                                                     <select
                                                         value={formData.refTo}
@@ -485,7 +485,7 @@ const PatientEdit = () => {
                                                                         ))}
                                                     </select>
                                                 </div>
-                                                <div class="col-4 mt-3">
+                                                <div className="col-4 mt-3">
                                                     <div className="mb-3 d-flex">
                                                         <div className="me-2" style={{ width: '30%' }}>
                                                             <label htmlFor="status" className="form-label">Status</label>
@@ -518,7 +518,7 @@ const PatientEdit = () => {
                                                     </div>
 
                                                 </div>
-                                                <div class="col-4 mt-3">
+                                                <div className="col-4 mt-3">
                                                     <label for="exampleInputName1">Visit Type</label>
                                                     <select value={formData.visitType}
                                                         name='visitType'
@@ -531,7 +531,7 @@ const PatientEdit = () => {
                                                         <option value='LFP'>LFP</option>
                                                     </select>
                                                 </div>
-                                                <div class="col-4 mt-3">
+                                                <div className="col-4 mt-3">
                                                     <label for="exampleInputName1">Payment Type</label>
                                                     <select
                                                         value={formData.paymentType}
@@ -546,7 +546,7 @@ const PatientEdit = () => {
                                                     </select>
                                                 </div>
 
-                                                <div class="col-4 mt-3">
+                                                <div className="col-4 mt-3">
                                                     <div className="mb-3 d-flex">
                                                         <div className="me-2" style={{ width: '30%' }}>
                                                             <label htmlFor="status" className="form-label">Discount Type </label>
@@ -575,13 +575,13 @@ const PatientEdit = () => {
 
                                                 </div>
 
-                                                <div class="col-12 mt-3">
+                                                <div className="col-12 mt-3">
                                                     <label for="city">Remarks</label>
                                                     <textarea
                                                         onChange={handleChange}
                                                         name='remarks'
                                                         value={formData.remarks}
-                                                        class="form-control"
+                                                        className="form-control"
                                                         id="city" ></textarea>
                                                 </div>
                                             </div>
