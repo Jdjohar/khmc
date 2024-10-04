@@ -52,7 +52,7 @@ router.post('/patients', async (req, res) => {
 // READ all patients (GET)
 router.get('/patients', async (req, res) => {
     try {
-        const patients = await Patient.find();
+        const patients = await Patient.find().sort({ createdAt: -1 });
         res.status(200).json(patients);
     } catch (err) {
         res.status(500).json({ error: err.message });
