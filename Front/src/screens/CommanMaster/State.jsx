@@ -16,7 +16,7 @@ const State = () => {
     useEffect(() => {
         const fetchState = async () => {
             try {
-                const response = await fetch("http://localhost:3001/api/state");
+                const response = await fetch("https://khmc-xdlm.onrender.com/api/state");
                 const data = await response.json();
                 console.log(data);
 
@@ -50,7 +50,7 @@ const State = () => {
           
             // If a state is selected, update the state
             try {
-                const response = await fetch(`http://localhost:3001/api/state/${selectedStateId}`, {
+                const response = await fetch(`https://khmc-xdlm.onrender.com/api/state/${selectedStateId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -84,7 +84,7 @@ const State = () => {
         } else {
             // If no state is selected, add a new state
             try {
-                const response = await fetch('http://localhost:3001/api/state', {
+                const response = await fetch('https://khmc-xdlm.onrender.com/api/state', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -118,7 +118,7 @@ const State = () => {
      const handleDelete = async () => {
       if (selectedStateId) {
           try {
-              const response = await fetch(`http://localhost:3001/api/state/${selectedStateId}`, {
+              const response = await fetch(`https://khmc-xdlm.onrender.com/api/state/${selectedStateId}`, {
                   method: 'DELETE', // Use DELETE for deleting the state
                   headers: {
                       'Content-Type': 'application/json'

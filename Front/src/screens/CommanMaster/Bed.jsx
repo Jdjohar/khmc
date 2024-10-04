@@ -34,9 +34,9 @@ const Bed = () => {
       try {
         // Run all API requests in parallel
         const [bedResponse, wardResponse, departmentResponse] = await Promise.all([
-          fetch("http://localhost:3001/api/beds"),
-          fetch("http://localhost:3001/api/wards"),
-          fetch("http://localhost:3001/api/department"),
+          fetch("https://khmc-xdlm.onrender.com/api/beds"),
+          fetch("https://khmc-xdlm.onrender.com/api/wards"),
+          fetch("https://khmc-xdlm.onrender.com/api/department"),
         ]);
 
         // Parse the JSON responses
@@ -94,7 +94,7 @@ const Bed = () => {
     if (selectedBedId) {
       // If a bed is selected, update the bed
       try {
-        const response = await fetch(`http://localhost:3001/api/beds/${selectedBedId}`, {
+        const response = await fetch(`https://khmc-xdlm.onrender.com/api/beds/${selectedBedId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
@@ -140,7 +140,7 @@ const Bed = () => {
     } else {
       // If no bed is selected, add a new bed
       try {
-        const response = await fetch('http://localhost:3001/api/beds', {
+        const response = await fetch('https://khmc-xdlm.onrender.com/api/beds', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -183,7 +183,7 @@ const Bed = () => {
   const handleDelete = async () => {
     if (selectedBedId) {
       try {
-        const response = await fetch(`http://localhost:3001/api/beds/${selectedBedId}`, {
+        const response = await fetch(`https://khmc-xdlm.onrender.com/api/beds/${selectedBedId}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json'

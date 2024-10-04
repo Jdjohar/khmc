@@ -16,7 +16,7 @@ const Ward = () => {
   useEffect(() => {
     const fetchWards = async () => {
       try {
-        const response = await fetch("http://localhost:3001/api/wards");
+        const response = await fetch("https://khmc-xdlm.onrender.com/api/wards");
         const data = await response.json();
         console.log(data);
         
@@ -45,7 +45,7 @@ const Ward = () => {
     if (selectedWardId) {
       // Update existing ward
       try {
-        const response = await fetch(`http://localhost:3001/api/wards/${selectedWardId}`, {
+        const response = await fetch(`https://khmc-xdlm.onrender.com/api/wards/${selectedWardId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ const Ward = () => {
     } else {
       // Add new ward
       try {
-        const response = await fetch('http://localhost:3001/api/wards', {
+        const response = await fetch('https://khmc-xdlm.onrender.com/api/wards', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -100,7 +100,7 @@ const Ward = () => {
 
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/wards/${id}`, {
+      const response = await fetch(`https://khmc-xdlm.onrender.com/api/wards/${id}`, {
         method: 'DELETE',
       });
 

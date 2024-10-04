@@ -17,7 +17,7 @@ const Category = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/category');
+        const response = await fetch('https://khmc-xdlm.onrender.com/api/category');
         const data = await response.json();
         setCategories(data);
         setLoading(false);
@@ -41,7 +41,7 @@ const Category = () => {
     if (selectedCategoryId) {
       // Update an existing category
       try {
-        const response = await fetch(`http://localhost:3001/api/category/${selectedCategoryId}`, {
+        const response = await fetch(`https://khmc-xdlm.onrender.com/api/category/${selectedCategoryId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -70,7 +70,7 @@ const Category = () => {
     } else {
       // Add a new category
       try {
-        const response = await fetch('http://localhost:3001/api/category', {
+        const response = await fetch('https://khmc-xdlm.onrender.com/api/category', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -108,7 +108,7 @@ const Category = () => {
   const handleDelete = async () => {
     if (selectedCategoryId) {
       try {
-        const response = await fetch(`http://localhost:3001/api/category/${selectedCategoryId}`, {
+        const response = await fetch(`https://khmc-xdlm.onrender.com/api/category/${selectedCategoryId}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',

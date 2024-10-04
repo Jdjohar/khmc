@@ -12,7 +12,7 @@ const PatientList = () => {
     useEffect(() => {
         const fetchPatients = async () => {
             try {
-                const response = await fetch("http://localhost:3001/api/patients");
+                const response = await fetch("https://khmc-xdlm.onrender.com/api/patients");
                 const data = await response.json();
                 setPatients(data); // Set the response data in the patients state
                 setLoading(false); // Stop the loading state
@@ -79,11 +79,12 @@ const PatientList = () => {
                                                         <th>OPD No</th>
                                                         <th>Mobile</th>
                                                         <th>Patient Name</th>
-                                                        <th>Guardian Name</th>
-                                                        <th>Referred By</th>
                                                         <th>Gender</th>
                                                         <th>Religion</th>
                                                         <th>Age</th>
+                                                        <th>Guardian Name</th>
+                                                        <th>Referred By</th>
+                                                        
                                                         <th>Guardian Number</th>
                                                         <th>Address</th>
                                                         <th>City</th>
@@ -156,11 +157,11 @@ const PatientList = () => {
                                                             <td>{patient.opdno}</td>
                                                             <td>{patient.mobile}</td>
                                                             <td>{patient.status} {patient.patientName}</td>
-                                                            <td>{patient.gStatus} {patient.guardianName}</td>
-                                                            <td>{patient.refBy}</td>
                                                             <td>{patient.gender}</td>
                                                             <td>{patient.religion}</td>
                                                             <td>{patient.age}</td>
+                                                            <td>{patient.refBy}</td>
+                                                            <td>{patient.gStatus} {patient.guardianName}</td>
                                                             <td>{patient.guardianNumber}</td>
                                                             <td>{patient.address}</td>
                                                             <td>{patient.city}</td>

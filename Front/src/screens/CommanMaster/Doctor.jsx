@@ -47,9 +47,9 @@ const Doctor = () => {
       try {
         // Run both API requests in parallel
         const [doctorResponse, departmentResponse, bankResponse] = await Promise.all([
-          fetch("http://localhost:3001/api/doctor"),
-          fetch("http://localhost:3001/api/bank"),
-          fetch("http://localhost:3001/api/department")
+          fetch("https://khmc-xdlm.onrender.com/api/doctor"),
+          fetch("https://khmc-xdlm.onrender.com/api/bank"),
+          fetch("https://khmc-xdlm.onrender.com/api/department")
         ]);
 
         // Parse the JSON responses
@@ -94,7 +94,7 @@ const Doctor = () => {
     if (selectedDoctorId) {
       // Update existing doctor
       try {
-        const response = await fetch(`http://localhost:3001/api/doctor/${selectedDoctorId}`, {
+        const response = await fetch(`https://khmc-xdlm.onrender.com/api/doctor/${selectedDoctorId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -122,7 +122,7 @@ const Doctor = () => {
     } else {
       // Add new doctor
       try {
-        const response = await fetch('http://localhost:3001/api/doctor', {
+        const response = await fetch('https://khmc-xdlm.onrender.com/api/doctor', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -149,7 +149,7 @@ const Doctor = () => {
   const handleDelete = async () => {
     if (selectedDoctorId) {
       try {
-        const response = await fetch(`http://localhost:3001/api/doctor/${selectedDoctorId}`, {
+        const response = await fetch(`https://khmc-xdlm.onrender.com/api/doctor/${selectedDoctorId}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
