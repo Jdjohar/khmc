@@ -4,31 +4,31 @@ const { Schema } = mongoose;
 const DoctorSchema = new Schema({
     type: {
         type: String,
-        required: true
+        required: false
     },
     doctorname: {
         type: String,
-        required: true
+        required: false
     },
     doctordepartment: {
         type: String,
-        required: true
+        required: false
     },
     doctorstatus: {
         type: String,
-        required: true
+        required: false
     },
     doctoraddress: {
         type: String,
-        required: true
+        required: false
     },
     city: {
         type: String,
-        required: true
+        required: false
     },
     mobilenumber: {
         type: String,
-        required: true,
+        required: false,
         validate: {
             validator: function (v) {
                 return /^\d{10,15}$/.test(v); // Ensures a mobile number is 10-15 digits long
@@ -38,15 +38,15 @@ const DoctorSchema = new Schema({
     },
     dob: {
         type: Date, // Use Date type for birthdate
-        required: true
+        required: false
     },
     dom: {
         type: Date, // Use Date type for date of membership
-        required: true
+        required: false
     },
     email: {
         type: String,
-        required: true,
+        required: false,
         validate: {
             validator: function (v) {
                 return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); // Basic email validation
@@ -56,7 +56,7 @@ const DoctorSchema = new Schema({
     },
     accountnumber: {
         type: String,
-        required: true,
+        required: false,
         validate: {
             validator: function (v) {
                 return /^\d{9,18}$/.test(v); // Ensures account number is 9-18 digits
@@ -66,7 +66,7 @@ const DoctorSchema = new Schema({
     },
     ifsccode: {
         type: String,
-        required: true,
+        required: false,
         validate: {
             validator: function (v) {
                 return /^[A-Z]{4}0[A-Z0-9]{6}$/.test(v); // Simple IFSC code validation
@@ -76,63 +76,63 @@ const DoctorSchema = new Schema({
     },
     bankname: {
         type: String,
-        required: true
+        required: false
     },
     acbranch: {
         type: String,
-        required: true
+        required: false
     },
     manageby: {
         type: String,
-        required: true
+        required: false
     },
     background: {
         type: String,
-        required: true
+        required: false
     },
     incentiveonvisit: {
         type: Number, // Fee-related fields should be numbers
-        required: true
+        required: false
     },
     consfee: {
         type: Number,
-        required: true
+        required: false
     },
     secondshiftfee: {
         type: Number,
-        required: true
+        required: false
     },
     emergencyfee: {
         type: Number,
-        required: true
+        required: false
     },
     revisitfeeafter: {
         type: Number,
-        required: true
+        required: false
     },
     visitschedule: {
         type: String,
-        required: true
+        required: false
     },
     tpp: {
         type: String,
-        required: true
+        required: false
     },
     ppd: { 
         type: String,
-        required: true
+        required: false
     },
     header: {
         type: String,
-        required: true
+        required: false
     },
     footer: {
         type: String,
-        required: true
+        required: false
     },
     footerheight: {
         type: String,
-        required: true
+        required: false
     },
     profile: {
         type: String, // Assuming it's a URL or file path, this should still be a string

@@ -124,16 +124,22 @@ const PatientList = () => {
                                                                         <div className="row">
                                                                             <div className="col-lg-4">
 
-                                                                                <li className="dropdown-item"> 
-                                                                                    
-                                                                                    <a href={`/master/patientEdit/${patient._id}`}
-                                                                                    className="dropdown-item" > Edit Patient </a></li>
+                                           
 
-                                                                                <li className="dropdown-item">Print Bill</li>
-                                                                                <li className="dropdown-item">Print Prescription</li>
+                                                                                <li className="dropdown-item">
+                                                                                    <Link className="text-dark text-decoration-none" to={patient?.documents[2]?.url || '#'} target="_blank" rel="noopener noreferrer">Print Bill</Link>
+                                                                                </li>
+                                                                                <li className="dropdown-item">
+                                                                                <Link className="text-dark text-decoration-none" to={patient?.documents[0]?.url || '#'} target="_blank" rel="noopener noreferrer">Print Prescription</Link>
+
+                                                                                    </li>
                                                                                 <li className="dropdown-item">Lab</li>
                                                                                 <li className="dropdown-item">Ultra Sound</li>
-                                                                                <li className="dropdown-item">Edit</li>
+                                                                                <li className="dropdown-item">
+                                                                                <Link to={`/master/patientEdit/${patient._id}`}
+                                                                                       className="text-dark text-decoration-none" > Edit </Link>
+
+                                                                                </li>
                                                                             </div>
                                                                             <div className="col-lg-4">
                                                                                 <li className="dropdown-item">Delete</li>
@@ -141,7 +147,7 @@ const PatientList = () => {
                                                                                 <li className="dropdown-item">WhatsApp Bill & Prescription</li>
 
                                                                             </div>
-                                                                           
+
                                                                         </div>
                                                                     </ul>
                                                                 </div>

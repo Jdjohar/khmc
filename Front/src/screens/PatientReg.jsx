@@ -956,7 +956,7 @@ const PatientReg = () => {
     //     }
     // };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit1 = async (e) => {
         e.preventDefault();
         setbtnLoading(true);
     
@@ -972,10 +972,7 @@ const PatientReg = () => {
             const prescriptionPdfUrl = URL.createObjectURL(prescriptionPdfBlob);
             const receiptPdfUrl = URL.createObjectURL(receiptPdfBlob);
     
-            // Open the PDFs in a new tab for printing
-            const prescriptionWindow = window.open(prescriptionPdfUrl);
-            const receiptWindow = window.open(receiptPdfUrl);
-    
+           
             // You can upload to Cloudinary or your server if needed (omitted for brevity)
             const documents = [
                 {
@@ -1020,6 +1017,12 @@ const PatientReg = () => {
                         ...formDataWithoutId,
                     }),
                 });
+
+                 // Open the PDFs in a new tab for printing
+            const prescriptionWindow = window.open(prescriptionPdfUrl);
+            const receiptWindow = window.open(receiptPdfUrl);
+    
+            
                   // Wait for the windows to load, then trigger the print dialog
             prescriptionWindow.onload = () => {
                 prescriptionWindow.print(); // Automatically opens the print dialog
@@ -1031,6 +1034,98 @@ const PatientReg = () => {
     
                 // Redirect to the patient list page after successful submission
                 navigate('/master/patientlist');
+            } else {
+                alert('Failed to submit patient data');
+            }
+        } catch (error) {
+            console.error('Error submitting patient data:', error);
+        } finally {
+            setbtnLoading(false);
+        }
+    };
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setbtnLoading(true);
+
+        // Select form data based on patient type
+        const selectedFormData = patientType === 'new' ? formData : OldformData;
+
+        try {
+            // Generate PDFs
+            const prescriptionPdfBlob = generatePrescriptionPdf(selectedFormData);
+            const tokenPdfBlob = generateTokenPdf(selectedFormData);
+            const receiptPdfBlob = generateReceiptPdf(selectedFormData);
+
+            // Upload PDFs to Cloudinary
+            const prescriptionPdfUrl = await uploadPdfToCloudinary(prescriptionPdfBlob, 'prescription.pdf');
+            const tokenPdfUrl = await uploadPdfToCloudinary(tokenPdfBlob, 'token.pdf');
+            const receiptPdfUrl = await uploadPdfToCloudinary(receiptPdfBlob, 'receipt.pdf'); // corrected file name here
+
+            console.log(selectedFormData, "selectedFormData");
+
+            // Create documents array with URLs and document types
+            const documents = [
+                {
+                    url: prescriptionPdfUrl,
+                    documentType: 'prescription',
+                    uploadedAt: new Date(),
+                },
+                {
+                    url: tokenPdfUrl,
+                    documentType: 'token',
+                    uploadedAt: new Date(),
+                },
+                {
+                    url: receiptPdfUrl,
+                    documentType: 'receipt',
+                    uploadedAt: new Date(),
+                },
+            ];
+
+            // Submit form data to patients API
+            const response = await fetch('https://khmc-xdlm.onrender.com/api/patients', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    ...selectedFormData,
+                    documents,
+                }),
+            });
+
+            if (response.ok) {
+                const patientData = await response.json();
+                console.log("patientData", patientData);
+                createBill(patientData.data._id);
+                const { _id, ...formDataWithoutId } = patientData.data;
+                console.log("formDataWithoutId:", _id, formDataWithoutId);
+
+                // After successful patient creation, log entry in patient logs
+                await fetch('https://khmc-xdlm.onrender.com/api/patientlogs', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        patientId: _id, // Assuming patientData includes the patient ID
+                        ...formDataWithoutId, // Log action type
+
+                    }),
+                });
+
+                 // Open the generated PDFs in new tabs
+            const prescriptionPdfUrlLocal = URL.createObjectURL(prescriptionPdfBlob);
+            const tokenPdfUrlLocal = URL.createObjectURL(tokenPdfBlob);
+            const receiptPdfUrlLocal = URL.createObjectURL(receiptPdfBlob);
+
+            // Open each PDF in a new tab
+            window.open(prescriptionPdfUrlLocal, '_blank');
+            window.open(tokenPdfUrlLocal, '_blank');
+            window.open(receiptPdfUrlLocal, '_blank');
+
+                // alert('Patient data and log submitted successfully!');
+                navigate('/master/patientlist')
             } else {
                 alert('Failed to submit patient data');
             }
