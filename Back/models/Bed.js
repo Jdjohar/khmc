@@ -16,7 +16,7 @@ const BedSchema = new Schema({
     },
     rate: {
         type: Number,
-        required: true
+   
     },
     gst: {
         type: Number

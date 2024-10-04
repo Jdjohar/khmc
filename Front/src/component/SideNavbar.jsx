@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 const SideNavbar = () => {
   return (
     <>
-    <div class="row p-0 m-0 proBanner" id="proBanner">
+    <div className="row p-0 m-0 proBanner" id="proBanner">
        
       </div>
      <nav className="sidebar sidebar-offcanvas" id="sidebar" role="navigation">

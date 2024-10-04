@@ -9,11 +9,11 @@ const CategorySchema = new Schema({
     },
     agelessthan: {
         type: String,
-        required: true
+        required: false
     },
     type: {
         type: String,
-        required: true
+        required: false
     },
 })
 

@@ -13,15 +13,11 @@ const DepartmentSchema = new Schema({
     },
     order: {
         type: String,
-        required: true
-    },
-    order: {
-        type: String,
-        required: true
+        required: false
     },
     comment: {
         type: String,
-        required: true
+        required: false
     },
     checkboxOptions: {
         type: [String], // An array of strings to store the selected options

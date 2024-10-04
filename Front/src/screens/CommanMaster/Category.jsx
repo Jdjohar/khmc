@@ -17,7 +17,7 @@ const Category = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch('https://khmc-xdlm.onrender.com/api/category');
+        const response = await fetch('http://localhost:3001/api/category');
         const data = await response.json();
         setCategories(data);
         setLoading(false);
@@ -41,7 +41,7 @@ const Category = () => {
     if (selectedCategoryId) {
       // Update an existing category
       try {
-        const response = await fetch(`https://khmc-xdlm.onrender.com/api/category/${selectedCategoryId}`, {
+        const response = await fetch(`http://localhost:3001/api/category/${selectedCategoryId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -57,8 +57,12 @@ const Category = () => {
             )
           );
           resetForm();
+          window.location.reload();
         } else {
-          alert('Failed to update category');
+          const errorData = await response.json();
+          console.log(errorData,"error");
+          
+          alert(`Failed to update Prefix 2: ${errorData.error || 'Unknown error'}`);
         }
       } catch (error) {
         console.error('Error updating category:', error);
@@ -66,7 +70,7 @@ const Category = () => {
     } else {
       // Add a new category
       try {
-        const response = await fetch('https://khmc-xdlm.onrender.com/api/category', {
+        const response = await fetch('http://localhost:3001/api/category', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -78,8 +82,13 @@ const Category = () => {
           alert('Category added successfully!');
           setCategories([...categories, newCategory]);
           resetForm();
+          window.location.reload();
         } else {
-          alert('Failed to add category');
+
+          const errorData = await response.json();
+          console.log(errorData,"error");
+          
+          alert(`Failed to update Prefix 2: ${errorData.error || 'Unknown error'}`);
         }
       } catch (error) {
         console.error('Error adding category:', error);
@@ -99,7 +108,7 @@ const Category = () => {
   const handleDelete = async () => {
     if (selectedCategoryId) {
       try {
-        const response = await fetch(`https://khmc-xdlm.onrender.com/api/category/${selectedCategoryId}`, {
+        const response = await fetch(`http://localhost:3001/api/category/${selectedCategoryId}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',

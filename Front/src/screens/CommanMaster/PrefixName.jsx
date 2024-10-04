@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Topbar from '../../component/TopNavBar'
 import SideNavbar from '../../component/SideNavbar'
+import { useParams, useNavigate } from 'react-router-dom';
 
 const PrefixName = () => {
 
@@ -11,6 +12,7 @@ const PrefixName = () => {
     order: '',
     usefor: '',
   });
+  const navigate = useNavigate(); // Hook to navigate programmatically
   const [prefix, setprefix] = useState([]);
   const [selectedprefixId, setselectedprefixId] = useState(null);
 
@@ -19,7 +21,7 @@ const PrefixName = () => {
   useEffect(() => {
     const fetchprefix = async () => {
       try {
-        const response = await fetch("https://khmc-xdlm.onrender.com/api/prefix");
+        const response = await fetch("http://localhost:3001/api/prefix");
         const data = await response.json();
         console.log(data);
 
@@ -53,7 +55,7 @@ const PrefixName = () => {
 
       // If a Prefixis selected, update the state
       try {
-        const response = await fetch(`https://khmc-xdlm.onrender.com/api/prefix/${selectedprefixId}`, {
+        const response = await fetch(`http://localhost:3001/api/prefix/${selectedprefixId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
@@ -79,8 +81,13 @@ const PrefixName = () => {
             usefor: '',
           });
           setselectedprefixId(null);
+          window.location.reload();
+          alert('doen')
         } else {
-          alert('Failed to update state');
+          const errorData = await response.json();
+          console.log(errorData);
+          
+        alert(`Failed to submit Prefix data: ${errorData.message || 'Unknown error'}`);
         }
       } catch (error) {
         console.error('Error updating state:', error);
@@ -88,7 +95,7 @@ const PrefixName = () => {
     } else {
       // If no Prefixis selected, add a new state
       try {
-        const response = await fetch('https://khmc-xdlm.onrender.com/api/prefix', {
+        const response = await fetch('http://localhost:3001/api/prefix', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -98,22 +105,28 @@ const PrefixName = () => {
 
         if (response.ok) {
           const newPrefix = await response.json();
-          alert('Prefixdata submitted successfully!');
-          console.log(newState);
-
+          alert('Prefix data submitted successfully!dssdsd');
+          // console.log(newState);
+          
           // Update the states array with the newly added state
           setprefix((prevStates) => [...prevStates, newState]);
-
+       
+        
           // Clear the form
           setFormData({
             prefixname: '',
             order: '',
             usefor: '',
           });
+          window.location.reload();
         } else {
-          alert('Failed to submit Prefixdata');
+          const errorData = await response.json();
+          console.log(errorData,"error");
+          
+          alert(`Failed to update Prefix 2: ${errorData.error || 'Unknown error'}`);
         }
       } catch (error) {
+        
         console.error('Error submitting Prefixdata:', error);
       }
     }
@@ -123,7 +136,7 @@ const PrefixName = () => {
   const handleDelete = async () => {
     if (selectedprefixId) {
       try {
-        const response = await fetch(`https://khmc-xdlm.onrender.com/api/prefix/${selectedprefixId}`, {
+        const response = await fetch(`http://localhost:3001/api/prefix/${selectedprefixId}`, {
           method: 'DELETE', // Use DELETE for deleting the state
           headers: {
             'Content-Type': 'application/json'
@@ -137,7 +150,7 @@ const PrefixName = () => {
           setprefix((prevStates) =>
             prevStates.filter((state) => state.id !== selectedprefixId)
           );
-
+          window.location.reload();
           // Clear the form and reset selectedprefixId
           setFormData({
             prefixname: '',

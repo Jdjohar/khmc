@@ -109,13 +109,25 @@ const PatientReg = () => {
     const [selectedDoctor, setSelectedDoctor] = useState([]);
     const [findFormData, setfindFormData] = useState({ uhid: '', mobile: '' });
 
-
+// Helper function to format the date and time
+const getCurrentDateTime = () => {
+    const current = new Date();
+    const year = current.getFullYear();
+    const month = String(current.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+    const day = String(current.getDate()).padStart(2, '0');
+    const hours = String(current.getHours()).padStart(2, '0');
+    const minutes = String(current.getMinutes()).padStart(2, '0');
+    const seconds = String(current.getSeconds()).padStart(2, '0');
+  
+    // Format the date and time as "YYYY-MM-DDTHH:MM:SS" (for datetime-local inputs)
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+  };
     const [formData, setFormData] = useState({
         uhid: '',
         sno: '',
         uhidprefix: 'KHMC/',
         mobile: '',
-        date: '',
+        date: getCurrentDateTime(),
         opdno: 'KHMC/',
         email: '',
         status: '',

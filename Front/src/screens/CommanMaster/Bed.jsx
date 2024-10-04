@@ -34,9 +34,9 @@ const Bed = () => {
       try {
         // Run all API requests in parallel
         const [bedResponse, wardResponse, departmentResponse] = await Promise.all([
-          fetch("https://khmc-xdlm.onrender.com/api/beds"),
-          fetch("https://khmc-xdlm.onrender.com/api/wards"),
-          fetch("https://khmc-xdlm.onrender.com/api/department"),
+          fetch("http://localhost:3001/api/beds"),
+          fetch("http://localhost:3001/api/wards"),
+          fetch("http://localhost:3001/api/department"),
         ]);
 
         // Parse the JSON responses
@@ -94,7 +94,7 @@ const Bed = () => {
     if (selectedBedId) {
       // If a bed is selected, update the bed
       try {
-        const response = await fetch(`https://khmc-xdlm.onrender.com/api/beds/${selectedBedId}`, {
+        const response = await fetch(`http://localhost:3001/api/beds/${selectedBedId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
@@ -140,7 +140,7 @@ const Bed = () => {
     } else {
       // If no bed is selected, add a new bed
       try {
-        const response = await fetch('https://khmc-xdlm.onrender.com/api/beds', {
+        const response = await fetch('http://localhost:3001/api/beds', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -183,7 +183,7 @@ const Bed = () => {
   const handleDelete = async () => {
     if (selectedBedId) {
       try {
-        const response = await fetch(`https://khmc-xdlm.onrender.com/api/beds/${selectedBedId}`, {
+        const response = await fetch(`http://localhost:3001/api/beds/${selectedBedId}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json'
@@ -278,13 +278,18 @@ const Bed = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {Array.isArray(beds) && beds.map((bed) => (
-                          <tr key={bed._id} onClick={() => handleRowClick(bed)} style={{ cursor: 'pointer' }}>
-                            <td>{bed.ward}</td>
-                            <td>{bed.bedname}</td>
-                            <td>{bed.rate}</td>
-                          </tr>
-                        ))}
+                        {Array.isArray(beds) && beds.map((bed) => {
+                          // Find the corresponding ward object using the ward ID
+                          const matchingWard = wards.find(ward => ward._id === bed.ward);
+                          return (
+                            <tr key={bed._id} onClick={() => handleRowClick(bed)} style={{ cursor: 'pointer' }}>
+                              {/* Display the ward name instead of the ward ID */}
+                              <td>{matchingWard ? matchingWard.wardname : 'Unknown Ward'}</td>
+                              <td>{bed.bedname}</td>
+                              <td>{bed.rate}</td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>
@@ -309,11 +314,11 @@ const Bed = () => {
                         </div>
                         <div className="col-6 mt-3">
                           <label htmlFor="department">Department</label>
-                          <select className="form-control" 
-                          name="department" 
-                          value={formData.department} 
-                          onChange={handleChange} 
-                          required>
+                          <select className="form-control"
+                            name="department"
+                            value={formData.department}
+                            onChange={handleChange}
+                            required>
                             {/* Replace with actual wards fetched from API if needed */}
                             <option value="">Select Department</option>
                             {department.map((item) => (
@@ -322,7 +327,7 @@ const Bed = () => {
                               </option>
                             ))}
                           </select>
-                          
+
                         </div>
                         <div className="col-6 mt-3">
                           <label htmlFor="bedname">Bed Name</label>
@@ -331,6 +336,7 @@ const Bed = () => {
                             className="form-control"
                             name="bedname"
                             value={formData.bedname}
+                            required
                             onChange={handleChange}
                             id="bedname"
                             placeholder="Enter Bed Name"

@@ -9,11 +9,11 @@ const PrefixSchema = new Schema({
     },
     order: {
         type: String,
-        required: true
+        required: false
     },
     usefor: {
         type: String,
-        required: true
+        required: false
     },
 })
 
