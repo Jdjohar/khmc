@@ -78,18 +78,16 @@ const PatientList = () => {
                                                         <th>UHID</th>
                                                         <th>OPD No</th>
                                                         <th>Mobile</th>
-                                                        <th>Email</th>
-                                                        <th>Status</th>
                                                         <th>Patient Name</th>
-                                                        <th>Guardian Status</th>
                                                         <th>Guardian Name</th>
-                                                        <th>Guardian Number</th>
-                                                        <th>Address</th>
-                                                        <th>City</th>
+                                                        <th>Referred By</th>
                                                         <th>Gender</th>
                                                         <th>Religion</th>
                                                         <th>Age</th>
-                                                        <th>Referred By</th>
+                                                        <th>Guardian Number</th>
+                                                        <th>Address</th>
+                                                        <th>City</th>
+                                                        <th>Email</th>
                                                         <th>Patient Type</th>
                                                         <th>Department</th>
                                                         <th>Referred To</th>
@@ -151,18 +149,16 @@ const PatientList = () => {
                                                             <td>{patient.uhid}</td>
                                                             <td>{patient.opdno}</td>
                                                             <td>{patient.mobile}</td>
-                                                            <td>{patient.email}</td>
-                                                            <td>{patient.status}</td>
-                                                            <td>{patient.patientName}</td>
-                                                            <td>{patient.gStatus}</td>
-                                                            <td>{patient.guardianName}</td>
-                                                            <td>{patient.guardianNumber}</td>
-                                                            <td>{patient.address}</td>
-                                                            <td>{patient.city}</td>
+                                                            <td>{patient.status} {patient.patientName}</td>
+                                                            <td>{patient.gStatus} {patient.guardianName}</td>
+                                                            <td>{patient.refBy}</td>
                                                             <td>{patient.gender}</td>
                                                             <td>{patient.religion}</td>
                                                             <td>{patient.age}</td>
-                                                            <td>{patient.refBy}</td>
+                                                            <td>{patient.guardianNumber}</td>
+                                                            <td>{patient.address}</td>
+                                                            <td>{patient.city}</td>
+                                                            <td>{patient.email}</td>
                                                             <td>{patient.type}</td>
                                                             <td>{patient.department}</td>
                                                             <td>{patient.refTo}</td>

@@ -162,7 +162,7 @@ const PatientEdit = () => {
                                 <span className="page-title-icon bg-gradient-primary text-white me-2">
                                     <i className="mdi mdi-home"></i>
                                 </span>
-                                Edit Patient 
+                                Edit Patient
                                 {console.log(formData, "formData ++++++++++++++++++++")
                                 }
                             </h3>
@@ -219,7 +219,7 @@ const PatientEdit = () => {
                                                         <input type="text"
                                                             value={formData.uhid}
                                                             name="uhid"
-                                                            
+
                                                             onChange={handleChange}
                                                             className="form-control" />
                                                     </div>
@@ -235,7 +235,7 @@ const PatientEdit = () => {
                                                         <input type="text"
 
                                                             name="uhidprefix"
-                                                           
+
                                                             disabled
                                                             value="KHMC/"
                                                             onChange={handleChange}
@@ -244,7 +244,7 @@ const PatientEdit = () => {
                                                         <input type="text"
                                                             className="form-control"
                                                             value={formData.opdno}
-                                                            
+
                                                             name='opdno'
                                                             onChange={handleChange}
                                                             aria-label="Text input with dropdown button" />
@@ -372,11 +372,11 @@ const PatientEdit = () => {
                                                         name='gender'
                                                         className='form-control'>
                                                         <option value=''>Select Gender</option>
-                                                        {Gender.map((item) => (
-                                                                            <option key={item._id} value={item.type}>
-                                                                                {item.categoryname}
-                                                                            </option>
-                                                                        ))}
+                                                        {Gender && Array.isArray(Gender) && Gender.map((item) => (
+                                                            <option key={item._id} value={item.type}>
+                                                                {item.categoryname}
+                                                            </option>
+                                                        ))}
 
                                                     </select>
                                                 </div>
@@ -389,10 +389,10 @@ const PatientEdit = () => {
                                                         className='form-control'>
                                                         <option value=''>Select Religion</option>
                                                         {Religion.map((item) => (
-                                                                            <option key={item._id} value={item.type}>
-                                                                                {item.religionname}
-                                                                            </option>
-                                                                        ))}
+                                                            <option key={item._id} value={item.type}>
+                                                                {item.religionname}
+                                                            </option>
+                                                        ))}
 
                                                     </select>
                                                 </div>
@@ -434,10 +434,10 @@ const PatientEdit = () => {
                                                         className='form-control'>
                                                         <option value=''>Select Reff</option>
                                                         {Reffby.map((item) => (
-                                                                            <option key={item._id} value={item.doctorName}>
-                                                                                {item.doctorName}
-                                                                            </option>
-                                                                        ))}
+                                                            <option key={item._id} value={item.doctorName}>
+                                                                {item.doctorName}
+                                                            </option>
+                                                        ))}
 
                                                     </select>
                                                 </div>
@@ -464,10 +464,10 @@ const PatientEdit = () => {
                                                         className='form-control'>
                                                         <option value=''>Select Department</option>
                                                         {Department.map((item) => (
-                                                                            <option key={item._id} value={item.type}>
-                                                                                {item.departmentname}
-                                                                            </option>
-                                                                        ))}
+                                                            <option key={item._id} value={item.type}>
+                                                                {item.departmentname}
+                                                            </option>
+                                                        ))}
                                                     </select>
                                                 </div>
                                                 <div className="col-4 mt-3">
@@ -479,10 +479,10 @@ const PatientEdit = () => {
                                                         className='form-control'>
                                                         <option value=''>Select Doctor</option>
                                                         {Doctor.map((item) => (
-                                                                            <option key={item._id} value={item.doctorname}>
-                                                                                {item.doctorname}
-                                                                            </option>
-                                                                        ))}
+                                                            <option key={item._id} value={item.doctorname}>
+                                                                {item.doctorname}
+                                                            </option>
+                                                        ))}
                                                     </select>
                                                 </div>
                                                 <div className="col-4 mt-3">
@@ -603,7 +603,7 @@ const PatientEdit = () => {
                                             </a>
 
 
-                                           
+
                                         </form>
                                     </div>
                                 </div>

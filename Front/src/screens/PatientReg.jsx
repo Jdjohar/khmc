@@ -1071,7 +1071,7 @@ const PatientReg = () => {
                                     <div className="card-body">
                                         <form className="forms-sample" onSubmit={handleSubmit}>
                                             <div className="form-group row">
-                                            <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                            <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                     <label htmlFor="patientType">Patient Type</label>
                                                     <select
                                                         className="form-control"
@@ -1093,7 +1093,7 @@ const PatientReg = () => {
                                                         {dataFetched
                                                             ?
                                                             <>
-                                                                {/* <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                                {/* <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                                     <label htmlFor="uhid">UHID f</label>
                                                                     <input
                                                                         type="text"
@@ -1106,7 +1106,7 @@ const PatientReg = () => {
                                                                         placeholder="Enter UHID"
                                                                     />
                                                                 </div>
-                                                                <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                                     <label htmlFor="mobilenumber">Mobile Number</label>
                                                                     <input
                                                                         type="text"
@@ -1125,7 +1125,7 @@ const PatientReg = () => {
 
                                                             <>
 
-                                                                <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                                     <label htmlFor="uhid">UHID w</label>
                                                                     <input
                                                                         type="text"
@@ -1136,7 +1136,7 @@ const PatientReg = () => {
                                                                         placeholder="Enter UHID"
                                                                     />
                                                                 </div>
-                                                                <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                                     <label htmlFor="mobilenumber">Mobile Number</label>
                                                                     <input
                                                                         type="text"
@@ -1159,7 +1159,7 @@ const PatientReg = () => {
                                                                 {console.log(OldformData, "OldformData")}
 
 
-                                                                <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                                     <label htmlFor="uhid">UHID O</label>
                                                                     <input
                                                                         type="text"
@@ -1171,7 +1171,7 @@ const PatientReg = () => {
                                                                         placeholder="Enter UHID"
                                                                     />
                                                                 </div>
-                                                                <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                                     <label htmlFor="mobilenumber">Mobile Number </label>
                                                                     <input
                                                                         type="text"
@@ -1184,7 +1184,7 @@ const PatientReg = () => {
                                                                     />
                                                                 </div>
 
-                                                                <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                                     <label htmlFor="date">Date</label>
                                                                     <input
                                                                         type="date"
@@ -1195,7 +1195,7 @@ const PatientReg = () => {
                                                                         id="date"
                                                                     />
                                                                 </div>
-                                                                <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                                     <label htmlFor="opdno">OPD No</label>
                                                                     <div className="input-group">
                                                                         <div className="input-group-prepend"></div>
@@ -1217,7 +1217,7 @@ const PatientReg = () => {
                                                                         />
                                                                     </div>
                                                                 </div>
-                                                                <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                                     <label for="exampleInputName1">Email</label>
                                                                     <input
                                                                         type="email"
@@ -1229,7 +1229,7 @@ const PatientReg = () => {
                                                                         placeholder="Enter email" />
 
                                                                 </div>
-                                                                <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                                     <div className="mb-3 d-flex">
                                                                         <div className="me-2" style={{ width: '30%' }}>
                                                                             <label htmlFor="status" className="form-label">Status</label>
@@ -1263,7 +1263,7 @@ const PatientReg = () => {
                                                                 </div>
 
 
-                                                                <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                                     <div className="mb-3 d-flex">
                                                                         <div className="me-2" style={{ width: '30%' }}>
                                                                             <label htmlFor="status" className="form-label">Status</label>
@@ -1297,7 +1297,7 @@ const PatientReg = () => {
 
                                                                 </div>
 
-                                                                <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                                     <label for="GuardianNumber">Guardian Number</label>
                                                                     <input
                                                                         type="text"
@@ -1319,7 +1319,7 @@ const PatientReg = () => {
                                                                         onChange={oldhandleChange}
                                                                         placeholder="Enter full address" />
                                                                 </div>
-                                                                <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                                     <label for="city">City</label>
                                                                     <input
                                                                         type="text"
@@ -1330,7 +1330,7 @@ const PatientReg = () => {
                                                                         onChange={oldhandleChange}
                                                                         placeholder="Enter city name" />
                                                                 </div>
-                                                                <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                                     <label for="exampleInputName1">Gender</label>
 
                                                                     <select
@@ -1348,7 +1348,7 @@ const PatientReg = () => {
                                                                         ))}
                                                                     </select>
                                                                 </div>
-                                                                <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                                     <label for="exampleInputName1">Religion</label>
                                                                     <select
                                                                         value={OldformData.religion}
@@ -1367,7 +1367,7 @@ const PatientReg = () => {
 
                                                                     </select>
                                                                 </div>
-                                                                <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                                     <div className="mb-3 d-flex">
                                                                         <div className="me-2" style={{ width: '30%' }}>
                                                                             <label htmlFor="status" className="form-label">Age</label>
@@ -1396,7 +1396,7 @@ const PatientReg = () => {
 
                                                                 </div>
 
-                                                                <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                                     <label for="exampleInputName1">Ref By</label>
                                                                     <select
                                                                         value={OldformData.refBy}
@@ -1413,7 +1413,7 @@ const PatientReg = () => {
                                                                     </select>
                                                                 </div>
 
-                                                                <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                                     <label for="exampleInputName1">Type</label>
                                                                     <select
                                                                         value={OldformData.type}
@@ -1426,7 +1426,7 @@ const PatientReg = () => {
                                                                         <option value='Tele Medicine'>Tele Medicine</option>
                                                                     </select>
                                                                 </div>
-                                                                <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                                     <label for="exampleInputName1">Department</label>
                                                                     <select
                                                                         value={OldformData.department}
@@ -1442,7 +1442,7 @@ const PatientReg = () => {
 
                                                                     </select>
                                                                 </div>
-                                                                <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                                     {console.log(selectedDoctor)}
 
                                                                     <label for="exampleInputName1">Reff To</label>
@@ -1459,7 +1459,7 @@ const PatientReg = () => {
                                                                         ))}
                                                                     </select>
                                                                 </div>
-                                                                <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                                     <div className="mb-3 d-flex">
                                                                         <div className="me-2" style={{ width: '30%' }}>
                                                                             <label htmlFor="status" className="form-label">Status</label>
@@ -1492,7 +1492,7 @@ const PatientReg = () => {
                                                                     </div>
 
                                                                 </div>
-                                                                <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                                     <label for="exampleInputName1">Visit Type</label>
                                                                     <select value={OldformData.visitType}
                                                                         name='visitType'
@@ -1506,7 +1506,7 @@ const PatientReg = () => {
                                                                         <option value='LFP'>LFP</option>
                                                                     </select>
                                                                 </div>
-                                                                <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                                     <label for="exampleInputName1">Payment Type</label>
                                                                     <select
                                                                         value={OldformData.paymentType}
@@ -1521,10 +1521,10 @@ const PatientReg = () => {
                                                                     </select>
                                                                 </div>
 
-                                                                <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                                     <div className="mb-3 d-flex">
                                                                         <div className="me-2" style={{ width: '30%' }}>
-                                                                            <label htmlFor="status" className="form-label">Discount Type </label>
+                                                                            <label htmlFor="status" className="form-label">Type </label>
                                                                             <select
                                                                                 value={OldformData.discountType}
                                                                                 onChange={oldhandleChange}
@@ -1594,7 +1594,7 @@ const PatientReg = () => {
                                                     {/* Full form content goes here */}
                                                     <div className="form-group row">
 
-                                                        <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                             <label htmlFor="mobilenumber">Mobile Number <span className='text-danger'>*</span></label>
                                                             <input
                                                                 type="text"
@@ -1606,7 +1606,7 @@ const PatientReg = () => {
                                                                 id="mobilenumber"
                                                                 placeholder="Enter Mobile Number" />
                                                         </div>
-                                                        <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                             <label htmlFor="date">Date</label>
                                                             <input
                                                                 type="date"
@@ -1617,7 +1617,7 @@ const PatientReg = () => {
                                                                 id="date" />
                                                         </div>
 
-                                                        <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                             <label for="exampleInputName1">UHID</label>
                                                             <div className="input-group">
                                                                 <div className="input-group-prepend">
@@ -1633,7 +1633,7 @@ const PatientReg = () => {
                                                             </div>
 
                                                         </div>
-                                                        <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                             <label for="exampleInputName1">OPD No</label>
                                                             <div className="input-group">
                                                                 <div className="input-group-prepend">
@@ -1658,7 +1658,7 @@ const PatientReg = () => {
 
                                                         </div>
 
-                                                        <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                             <label for="exampleInputName1">Email</label>
                                                             <input
                                                                 type="email"
@@ -1670,7 +1670,7 @@ const PatientReg = () => {
                                                                 placeholder="Enter email" />
 
                                                         </div>
-                                                        <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                             <div className="mb-3 d-flex">
                                                                 <div className="me-2" style={{ width: '30%' }}>
                                                                     <label htmlFor="status" className="form-label">Status</label>
@@ -1704,7 +1704,7 @@ const PatientReg = () => {
                                                         </div>
 
 
-                                                        <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                             <div className="mb-3 d-flex">
                                                                 <div className="me-2" style={{ width: '30%' }}>
                                                                     <label htmlFor="status" className="form-label">Status <span className='text-danger'>*</span></label>
@@ -1738,7 +1738,7 @@ const PatientReg = () => {
 
                                                         </div>
 
-                                                        <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                             <label for="GuardianNumber">Guardian Number</label>
                                                             <input
                                                                 type="text"
@@ -1760,7 +1760,7 @@ const PatientReg = () => {
                                                                 onChange={handleChange}
                                                                 placeholder="Enter full address" />
                                                         </div>
-                                                        <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                             <label for="city">City</label>
                                                             <input
                                                                 type="text"
@@ -1771,7 +1771,7 @@ const PatientReg = () => {
                                                                 onChange={handleChange}
                                                                 placeholder="Enter city name" />
                                                         </div>
-                                                        <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                             <label for="exampleInputName1">Gender <span className='text-danger'>*</span></label>
 
                                                             <select
@@ -1789,7 +1789,7 @@ const PatientReg = () => {
                                                                 ))}
                                                             </select>
                                                         </div>
-                                                        <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                             <label for="exampleInputName1">Religion</label>
                                                             <select
                                                                 value={formData.religion}
@@ -1808,7 +1808,7 @@ const PatientReg = () => {
 
                                                             </select>
                                                         </div>
-                                                        <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                             <div className="mb-3 d-flex">
                                                                 <div className="me-2" style={{ width: '30%' }}>
                                                                     <label htmlFor="status" className="form-label">Age <span className='text-danger'>*</span></label>
@@ -1837,7 +1837,7 @@ const PatientReg = () => {
 
                                                         </div>
 
-                                                        <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                             <label for="exampleInputName1">Ref By <span className='text-danger'>*</span></label>
                                                             <select
                                                                 value={formData.refBy}
@@ -1854,7 +1854,7 @@ const PatientReg = () => {
                                                             </select>
                                                         </div>
 
-                                                        <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                             <label for="exampleInputName1">Type <span className='text-danger'>*</span></label>
                                                             <select
                                                                 value={formData.type}
@@ -1867,7 +1867,7 @@ const PatientReg = () => {
                                                                 <option value='Tele Medicine'>Tele Medicine</option>
                                                             </select>
                                                         </div>
-                                                        <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                             <label for="exampleInputName1">Department</label>
                                                             <select
                                                                 value={formData.department}
@@ -1883,7 +1883,7 @@ const PatientReg = () => {
 
                                                             </select>
                                                         </div>
-                                                        <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                             <label for="exampleInputName1">Reff To <span className='text-danger'>*</span></label>
                                                             <select
                                                                 value={formData.refTo}
@@ -1899,7 +1899,7 @@ const PatientReg = () => {
                                                             </select>
                                                         </div>
                                                         {console.log(selectedDoctor, "selectedDoctor")}
-                                                        <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                             <div className="mb-3 d-flex">
                                                                 <div className="me-2" style={{ width: '30%' }}>
                                                                     <label htmlFor="status" className="form-label">Status</label>
@@ -1932,7 +1932,7 @@ const PatientReg = () => {
                                                             </div>
 
                                                         </div>
-                                                        <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                             <label for="exampleInputName1">Visit Type</label>
                                                             <select value={formData.visitType}
                                                                 name='visitType'
@@ -1946,7 +1946,7 @@ const PatientReg = () => {
                                                                 <option value='LFP'>LFP</option>
                                                             </select>
                                                         </div>
-                                                        <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                             <label for="exampleInputName1">Payment Type</label>
                                                             <select
                                                                 value={formData.paymentType}
@@ -1962,7 +1962,7 @@ const PatientReg = () => {
                                                             </select>
                                                         </div>
 
-                                                        <div className="col-lg-4 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                             <div className="mb-3 d-flex">
                                                                 <div className="me-2" style={{ width: '30%' }}>
                                                                     <label htmlFor="status" className="form-label">Discount Type </label>
