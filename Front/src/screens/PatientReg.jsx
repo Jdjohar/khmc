@@ -976,15 +976,6 @@ const PatientReg = () => {
             const prescriptionWindow = window.open(prescriptionPdfUrl);
             const receiptWindow = window.open(receiptPdfUrl);
     
-            // Wait for the windows to load, then trigger the print dialog
-            prescriptionWindow.onload = () => {
-                prescriptionWindow.print(); // Automatically opens the print dialog
-            };
-    
-            receiptWindow.onload = () => {
-                receiptWindow.print(); // Automatically opens the print dialog
-            };
-    
             // You can upload to Cloudinary or your server if needed (omitted for brevity)
             const documents = [
                 {
@@ -1029,6 +1020,14 @@ const PatientReg = () => {
                         ...formDataWithoutId,
                     }),
                 });
+                  // Wait for the windows to load, then trigger the print dialog
+            prescriptionWindow.onload = () => {
+                prescriptionWindow.print(); // Automatically opens the print dialog
+            };
+    
+            receiptWindow.onload = () => {
+                receiptWindow.print(); // Automatically opens the print dialog
+            };
     
                 // Redirect to the patient list page after successful submission
                 navigate('/master/patientlist');
