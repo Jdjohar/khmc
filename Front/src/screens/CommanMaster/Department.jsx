@@ -34,7 +34,7 @@ const Department = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-
+    console.log(name,checked, "checked");
     if (type === 'checkbox') {
       // Update checkbox options
       if (checked) {
@@ -147,6 +147,8 @@ const Department = () => {
 
   // Handle deleting a department
   const handleDelete = async () => {
+    console.log(selectedDepartId);
+    
     if (selectedDepartId) {
       try {
         const response = await fetch(

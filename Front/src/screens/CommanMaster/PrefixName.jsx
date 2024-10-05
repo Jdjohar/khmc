@@ -105,7 +105,7 @@ const PrefixName = () => {
 
         if (response.ok) {
           const newPrefix = await response.json();
-          alert('Prefix data submitted successfully!dssdsd');
+          alert('Prefix data submitted successfully!');
           // console.log(newState);
           
           // Update the states array with the newly added state
@@ -265,6 +265,9 @@ const PrefixName = () => {
                             <option value="">Select Patient Type</option>
                             <option value="pathology">Pathology</option>
                             <option value="hospital">Hospital</option>
+                            <option value="hospital">Ultrasound</option>
+                            <option value="pharmacy">Pharmacy</option>
+                            <option value="indoor">Indoor</option>
                           </select>
                         </div>
 

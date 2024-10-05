@@ -1294,9 +1294,10 @@ const getCurrentDateTime = () => {
                                                                 <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                                     <label htmlFor="date">Date</label>
                                                                     <input
-                                                                        type="date"
+                                                                        type="text"
                                                                         value={OldformData.date}
                                                                         name="date"
+                                                                        disabled
                                                                         onChange={oldhandleChange}
                                                                         className="form-control"
                                                                         id="date"
@@ -1716,9 +1717,10 @@ const getCurrentDateTime = () => {
                                                         <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                             <label htmlFor="date">Date</label>
                                                             <input
-                                                                type="date"
+                                                                type="text"
                                                                 value={formData.date}
                                                                 name="date"
+                                                                disabled
                                                                 onChange={handleChange}
                                                                 className="form-control"
                                                                 id="date" />

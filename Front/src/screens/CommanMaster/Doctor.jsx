@@ -272,7 +272,7 @@ const Doctor = () => {
                       <thead>
                         <tr>
                           <th>Doctor Name</th>
-                          <th>Department</th>
+                        
                           <th>Type</th>
                         </tr>
                       </thead>
@@ -280,7 +280,7 @@ const Doctor = () => {
                         {doctorList.map((doctor) => (
                           <tr key={doctor._id} onClick={() => handleRowClick(doctor)} style={{ cursor: 'pointer' }}>
                             <td>{doctor.doctorname}</td>
-                            <td>{doctor.doctordepartment}</td>
+
                             <td>{doctor.type}</td>
                           </tr>
                         ))}

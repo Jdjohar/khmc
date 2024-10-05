@@ -15,6 +15,7 @@ import Disease from "./Disease"
 import Examination from "./Examination"
 import DoseComment from "./DoseComment"
 
+
 export {
     State,
     Religions,

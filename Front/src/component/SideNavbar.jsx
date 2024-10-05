@@ -38,6 +38,7 @@ const SideNavbar = () => {
               <div className="collapse" id="ui-basic">
                 <ul className="nav flex-column sub-menu">
                   <li className="nav-item">
+                  
                     <Link className="nav-link" to="/master/patient">Patient Registration</Link>
                   </li>
                   <li className="nav-item">
@@ -106,9 +107,7 @@ const SideNavbar = () => {
                   <li className="nav-item">
                     <Link className="nav-link" to="/master/doctor">Doctor</Link>
                   </li>
-                  <li className="nav-item">
-                    <Link className="nav-link" to="/master/doctorlist">List</Link>
-                  </li>
+                  
                 </ul>
               </div>
             </li>

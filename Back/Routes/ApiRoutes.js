@@ -10,7 +10,11 @@ const Patient = require('../models/Patient')
 const State = require('../models/State')
 const Religion = require('../models/Religion')
 const Prefix = require('../models/Prefix')
+const Examination = require('../models/Examination')
+const Pcom = require('../models/pcomp')
+const Disease = require('../models/Disease')
 const Department = require('../models/Department')
+const Dosecomment = require('../models/Dosecomment')
 const Category = require('../models/Category')
 const Bank = require('../models/Bank')
 const Doctor = require('../models/Doctor')
@@ -434,6 +438,282 @@ router.delete('/prefix/:id', async (req, res) => {
             return res.status(404).json({ message: 'prefix not found' });
         }
         res.status(200).json({ message: 'prefix deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// CREATE a new religion (POST)
+router.post('/examination', async (req, res) => {
+    try {
+        const newexamination = new Examination(req.body);
+        const savedexamination = await newexamination.save();
+        res.status(201).json({ 
+            success: true,
+            data:savedexamination
+         });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// READ all religion (GET)
+router.get('/examination', async (req, res) => {
+    try {
+        const examination = await Examination.find();
+        res.status(200).json(examination);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+// READ a single religion by ID (GET)
+router.get('/examination/:id', async (req, res) => {
+    try {
+        const examination = await Examination.findById(req.params.id);
+        if (!examination) {
+            return res.status(404).json({ message: 'examination not found' });
+        }
+        res.status(200).json(examination);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// UPDATE a state by ID (PUT)
+router.put('/examination/:id', async (req, res) => {
+    try {
+        const updatedexamination = await Examination.findByIdAndUpdate(req.params.id, req.body, {
+            new: true, // Return the updated document
+            runValidators: true // Ensure the data is valid
+        });
+        if (!updatedexamination) {
+            return res.status(404).json({ message: 'religion not found' });
+        }
+        res.status(200).json(updatedexamination);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// DELETE a religion by ID (DELETE)
+router.delete('/examination/:id', async (req, res) => {
+    try {
+        const deletedexamination = await Examination.findByIdAndDelete(req.params.id);
+        if (!deletedexamination) {
+            return res.status(404).json({ message: 'examination not found' });
+        }
+        res.status(200).json({ message: 'examination deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+
+// CREATE a new religion (POST)
+router.post('/disease', async (req, res) => {
+    try {
+        const newdisease = new Disease(req.body);
+        const saveddisease = await newdisease.save();
+        res.status(201).json({ 
+            success: true,
+            data:saveddisease
+         });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// READ all religion (GET)
+router.get('/disease', async (req, res) => {
+    try {
+        const disease = await Disease.find();
+        res.status(200).json(disease);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+// READ a single religion by ID (GET)
+router.get('/disease/:id', async (req, res) => {
+    try {
+        const disease = await Disease.findById(req.params.id);
+        if (!disease) {
+            return res.status(404).json({ message: 'disease not found' });
+        }
+        res.status(200).json(disease);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// UPDATE a state by ID (PUT)
+router.put('/disease/:id', async (req, res) => {
+    try {
+        const updateddisease = await Disease.findByIdAndUpdate(req.params.id, req.body, {
+            new: true, // Return the updated document
+            runValidators: true // Ensure the data is valid
+        });
+        if (!updateddisease) {
+            return res.status(404).json({ message: 'religion not found' });
+        }
+        res.status(200).json(updateddisease);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// DELETE a religion by ID (DELETE)
+router.delete('/disease/:id', async (req, res) => {
+    try {
+        const deleteddisease = await Disease.findByIdAndDelete(req.params.id);
+        if (!deleteddisease) {
+            return res.status(404).json({ message: 'disease not found' });
+        }
+        res.status(200).json({ message: 'disease deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+
+
+
+// CREATE a new religion (POST)
+router.post('/dosecomment', async (req, res) => {
+    try {
+        const newdosecomment = new Dosecomment(req.body);
+        const saveddosecomment = await newdosecomment.save();
+        res.status(201).json({ 
+            success: true,
+            data:saveddosecomment
+         });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// READ all religion (GET)
+router.get('/dosecomment', async (req, res) => {
+    try {
+        const dosecomment = await Dosecomment.find();
+        res.status(200).json(dosecomment);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+// READ a single religion by ID (GET)
+router.get('/dosecomment/:id', async (req, res) => {
+    try {
+        const dosecomment = await Dosecomment.findById(req.params.id);
+        if (!dosecomment) {
+            return res.status(404).json({ message: 'dosecomment not found' });
+        }
+        res.status(200).json(dosecomment);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// UPDATE a state by ID (PUT)
+router.put('/dosecomment/:id', async (req, res) => {
+    try {
+        const updateddosecomment = await Dosecomment.findByIdAndUpdate(req.params.id, req.body, {
+            new: true, // Return the updated document
+            runValidators: true // Ensure the data is valid
+        });
+        if (!updateddosecomment) {
+            return res.status(404).json({ message: 'religion not found' });
+        }
+        res.status(200).json(updateddosecomment);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// DELETE a religion by ID (DELETE)
+router.delete('/dosecomment/:id', async (req, res) => {
+    try {
+        const deleteddosecomment = await Dosecomment.findByIdAndDelete(req.params.id);
+        if (!deleteddosecomment) {
+            return res.status(404).json({ message: 'dosecomment not found' });
+        }
+        res.status(200).json({ message: 'dosecomment deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+
+// CREATE a new religion (POST)
+router.post('/complaints', async (req, res) => {
+    try {
+        const newpcom = new Pcom(req.body);
+        const savedpcom = await newpcom.save();
+        res.status(201).json({ 
+            success: true,
+            data:savedpcom
+         });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// READ all religion (GET)
+router.get('/complaints', async (req, res) => {
+    try {
+        const pcom = await Pcom.find();
+        res.status(200).json(pcom);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+// READ a single religion by ID (GET)
+router.get('/complaints/:id', async (req, res) => {
+    try {
+        const pcom = await Pcom.findById(req.params.id);
+        if (!pcom) {
+            return res.status(404).json({ message: 'pcom not found' });
+        }
+        res.status(200).json(pcom);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// UPDATE a state by ID (PUT)
+router.put('/complaints/:id', async (req, res) => {
+    try {
+        const updatedpcom = await Pcom.findByIdAndUpdate(req.params.id, req.body, {
+            new: true, // Return the updated document
+            runValidators: true // Ensure the data is valid
+        });
+        if (!updatedpcom) {
+            return res.status(404).json({ message: 'religion not found' });
+        }
+        res.status(200).json(updatedpcom);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// DELETE a religion by ID (DELETE)
+router.delete('/complaints/:id', async (req, res) => {
+    try {
+        const deletedpcom = await Pcom.findByIdAndDelete(req.params.id);
+        if (!deletedpcom) {
+            return res.status(404).json({ message: 'pcom not found' });
+        }
+        res.status(200).json({ message: 'pcom deleted successfully' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
