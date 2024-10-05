@@ -41,6 +41,18 @@ const Modal = ({ isOpen, onClose, patients }) => {
             return null; // Return null in case of an error
         }
     };
+    const getCurrentDateTime = () => {
+        const current = new Date();
+        const year = current.getFullYear();
+        const month = String(current.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+        const day = String(current.getDate()).padStart(2, '0');
+        const hours = String(current.getHours()).padStart(2, '0');
+        const minutes = String(current.getMinutes()).padStart(2, '0');
+        const seconds = String(current.getSeconds()).padStart(2, '0');
+      
+        // Format the date and time as "YYYY-MM-DDTHH:MM:SS" (for datetime-local inputs)
+        return `${day}-${month}-${year}T${hours}:${minutes}:${seconds}`;
+      };
     // Function to handle patient selection and update opdno
     const handlePatientSelection = async (patient) => {
         setLoading(true); // Show loading indicator
@@ -50,6 +62,7 @@ const Modal = ({ isOpen, onClose, patients }) => {
                 const updatedPatient = {
                     ...patient,
                     opdno: newOpdno, // Update the patient's opdno with the new value
+                    date:getCurrentDateTime()
                 };
                 onClose(updatedPatient); // Pass the updated patient to the parent
             }
@@ -120,7 +133,7 @@ const getCurrentDateTime = () => {
     const seconds = String(current.getSeconds()).padStart(2, '0');
   
     // Format the date and time as "YYYY-MM-DDTHH:MM:SS" (for datetime-local inputs)
-    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+    return `${day}-${month}-${year}T${hours}:${minutes}:${seconds}`;
   };
     const [formData, setFormData] = useState({
         uhid: '',
