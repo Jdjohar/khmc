@@ -17,6 +17,11 @@ const Department = require('../models/Department')
 const Dosecomment = require('../models/Dosecomment')
 const Category = require('../models/Category')
 const Bank = require('../models/Bank')
+const Lab = require('../models/Labs')
+const Labentry = require('../models/Lablogs')
+const TestName = require('../models/TestName')
+const TestComment = require('../models/TestComments')
+const TestResult = require('../models/TestResults')
 const Doctor = require('../models/Doctor')
 const Reffby = require('../models/Reffby')
 const Ward = require('../models/Ward')
@@ -782,6 +787,422 @@ router.delete('/bank/:id', async (req, res) => {
             return res.status(404).json({ message: 'Bank not found' });
         }
         res.status(200).json({ message: 'Bank deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+// CREATE a new religion (POST)
+router.post('/lab', async (req, res) => {
+    try {
+        const newlab = new Lab(req.body);
+        const savedlab = await newlab.save();
+        res.status(201).json({ 
+            success: true,
+            data:savedlab
+         });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// READ all religion (GET)
+router.get('/lab', async (req, res) => {
+    try {
+        const labdata = await Lab.find();
+        res.status(200).json(labdata);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+// READ a single religion by ID (GET)
+router.get('/lab/:id', async (req, res) => {
+    try {
+        const lab = await Lab.findById(req.params.id);
+        if (!lab) {
+            return res.status(404).json({ message: 'lab not found' });
+        }
+        res.status(200).json(lab);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// UPDATE a state by ID (PUT)
+router.put('/lab/:id', async (req, res) => {
+    try {
+        const updatedlab = await Lab.findByIdAndUpdate(req.params.id, req.body, {
+            new: true, // Return the updated document
+            runValidators: true // Ensure the data is valid
+        });
+        if (!updatedlab) {
+            return res.status(404).json({ message: 'lab not found' });
+        }
+        res.status(200).json(updatedlab);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// DELETE a religion by ID (DELETE)
+router.delete('/lab/:id', async (req, res) => {
+    try {
+        const deletedlab = await Lab.findByIdAndDelete(req.params.id);
+        if (!deletedlab) {
+            return res.status(404).json({ message: 'lab not found' });
+        }
+        res.status(200).json({ message: 'lab deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// CREATE a new religion (POST)
+router.post('/testName', async (req, res) => {
+    try {
+        const newtestName = new TestName(req.body);
+        const savedtestName = await newtestName.save();
+        res.status(201).json({ 
+            success: true,
+            data:savedtestName
+         });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// READ all religion (GET)
+router.get('/testName', async (req, res) => {
+    try {
+        const testNamedata = await TestName.find();
+        res.status(200).json(testNamedata);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+// READ a single religion by ID (GET)
+router.get('/testName/:id', async (req, res) => {
+    try {
+        const testName = await TestName.findById(req.params.id);
+        if (!testName) {
+            return res.status(404).json({ message: 'testName not found' });
+        }
+        res.status(200).json(testName);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// UPDATE a state by ID (PUT)
+router.put('/testName/:id', async (req, res) => {
+    try {
+        const updatedtestName = await TestName.findByIdAndUpdate(req.params.id, req.body, {
+            new: true, // Return the updated document
+            runValidators: true // Ensure the data is valid
+        });
+        if (!updatedtestName) {
+            return res.status(404).json({ message: 'TestName not found' });
+        }
+        res.status(200).json(updatedtestName);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// DELETE a religion by ID (DELETE)
+router.delete('/testName/:id', async (req, res) => {
+    try {
+        const deletedtestName = await TestName.findByIdAndDelete(req.params.id);
+        if (!deletedtestName) {
+            return res.status(404).json({ message: 'TestName not found' });
+        }
+        res.status(200).json({ message: 'TestName deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+// CREATE a new religion (POST)
+router.post('/testComment', async (req, res) => {
+    try {
+        const newtestComment = new TestComment(req.body);
+        const savedtestComment = await newtestComment.save();
+        res.status(201).json({ 
+            success: true,
+            data:savedtestComment
+         });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// READ all religion (GET)
+router.get('/testComment', async (req, res) => {
+    try {
+        const testCommentdata = await TestComment.find();
+        res.status(200).json(testCommentdata);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+// READ a single religion by ID (GET)
+router.get('/testComment/:id', async (req, res) => {
+    try {
+        const testComment = await TestComment.find({ TestId: req.params.id });
+        if (!testComment) {
+            return res.status(404).json({ message: 'testComment not found' });
+        }
+        res.status(200).json(testComment);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// UPDATE a state by ID (PUT)
+router.put('/testComment/:id', async (req, res) => {
+    try {
+        const updatedtestComment = await TestComment.findByIdAndUpdate(req.params.id, req.body, {
+            new: true, // Return the updated document
+            runValidators: true // Ensure the data is valid
+        });
+        if (!updatedtestComment) {
+            return res.status(404).json({ message: 'testComment not found' });
+        }
+        res.status(200).json(updatedtestComment);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// DELETE a religion by ID (DELETE)
+router.delete('/testComment/:id', async (req, res) => {
+    try {
+        const deletedtestComment = await TestComment.findByIdAndDelete(req.params.id);
+        if (!deletedtestComment) {
+            return res.status(404).json({ message: 'testComment not found' });
+        }
+        res.status(200).json({ message: 'testComment deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// CREATE a new religion (POST)
+router.post('/testResult', async (req, res) => {
+    try {
+        const newtestResult = new TestResult(req.body);
+        const savedtestResult = await newtestResult.save();
+        res.status(201).json({ 
+            success: true,
+            data:savedtestResult
+         });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// READ all religion (GET)
+router.get('/testResult', async (req, res) => {
+    try {
+        const testResultdata = await TestResult.find();
+        res.status(200).json(testResultdata);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+// READ a single religion by ID (GET)
+router.get('/testResult/:id', async (req, res) => {
+    try {
+        const testResult = await TestResult.find({ TestId: req.params.id });
+        if (!testResult) {
+            return res.status(404).json({ message: 'testResult not found' });
+        }
+        res.status(200).json(testResult);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// UPDATE a state by ID (PUT)
+router.put('/testResult/:id', async (req, res) => {
+    try {
+        const updatedtestResult = await TestResult.findByIdAndUpdate(req.params.id, req.body, {
+            new: true, // Return the updated document
+            runValidators: true // Ensure the data is valid
+        });
+        if (!updatedtestResult) {
+            return res.status(404).json({ message: 'testResult not found' });
+        }
+        res.status(200).json(updatedtestResult);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// DELETE a religion by ID (DELETE)
+router.delete('/testResult/:id', async (req, res) => {
+    try {
+        const deletedtestResult = await TestResult.findByIdAndDelete(req.params.id);
+        if (!deletedtestResult) {
+            return res.status(404).json({ message: 'testResult not found' });
+        }
+        res.status(200).json({ message: 'testResult deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// CREATE a new religion (POST)
+router.post('/labentry', async (req, res) => {
+    try {
+        // Get the current date (without time) to compare only the date part
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Reset time to midnight for date comparison
+
+        // Find lab entries created today
+        const todayEntries = await Labentry.find({
+            date: {
+                $gte: today, // Greater than or equal to today's date (midnight)
+                $lt: new Date(today.getTime() + 24 * 60 * 60 * 1000) // Less than tomorrow's date (midnight)
+            }
+        });
+
+        // Calculate the next serial number for today
+        const nextSerialNumber = todayEntries.length + 1;
+
+        // Create a new lab entry
+        const newlabentry = new Labentry({
+            ...req.body,
+            serialNumber: nextSerialNumber // Assign the serial number
+        });
+
+        // Save the new lab entry
+        const savedlabentry = await newlabentry.save();
+
+        // Respond with success
+        res.status(201).json({
+            success: true,
+            data: savedlabentry
+        });
+    } catch (err) {
+        // Respond with error
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// Function to get the next serial number for the day
+async function getNextSerialNumber() {
+    const today = new Date();
+    const dateString = today.toLocaleDateString('en-GB'); // Format: DD-MM-YYYY
+    const startOfDay = new Date(today.setHours(0, 0, 0, 0));
+    const endOfDay = new Date(today.setHours(23, 59, 59, 999));
+
+    const count = await Labentry.countDocuments({
+        createdAt: { $gte: startOfDay, $lt: endOfDay },
+    });
+
+    // Generate the next serial number
+    const serialNumber = count + 1;
+    return `${dateString} - ${String(serialNumber).padStart(3, '0')}`;
+}
+
+// Endpoint to get the next serial number
+router.get('/labentrynumber', async (req, res) => {
+    try {
+        const sno = await getNextSerialNumber();
+        res.json({ sno });
+    } catch (error) {
+        console.error('Error generating serial number:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+// Function to get the next labReg number
+async function getNextLabRegNumber() {
+    // Find the document with the highest labReg value
+    const lastEntry = await Labentry.findOne().sort({ labReg: -1 });
+
+    if (!lastEntry || !lastEntry.labReg) {
+        // If no labReg is present, start from 30001
+        return 30001;
+    }
+    // console.log(lastEntry,"lastEntry");
+    
+
+    // Increment the last labReg by 1
+    return lastEntry.labReg + 1;
+}
+
+// Endpoint to get the next labReg number
+router.get('/next-labreg', async (req, res) => {
+    try {
+        const nextLabReg = await getNextLabRegNumber();
+        console.log(nextLabReg,"nextLabReg");
+        
+        res.json({ nextLabReg });
+    } catch (error) {
+        console.error('Error generating next labReg number:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+// READ all religion (GET)
+router.get('/labentry', async (req, res) => {
+    try {
+        const labentrydata = await Labentry.find();
+        res.status(200).json(labentrydata);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+// READ a single religion by ID (GET)
+router.get('/labentry/:id', async (req, res) => {
+    try {
+        const labentry = await Labentry.findById(req.params.id);
+        if (!labentry) {
+            return res.status(404).json({ message: 'labentry not found' });
+        }
+        res.status(200).json(labentry);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// UPDATE a state by ID (PUT)
+router.put('/labentry/:id', async (req, res) => {
+    try {
+        const updatedlabentry = await Labentry.findByIdAndUpdate(req.params.id, req.body, {
+            new: true, // Return the updated document
+            runValidators: true // Ensure the data is valid
+        });
+        if (!updatedlabentry) {
+            return res.status(404).json({ message: 'labentry not found' });
+        }
+        res.status(200).json(updatedlabentry);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// DELETE a religion by ID (DELETE)
+router.delete('/labentry/:id', async (req, res) => {
+    try {
+        const deletedlabentry = await Labentry.findByIdAndDelete(req.params.id);
+        if (!deletedlabentry) {
+            return res.status(404).json({ message: 'labentry not found' });
+        }
+        res.status(200).json({ message: 'labentry deleted successfully' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

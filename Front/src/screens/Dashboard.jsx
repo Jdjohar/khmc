@@ -1,6 +1,6 @@
 import React from 'react'
-import SideNavbar from '../component/SideNavbar'
-import Topbar from '../component/TopNavBar'
+import SideNavbar from './component/SideNavbar'
+import Topbar from './component/TopNavBar'
 import circle from "../../public/circle.svg"
 
 const Dashboard = () => {
@@ -9,8 +9,8 @@ const Dashboard = () => {
     
     <Topbar />
 
-    <div className="container-fluid page-body-wrapper">
-        <SideNavbar />
+    <div className="container-fluid p-0 page-body-wrapper">
+      {/* <SideNavbar /> */}
 
         <div className="main-panel">
             <div className="content-wrapper">

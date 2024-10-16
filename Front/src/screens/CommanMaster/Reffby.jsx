@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import Topbar from '../../component/TopNavBar';
-import SideNavbar from '../../component/SideNavbar';
+import Topbar from '../component/TopNavBar';
+import SideNavbar from '../component/SideNavbar';
 
 const Reffby = () => {
   const [loading, setLoading] = useState(true);
@@ -322,8 +322,8 @@ const Reffby = () => {
   return (
     <>
       <Topbar />
-      <div className="container-fluid page-body-wrapper">
-        <SideNavbar />
+      <div className="container-fluid p-0 page-body-wrapper">
+        {/* <SideNavbar /> */}
         <div className="main-panel">
           <div className="content-wrapper">
             <div className="page-header">

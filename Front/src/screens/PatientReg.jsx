@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import SideNavbar from '../component/SideNavbar';
-import Topbar from '../component/TopNavBar';
+import SideNavbar from './component/SideNavbar';
+import Topbar from './component/TopNavBar';
 import jsPDF from 'jspdf';
 import JsBarcode from 'jsbarcode';
 import { useNavigate } from 'react-router-dom';
@@ -50,8 +50,8 @@ const Modal = ({ isOpen, onClose, patients }) => {
         const minutes = String(current.getMinutes()).padStart(2, '0');
         const seconds = String(current.getSeconds()).padStart(2, '0');
       
-        // Format the date and time as "YYYY-MM-DDTHH:MM:SS" (for datetime-local inputs)
-        return `${day}-${month}-${year}T${hours}:${minutes}:${seconds}`;
+        // Correct format: "YYYY-MM-DDTHH:MM:SS"
+        return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
       };
     // Function to handle patient selection and update opdno
     const handlePatientSelection = async (patient) => {
@@ -132,8 +132,8 @@ const getCurrentDateTime = () => {
     const minutes = String(current.getMinutes()).padStart(2, '0');
     const seconds = String(current.getSeconds()).padStart(2, '0');
   
-    // Format the date and time as "YYYY-MM-DDTHH:MM:SS" (for datetime-local inputs)
-    return `${day}-${month}-${year}T${hours}:${minutes}:${seconds}`;
+    // Correct format: "YYYY-MM-DDTHH:MM:SS"
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
   };
     const [formData, setFormData] = useState({
         uhid: '',
@@ -498,7 +498,7 @@ const getCurrentDateTime = () => {
         // Select form data based on patient type
         const selectedFormData = patientType === 'new' ? formData : OldformData;
 
-        console.log(typeof selectedFormData.emergencyfee, "selectedFormData");
+        console.log( selectedFormData, "selectedFormData");
         const applyFee = selectedFormData.visitType == 'Emergency' ? selectedDoctor.emergencyfee.toString() : selectedDoctor.consfee.toString()
 
         const doc = new jsPDF();
@@ -1165,8 +1165,8 @@ const getCurrentDateTime = () => {
     return (
         <>
             <Topbar />
-            <div className="container-fluid page-body-wrapper">
-                <SideNavbar />
+            <div className="container-fluid p-0 page-body-wrapper">
+                {/* <SideNavbar /> */}
                 <div className="main-panel">
                     <div className="content-wrapper">
                         <div className="page-header">
@@ -1324,7 +1324,7 @@ const getCurrentDateTime = () => {
                                                                             type="text"
                                                                             name="uhidprefix"
                                                                             disabled
-                                                                            value={OldformData.uhidprefix}
+                                                                            value="KHMC/"
                                                                             onChange={oldhandleChange}
                                                                             className="form-control"
                                                                         />

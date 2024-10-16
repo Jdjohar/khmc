@@ -20,7 +20,8 @@ const PlogSchema = new Schema({
     },
     opdno: {
         type: String,
-        required: true
+        required: true,
+        default: '22001'
     },
     mobile: {
         type: String,

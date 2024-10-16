@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import Topbar from '../../component/TopNavBar';
-import SideNavbar from '../../component/SideNavbar';
+import Topbar from '../component/TopNavBar';
+import SideNavbar from '../component/SideNavbar';
 
 const Category = () => {
   const [formData, setFormData] = useState({
@@ -139,8 +139,8 @@ const Category = () => {
   return (
     <>
       <Topbar />
-      <div className="container-fluid page-body-wrapper">
-        <SideNavbar />
+      <div className="container-fluid p-0 page-body-wrapper">
+      {/* <SideNavbar /> */}
         <div className="main-panel">
           <div className="content-wrapper">
             <div className="page-header">

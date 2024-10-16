@@ -27,7 +27,16 @@ import {
   Disease,
   Reffby,
   PatComplaint,
-  Gender
+  Gender,
+  Lab,
+  LabLogs,
+  TestName,
+  LabTestList,
+  LabTestEdit,
+  LabTestComments,
+  LablogEntry,
+  LablogResult,
+
 
 } from './screens/CommanMaster/index'
 
@@ -58,6 +67,14 @@ function App() {
     <Route exact path='/master/preffby' element={<Reffby />}/>
     <Route exact path='/master/ppatcomplaint' element={<PatComplaint />}/>
     <Route exact path='/master/pgender' element={<Gender />}/>
+    <Route exact path='/master/lab' element={<Lab />}/>
+    <Route exact path='/master/labentry' element={<LabLogs />}/>
+    <Route exact path='/master/labloglist' element={<LablogEntry />}/>
+    <Route exact path='/master/lablogresult/:id' element={<LablogResult />}/>
+    <Route exact path='/master/testname' element={<TestName />}/>
+    <Route exact path='/master/testlist' element={<LabTestList />}/>
+    <Route exact path='/master/testEdit/:id' element={<LabTestEdit />}/>
+    <Route exact path='/master/testComment/:id' element={<LabTestComments />}/>
     </Routes>
 
     </Router>

@@ -74,6 +74,9 @@ const SideNavbar = () => {
                   <li className="nav-item">
                     <Link className="nav-link" to="/master/category">Category</Link>
                   </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/master/lab">Lab</Link>
+                  </li>
                 </ul>
               </div>
             </li>

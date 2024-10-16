@@ -23541,7 +23541,7 @@ code {
   background: initial;
 }
 .dropdown .dropdown-menu .dropdown-item:hover {
-  background-color: #f8f9fa;
+  background-color: #0d6efd;
   color: #ffffff;
 }
 
@@ -26265,7 +26265,8 @@ dl li {
 
 .main-panel {
   transition: width 0.25s ease, margin 0.25s ease;
-  width: calc(100% - 260px);
+  /* width: calc(100% - 260px); */
+  width: 100%;
   min-height: calc(100vh - 70px);
   display: -webkit-flex;
   display: flex;

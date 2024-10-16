@@ -3,9 +3,8 @@ const { Schema } = mongoose;
 
 const PatientSchema = new Schema({
     date: {
-        type: Date,
+        type: String,
         required: true,
-        default: Date.now
     },
     uhid: {
         type: String,
@@ -17,7 +16,8 @@ const PatientSchema = new Schema({
     },
     opdno: {
         type: String,
-        required: true
+        required: true,
+        default: '22001'
     },
     mobile: {
         type: String,
