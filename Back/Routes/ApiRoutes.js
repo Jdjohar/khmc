@@ -1012,7 +1012,7 @@ router.post('/testResult', async (req, res) => {
 // READ all religion (GET)
 router.get('/testResult', async (req, res) => {
     try {
-        const testResultdata = await TestResult.find();
+        const testResultdata = await TestResult.find().sort({ createdAt: -1 });
         res.status(200).json(testResultdata);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -1189,6 +1189,37 @@ router.put('/labentry/:id', async (req, res) => {
         if (!updatedlabentry) {
             return res.status(404).json({ message: 'labentry not found' });
         }
+        res.status(200).json(updatedlabentry);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+//update only result field
+router.put('/UpdateResultlabEntry/:id', async (req, res) => {
+    try {
+        // Only extract the 'result' field from the request body
+        const { result } = req.body;
+
+        // Check if result is provided in the request
+        if (result === undefined) {
+            return res.status(400).json({ message: 'Result field is required' });
+        }
+
+        // Update only the 'result' field
+        const updatedlabentry = await Labentry.findByIdAndUpdate(
+            req.params.id,
+            { result }, // Update only the result field
+            {
+                new: true, // Return the updated document
+                runValidators: true // Ensure the data is valid
+            }
+        );
+
+        if (!updatedlabentry) {
+            return res.status(404).json({ message: 'Labentry not found' });
+        }
+
         res.status(200).json(updatedlabentry);
     } catch (err) {
         res.status(400).json({ error: err.message });

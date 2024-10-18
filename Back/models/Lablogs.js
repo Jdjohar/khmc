@@ -84,6 +84,11 @@ const LabSchema = new Schema({
         type: String,
         required: false
     },
+    result:{
+        type: Boolean,
+        default: false,
+    },
+  
     recivedamount: {
         type: String,
         required: false

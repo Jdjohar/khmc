@@ -135,7 +135,8 @@ const PatientList = () => {
 
                                                                                     </li>
                                                                                 <li className="dropdown-item">Lab</li>
-                                                                                <li className="dropdown-item">Ultra Sound</li>
+                                                                                <li className="dropdown-item"><Link to={`/master/labentry/${patient._id}`}
+                                                                                       className="text-dark text-decoration-none" > Ultra Sound </Link></li>
                                                                                 <li className="dropdown-item">
                                                                                 <Link to={`/master/patientEdit/${patient._id}`}
                                                                                        className="text-dark text-decoration-none" > Edit </Link>

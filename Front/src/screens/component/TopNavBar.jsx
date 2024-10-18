@@ -36,7 +36,7 @@ const Topbar = () => {
                   Master
                 </Link>
                 <ul className="dropdown-menu">
-               
+
                   <li>
                     <Link className="dropdown-item" to="#">
                       Comman Master &raquo;
@@ -49,41 +49,41 @@ const Topbar = () => {
                       </li>
                       <li>
                         <Link className="dropdown-item" to="/master/religions">
-                        Religions
+                          Religions
                         </Link>
                       </li>
                       <li>
                         <Link className="dropdown-item" to="/master/prefixname">
-                        Prefix Name
+                          Prefix Name
                         </Link>
                       </li>
                       <li>
                         <Link className="dropdown-item" to="/master/bankname">
-                        Bank Name
+                          Bank Name
                         </Link>
                       </li>
                       <li>
                         <Link className="dropdown-item" to="/master/department">
-                        Department
+                          Department
                         </Link>
                       </li>
                       <li>
                         <Link className="dropdown-item" to="/master/category">
-                        Category
+                          Category
                         </Link>
                       </li>
                       <li>
                         <Link className="dropdown-item" to="/master/lab">
-                        Lab
+                          Lab
                         </Link>
                       </li>
-                      
-                     
+
+
                     </ul>
                   </li>
                   <li>
                     <Link className="dropdown-item" to="#">
-                     Ward/Bed &raquo;
+                      Ward/Bed &raquo;
                     </Link>
                     <ul className="submenu dropdown-menu">
                       <li>
@@ -93,14 +93,14 @@ const Topbar = () => {
                       </li>
                       <li>
                         <Link className="dropdown-item" to="/master/bed">
-                        Bed
+                          Bed
                         </Link>
                       </li>
-                   </ul>
+                    </ul>
                   </li>
                   <li>
                     <Link className="dropdown-item" to="#">
-                     Doctor &raquo;
+                      Doctor &raquo;
                     </Link>
                     <ul className="submenu dropdown-menu">
                       <li>
@@ -108,14 +108,14 @@ const Topbar = () => {
                           Add Doctor
                         </Link>
                       </li>
-                    
-                     
-                     
+
+
+
                     </ul>
                   </li>
                   <li>
                     <Link className="dropdown-item" to="#">
-                     Patient &raquo;
+                      Patient &raquo;
                     </Link>
                     <ul className="submenu dropdown-menu">
                       <li>
@@ -125,50 +125,50 @@ const Topbar = () => {
                       </li>
                       <li>
                         <Link className="dropdown-item" to="/master/ppatcomplaint">
-                        Pat. Complaint
+                          Pat. Complaint
                         </Link>
                       </li>
                       <li>
                         <Link className="dropdown-item" to="/master/preffby">
-                        Reffered By
+                          Reffered By
                         </Link>
                       </li>
                       <li>
                         <Link className="dropdown-item" to="/master/pdisease">
-                        Disease
+                          Disease
                         </Link>
                       </li>
                       <li>
                         <Link className="dropdown-item" to="/master/pexamination">
-                        Examination
+                          Examination
                         </Link>
                       </li>
                       <li>
                         <Link className="dropdown-item" to="/master/pdose">
-                        Dose Comment
+                          Dose Comment
                         </Link>
                       </li>
-                     
-                     
+
+
                     </ul>
                   </li>
                   <li>
-                        <Link className="dropdown-item" to="#">
-                         Investigation &raquo;
+                    <Link className="dropdown-item" to="#">
+                      Investigation &raquo;
+                    </Link>
+                    <ul className="submenu dropdown-menu">
+                      <li>
+                        <Link className="dropdown-item" to="/master/labentry">
+                          New Test
                         </Link>
-                        <ul className="submenu dropdown-menu">
-                          <li>
-                            <Link className="dropdown-item" to="/master/labentry">
-                              New Test
-                            </Link>
-                          </li>
-                          <li>
-                            <Link className="dropdown-item" to="/master/testlist">
-                            Test List
-                            </Link>
-                          </li>
-                        </ul>
                       </li>
+                      <li>
+                        <Link className="dropdown-item" to="/master/testlist">
+                          Test List
+                        </Link>
+                      </li>
+                    </ul>
+                  </li>
                   <li>
                     <Link className="dropdown-item" to="#">
                       Dropdown item 3
@@ -191,35 +191,42 @@ const Topbar = () => {
                   Transactions
                 </Link>
                 <ul className="dropdown-menu">
-                  <li>
-                    <Link className="dropdown-item" to="/master/patient">
-                    Patient Registration
-                    </Link>
-                  </li>
                   
                   <li>
-                    <Link className="dropdown-item" to="/master/patientlist">
-                    Patient List
+                    <Link className="dropdown-item" to="#">
+                    Patients &raquo;
                     </Link>
-                  </li>
-                   <li>
-                        <Link className="dropdown-item" to="#">
-                         Investigation &raquo;
+                    <ul className="submenu dropdown-menu">
+                      <li>
+                        <Link className="dropdown-item" to="/master/patient">
+                        Patient Registration
                         </Link>
-                        <ul className="submenu dropdown-menu">
-                          <li>
-                            <Link className="dropdown-item" to="/master/labentry">
-                              Test Request (R)
-                            </Link>
-                          </li>
-                          <li>
-                            <Link className="dropdown-item" to="/master/labloglist">
-                             Result Entry (R)
-                            </Link>
-                          </li>
-                        </ul>
                       </li>
-                
+                      <li>
+                        <Link className="dropdown-item" to="/master/patientlist">
+                        Patient List
+                        </Link>
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <Link className="dropdown-item" to="#">
+                      Investigation &raquo;
+                    </Link>
+                    <ul className="submenu dropdown-menu">
+                      <li>
+                        <Link className="dropdown-item" to="/master/labentry">
+                          Test Request (R)
+                        </Link>
+                      </li>
+                      <li>
+                        <Link className="dropdown-item" to="/master/labloglist">
+                          Result Entry (R)
+                        </Link>
+                      </li>
+                    </ul>
+                  </li>
+
                 </ul>
               </li>
             </ul>

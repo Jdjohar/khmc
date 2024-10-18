@@ -68,7 +68,7 @@ function App() {
     <Route exact path='/master/ppatcomplaint' element={<PatComplaint />}/>
     <Route exact path='/master/pgender' element={<Gender />}/>
     <Route exact path='/master/lab' element={<Lab />}/>
-    <Route exact path='/master/labentry' element={<LabLogs />}/>
+    <Route exact path='/master/labentry/:patientid?' element={<LabLogs />}/>
     <Route exact path='/master/labloglist' element={<LablogEntry />}/>
     <Route exact path='/master/lablogresult/:id' element={<LablogResult />}/>
     <Route exact path='/master/testname' element={<TestName />}/>

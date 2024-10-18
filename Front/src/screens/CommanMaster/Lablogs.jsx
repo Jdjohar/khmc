@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import Topbar from '../component/TopNavBar';
 import SideNavbar from '../component/SideNavbar';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams  } from 'react-router-dom';
 
 const labentrys = () => {
   const [loading, setLoading] = useState(true);
@@ -32,6 +32,7 @@ const labentrys = () => {
     sampledate: '',
     tests: [],
   });
+  const { patientid } = useParams();
   const [labs, setLabs] = useState([]);
   const [tests, setTest] = useState([]);
   const [LabReg, setLabReg] = useState('');
@@ -42,8 +43,7 @@ const labentrys = () => {
   const [selectedLabId, setSelectedLabId] = useState(null);
 
   const navigate = useNavigate();
-
-  // Options for the react-select (available test options)
+  
   // Create `testOptions` by mapping over `test` state
   const testOptions = tests.map(t => ({
     value: t._id, // Use unique ID as value
@@ -56,28 +56,59 @@ const labentrys = () => {
   };
   // Fetch lab logs from the API when the component is mounted
   useEffect(() => {
+    const fetchPatientDetails = async () => {
+      if (patientid) {
+        console.log('Patient ID:', patientid);
+        try {
+          const response = await fetch(`https://khmc-xdlm.onrender.com/api/patients/${patientid}`);
+          const data = await response.json();
+          console.log(data, "Patient Data");
+  
+          // Update the form data with patient details
+          setFormData((prevFormData) => ({
+            ...prevFormData,  // Retain previous form data
+            ...data,  // Overwrite with fetched patient data
+    careofstatus: data.gStatus,
+    careofName: data.guardianName,
+    category: data.gender,
+    reffby: data.refTo,
+            tests: [], // Ensure 'tests' is set to an empty array (or based on your need)
+          }));
+          
+          setLoading(false); // Stop the loading state
+        } catch (error) {
+          console.error("Error fetching patient data:", error);
+          setLoading(false); // Stop the loading in case of an error
+        }
+      } else {
+        console.log('No Patient ID provided');
+      }
+    };
+  
     const fetchData = async () => {
       try {
-        // Fire both API requests simultaneously
-        const [snoResponse,
+        // Fire all API requests simultaneously
+        const [
+          snoResponse,
           labResponse,
           testResponse,
           labRegResponse,
           labEntryResponse,
           genderResponse,
-          reffbyResponse] = await Promise.all([
-
-            fetch("https://khmc-xdlm.onrender.com/api/labentrynumber"),
-            fetch("https://khmc-xdlm.onrender.com/api/lab"),
-            fetch("https://khmc-xdlm.onrender.com/api/testName"),
-            fetch("https://khmc-xdlm.onrender.com/api/next-labreg"),
-            fetch("https://khmc-xdlm.onrender.com/api/labentry"),
-            fetch("https://khmc-xdlm.onrender.com/api/category"),
-            fetch("https://khmc-xdlm.onrender.com/api/reffby"),
-          ]);
-
-        // Wait for both responses to be converted to JSON
-        const [snoData,
+          reffbyResponse
+        ] = await Promise.all([
+          fetch("https://khmc-xdlm.onrender.com/api/labentrynumber"),
+          fetch("https://khmc-xdlm.onrender.com/api/lab"),
+          fetch("https://khmc-xdlm.onrender.com/api/testName"),
+          fetch("https://khmc-xdlm.onrender.com/api/next-labreg"),
+          fetch("https://khmc-xdlm.onrender.com/api/labentry"),
+          fetch("https://khmc-xdlm.onrender.com/api/category"),
+          fetch("https://khmc-xdlm.onrender.com/api/reffby"),
+        ]);
+  
+        // Convert all responses to JSON
+        const [
+          snoData,
           labData,
           testData,
           labRegData,
@@ -85,7 +116,6 @@ const labentrys = () => {
           genderData,
           reffbyData
         ] = await Promise.all([
-
           snoResponse.json(),
           labResponse.json(),
           testResponse.json(),
@@ -94,30 +124,35 @@ const labentrys = () => {
           genderResponse.json(),
           reffbyResponse.json(),
         ]);
-
-        // Set state based on the data
+  
+        // Update the form state and other states
         setSno(snoData.sno);
         setLabs(labData);
-        setTest(testData)
-        setLabReg(labRegData)
-        setLabentry(labEntryData)
-        setFormData({
-          ...formData,
-          labReg: labRegData.nextLabReg
-        })
-        setGender(genderData)
-        setReffby(reffbyData)
-        console.log(labRegData, "dsdsfds");
-
-
+        setTest(testData);
+        setLabReg(labRegData);
+        setLabentry(labEntryData);
+        setGender(genderData);
+        setReffby(reffbyData);
+  
+        // Update form data with labReg while retaining the rest
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          labReg: labRegData.nextLabReg,  // Update lab registration field
+        }));
+  
+        console.log(labRegData, "Lab Registration Data");
       } catch (error) {
         console.error("Error fetching data:", error);
-        setLoading(false); // Set loading to false on error
+        setLoading(false); // Stop loading if there is an error
       }
     };
-
-    fetchData(); // Call the function to fetch data
-  }, []);
+  
+    // Call the async functions
+    fetchPatientDetails(); // Fetch patient details if patientid is available
+    fetchData(); // Fetch other lab-related data
+  
+  }, [patientid]); // Add patientid as a dependency to re-fetch if it changes
+  
 
 
   // Handle input changes for form fields
@@ -313,7 +348,7 @@ const labentrys = () => {
                 <span className="page-title-icon bg-gradient-primary text-white me-2">
                   <i className="mdi mdi-home"></i>
                 </span>
-                Lab Logs
+                Lab Logs {patientid}
               </h3>
             </div>
 
@@ -355,7 +390,7 @@ const labentrys = () => {
                       </div>
                       <div className="form-group row">
 
-
+{console.log(formData, "formData Print Check")}
                         <div className="col-md-6 col-12">
                           <label className="my-2">Lab Reg No.</label>
                           <div className="input-group">
@@ -535,7 +570,7 @@ const labentrys = () => {
                           <select
                             value={formData.reffby}
                             onChange={handleChange}
-                            name='refBy'
+                            name='reffBy'
                             className='form-control'>
                             <option value=''>Select Reff</option>
                             {Reffby.map((item) => (
@@ -559,15 +594,25 @@ const labentrys = () => {
                           />
                         </div>
                         <div className="col-md-6 col-12">
-                          <label className="my-2">Payment</label>
-                          <input
+                          <label className="my-2">Payment Mode</label>
+                          <select
+                            value={formData.payment}
+                            onChange={handleChange}
+                            name='payment'
+                            className="form-select" id="payment">
+                            <option value=''>Select</option>
+                            <option value='cash'>Cash</option>
+                            <option value='bank'>Bank</option>
+                            <option value='upi'>UPI</option>
+                          </select>
+                          {/* <input
                             type="text"
                             name="payment"
                             value={formData.payment}
                             onChange={handleChange}
                             className="form-control"
                             placeholder="Enter Payment"
-                          />
+                          /> */}
                         </div>
                         <div className="col-md-6 col-12">
                           <label className="my-2">Discount Type</label>

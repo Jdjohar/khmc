@@ -85,16 +85,31 @@ const LablogEntry = () => {
                                                             <td>
                                                                 {/* Dropdown menu */}
                                                                 <div className="dropdown">
-                                                                    <i
-                                                                        className="mdi mdi-menu"
-                                                                        type="button"
-                                                                        id={`dropdownMenuButton${labtest._id}`}
-                                                                        data-bs-toggle="dropdown"
-                                                                        aria-expanded="false"
-                                                                        style={{ cursor: "pointer" }}
-                                                                    >
-                                                                        {/* Menu Icon */}
-                                                                    </i>
+                                                                {labtest.result == false
+                                                                ?
+                                                                <i
+                                                                className="mdi mdi-menu bg-warning"
+                                                                type="button"
+                                                                id={`dropdownMenuButton${labtest._id}`}
+                                                                data-bs-toggle="dropdown"
+                                                                aria-expanded="false"
+                                                                style={{ cursor: "pointer" }}
+                                                            >
+                                                                {/* Menu Icon */}
+                                                            </i>
+                                                                :
+                                                                <i
+                                                                className="mdi mdi-menu"
+                                                                type="button"
+                                                                id={`dropdownMenuButton${labtest._id}`}
+                                                                data-bs-toggle="dropdown"
+                                                                aria-expanded="false"
+                                                                style={{ cursor: "pointer" }}
+                                                            >
+                                                                {/* Menu Icon */}
+                                                            </i>
+                                                                }
+                                                                   
                                                                     <ul
                                                                         className="dropdown-menu mega-menu1"
                                                                         aria-labelledby={`dropdownMenuButton${labtest._id}`}

@@ -3,7 +3,7 @@ import Topbar from '../component/TopNavBar';
 import SideNavbar from '../component/SideNavbar';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
+import { ClassicEditor, Context, Bold, Essentials, Italic, Underline, Heading, Alignment, List, Paragraph, ContextWatchdog,Mention, Undo } from 'ckeditor5';
 
 
 import 'ckeditor5/ckeditor5.css';
@@ -141,19 +141,14 @@ const LabTestComments = () => {
                                                     <CKEditor
                                                         editor={ClassicEditor}
                                                         name="Comment"
-                                                        config={{
-                                                            toolbar: {
-                                                                items: ['undo', 'redo', '|', 'bold', 'italic'],
-                                                            },
+                                                        config={ {
                                                             plugins: [
-                                                                Bold, Essentials, Italic, Mention, Paragraph, Undo
+                                                              Essentials, Bold, Italic, Underline, Heading, Alignment, List, Paragraph, Undo
                                                             ],
-
-                                                            mention: {
-                                                                // Mention configuration
-                                                            },
-                                                            initialData: '<p>Hello!</p>',
-                                                        }}
+                                                            toolbar: [
+                                                              'heading', '|', 'bold', 'italic', 'underline', '|', 'alignment', '|', 'bulletedList', 'numberedList', '|', 'undo', 'redo'
+                                                            ]
+                                                          } }
                                                         onReady={(editor) => {
                                                             // You can store the "editor" and use it later.
                                                             console.log('Editor is ready to use!', editor);
