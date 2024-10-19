@@ -158,7 +158,7 @@ const Topbar = () => {
                     </Link>
                     <ul className="submenu dropdown-menu">
                       <li>
-                        <Link className="dropdown-item" to="/master/labentry">
+                        <Link className="dropdown-item" to="/master/testname">
                           New Test
                         </Link>
                       </li>
