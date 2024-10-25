@@ -27,7 +27,7 @@ const LablogResult = () => {
     useEffect(() => {
         const fetchLabEntries = async () => {
             try {
-                const response = await fetch(`https://khmc-xdlm.onrender.com/api/labentry/${id}`);
+                const response = await fetch(`http://localhsot:3001/api/labentry/${id}`);
                 const data = await response.json();
                 console.log(data, "data");
 
@@ -42,7 +42,7 @@ const LablogResult = () => {
         };
         const fetchLabresults = async () => {
             try {
-                const response = await fetch(`https://khmc-xdlm.onrender.com/api/testResult/${id}`);
+                const response = await fetch(`http://localhsot:3001/api/testResult/${id}`);
                 const data = await response.json();
                 console.log(data, "Results");
 
@@ -62,7 +62,7 @@ const LablogResult = () => {
     // Fetch test comments
     const fetchTestComments = async () => {
         try {
-            const response = await fetch(`https://khmc-xdlm.onrender.com/api/testComment/${testId}`);
+            const response = await fetch(`http://localhsot:3001/api/testComment/${testId}`);
             const data = await response.json();
             console.log(data, "testComment");
 
@@ -458,7 +458,7 @@ const LablogResult = () => {
                 }
             ];
             // First, submit the form data with a POST request
-            const response = await fetch('https://khmc-xdlm.onrender.com/api/testResult', {
+            const response = await fetch('http://localhsot:3001/api/testResult', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -476,7 +476,7 @@ const LablogResult = () => {
                 console.log("After submission:", newTest);
 
                 // Now, send the PUT request to update the result field after successful POST
-                const updateResult = await fetch(`https://khmc-xdlm.onrender.com/api/UpdateResultlabEntry/${id}`, {
+                const updateResult = await fetch(`http://localhsot:3001/api/UpdateResultlabEntry/${id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',

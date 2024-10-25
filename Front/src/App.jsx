@@ -30,12 +30,15 @@ import {
   Gender,
   Lab,
   LabLogs,
+  LabLogsP,
   TestName,
   LabTestList,
   LabTestEdit,
   LabTestComments,
   LablogEntry,
   LablogResult,
+  LablogResultP,
+  LablogEntryP,
 
 
 } from './screens/CommanMaster/index'
@@ -69,9 +72,12 @@ function App() {
     <Route exact path='/master/pgender' element={<Gender />}/>
     <Route exact path='/master/lab' element={<Lab />}/>
     <Route exact path='/master/labentry/:patientid?' element={<LabLogs />}/>
+    <Route exact path='/master/lablogsp/:patientid?' element={<LabLogsP />}/>
     <Route exact path='/master/labloglist' element={<LablogEntry />}/>
+    <Route exact path='/master/labloglistp' element={<LablogEntryP />}/>
     <Route exact path='/master/lablogresult/:id' element={<LablogResult />}/>
-    <Route exact path='/master/testname' element={<TestName />}/>
+    <Route exact path='/master/lablogresultp/:id' element={<LablogResultP />}/>
+    <Route exact path='/master/testname/:id?' element={<TestName />}/>
     <Route exact path='/master/testlist' element={<LabTestList />}/>
     <Route exact path='/master/testEdit/:id' element={<LabTestEdit />}/>
     <Route exact path='/master/testComment/:id' element={<LabTestComments />}/>

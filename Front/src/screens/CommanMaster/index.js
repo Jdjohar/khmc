@@ -16,12 +16,15 @@ import Examination from "./Examination"
 import DoseComment from "./DoseComment"
 import Lab from "./Lab"
 import LabLogs from "./Lablogs"
+import LabLogsP from "./LablogsP"
 import TestName from "./TestName"
 import LabTestList from "./LabTestList";
 import LabTestEdit from "./LabTestEdit";
 import LabTestComments from "./LabTestComments";
 import LablogEntry from "./LablogEntry";
+import LablogEntryP from "./LablogEntryP";
 import LablogResult from "./LablogResult";
+import LablogResultP from "./LablogResultP";
 
 export {
     State,
@@ -42,10 +45,13 @@ export {
     Gender,
     Lab,
     LabLogs,
+    LabLogsP,
     TestName,
     LabTestList,
     LabTestEdit,
     LabTestComments,
     LablogEntry,
-    LablogResult
+    LablogEntryP,
+    LablogResult,
+    LablogResultP
 }

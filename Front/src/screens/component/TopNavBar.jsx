@@ -215,8 +215,18 @@ const Topbar = () => {
                     </Link>
                     <ul className="submenu dropdown-menu">
                       <li>
+                        <Link className="dropdown-item" to="/master/labLogsP">
+                          Test Request (P)
+                        </Link>
+                      </li>
+                      <li>
                         <Link className="dropdown-item" to="/master/labentry">
                           Test Request (R)
+                        </Link>
+                      </li>
+                      <li>
+                        <Link className="dropdown-item" to="/master/labloglistp">
+                          Result Entry (P)
                         </Link>
                       </li>
                       <li>

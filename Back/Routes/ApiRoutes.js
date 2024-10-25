@@ -22,6 +22,7 @@ const Labentry = require('../models/Lablogs')
 const TestName = require('../models/TestName')
 const TestComment = require('../models/TestComments')
 const TestResult = require('../models/TestResults')
+const TestResultP = require('../models/TestResultsP')
 const Doctor = require('../models/Doctor')
 const Reffby = require('../models/Reffby')
 const Ward = require('../models/Ward')
@@ -1063,7 +1064,77 @@ router.delete('/testResult/:id', async (req, res) => {
 });
 
 // CREATE a new religion (POST)
+router.post('/testResultP', async (req, res) => {
+    try {
+        const newtestResult = new TestResultP(req.body);
+        const savedtestResult = await newtestResult.save();
+        res.status(201).json({ 
+            success: true,
+            data:savedtestResult
+         });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// READ all religion (GET)
+router.get('/testResultP', async (req, res) => {
+    try {
+        const testResultdata = await TestResultP.find().sort({ createdAt: -1 });
+        res.status(200).json(testResultdata);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+// READ a single religion by ID (GET)
+router.get('/testResultP/:id', async (req, res) => {
+    try {
+        const testResult = await TestResultP.find({ TestId: req.params.id });
+        if (!testResult) {
+            return res.status(404).json({ message: 'testResult not found' });
+        }
+        res.status(200).json(testResult);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// UPDATE a state by ID (PUT)
+router.put('/testResultP/:id', async (req, res) => {
+    try {
+        const updatedtestResult = await TestResultP.findByIdAndUpdate(req.params.id, req.body, {
+            new: true, // Return the updated document
+            runValidators: true // Ensure the data is valid
+        });
+        if (!updatedtestResult) {
+            return res.status(404).json({ message: 'testResult not found' });
+        }
+        res.status(200).json(updatedtestResult);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// DELETE a religion by ID (DELETE)
+router.delete('/testResultP/:id', async (req, res) => {
+    try {
+        const deletedtestResult = await TestResultP.findByIdAndDelete(req.params.id);
+        if (!deletedtestResult) {
+            return res.status(404).json({ message: 'testResult not found' });
+        }
+        res.status(200).json({ message: 'testResult deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// CREATE a new religion (POST)
 router.post('/labentry', async (req, res) => {
+
+    const {testType} = req.body
+    
     try {
         // Get the current date (without time) to compare only the date part
         const today = new Date();
@@ -1197,6 +1268,36 @@ router.put('/labentry/:id', async (req, res) => {
 
 //update only result field
 router.put('/UpdateResultlabEntry/:id', async (req, res) => {
+    try {
+        // Only extract the 'result' field from the request body
+        const { result } = req.body;
+
+        // Check if result is provided in the request
+        if (result === undefined) {
+            return res.status(400).json({ message: 'Result field is required' });
+        }
+
+        // Update only the 'result' field
+        const updatedlabentry = await Labentry.findByIdAndUpdate(
+            req.params.id,
+            { result }, // Update only the result field
+            {
+                new: true, // Return the updated document
+                runValidators: true // Ensure the data is valid
+            }
+        );
+
+        if (!updatedlabentry) {
+            return res.status(404).json({ message: 'Labentry not found' });
+        }
+
+        res.status(200).json(updatedlabentry);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+//update only result field
+router.put('/UpdateResultlabEntryp/:id', async (req, res) => {
     try {
         // Only extract the 'result' field from the request body
         const { result } = req.body;

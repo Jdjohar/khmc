@@ -30,6 +30,34 @@ const PatientList = () => {
         return <p>Loading...</p>;
     }
 
+
+    const handleDelete = async (id) => {
+        console.log("Delete operation triggered");
+
+        try {
+            // Make a DELETE request to the API
+            const response = await fetch(`https://khmc-xdlm.onrender.com/api/patients/${id}`, {
+                method: 'DELETE',
+            });
+
+            const data = await response.json();
+            console.log(data, "Response from delete operation");
+
+            if (data.success) {
+                // Update the state to remove the deleted patient
+                setPatients((prevPatients) => prevPatients.filter((patient) => patient._id !== id));
+                alert("Patient successfully deleted!");
+            } else {
+                alert("Failed to delete the patient. Please try again.");
+            }
+
+        } catch (error) {
+            console.error("Error deleting patient:", error);
+            alert("An error occurred while deleting the patient.");
+        }
+    };
+
+
     const handleQuickAction = (action, patientId) => {
         switch (action) {
             case 'edit':
@@ -46,7 +74,7 @@ const PatientList = () => {
         <>
             <Topbar />
             <div className="container-fluid p-0 page-body-wrapper">
-              {/* <SideNavbar /> */}
+                {/* <SideNavbar /> */}
                 <div className="main-panel">
                     <div className="content-wrapper">
                         <div className="page-header">
@@ -84,7 +112,7 @@ const PatientList = () => {
                                                         <th>Age</th>
                                                         <th>Guardian Name</th>
                                                         <th>Referred By</th>
-                                                        
+
                                                         <th>Guardian Number</th>
                                                         <th>Address</th>
                                                         <th>City</th>
@@ -124,27 +152,27 @@ const PatientList = () => {
                                                                     >
                                                                         <div className="row">
                                                                             <div className="col-lg-4">
+                                                                                <Link to={patient?.documents[2]?.url || '#'} target="_blank" rel="noopener noreferrer" className="dropdown-item text-dark text-decoration-none">
+                                                                                    <li>Print Bill</li>
+                                                                                </Link>
 
-                                           
+                                                                                <Link to={patient?.documents[0]?.url || '#'} target="_blank" rel="noopener noreferrer" className="dropdown-item text-dark text-decoration-none">
+                                                                                    <li>Print Prescription</li>
+                                                                                </Link>
 
-                                                                                <li className="dropdown-item">
-                                                                                    <Link className="text-dark text-decoration-none" to={patient?.documents[2]?.url || '#'} target="_blank" rel="noopener noreferrer">Print Bill</Link>
-                                                                                </li>
-                                                                                <li className="dropdown-item">
-                                                                                <Link className="text-dark text-decoration-none" to={patient?.documents[0]?.url || '#'} target="_blank" rel="noopener noreferrer">Print Prescription</Link>
-
-                                                                                    </li>
                                                                                 <li className="dropdown-item">Lab</li>
-                                                                                <li className="dropdown-item"><Link to={`/master/labentry/${patient._id}`}
-                                                                                       className="text-dark text-decoration-none" > Ultra Sound </Link></li>
-                                                                                <li className="dropdown-item">
-                                                                                <Link to={`/master/patientEdit/${patient._id}`}
-                                                                                       className="text-dark text-decoration-none" > Edit </Link>
 
-                                                                                </li>
+                                                                                <Link to={`/master/labentry/${patient._id}`} className="dropdown-item text-dark text-decoration-none">
+                                                                                    <li>Ultra Sound</li>
+                                                                                </Link>
+
+                                                                                <Link to={`/master/patientEdit/${patient._id}`} className="dropdown-item text-dark text-decoration-none">
+                                                                                    <li>Edit</li>
+                                                                                </Link>
                                                                             </div>
+
                                                                             <div className="col-lg-4">
-                                                                                <li className="dropdown-item">Delete</li>
+                                                                                <li className="dropdown-item" onClick={() => handleDelete(patient._id)}>Delete</li>
                                                                                 <li className="dropdown-item">Ladger Daycare Bill</li>
                                                                                 <li className="dropdown-item">WhatsApp Bill & Prescription</li>
 

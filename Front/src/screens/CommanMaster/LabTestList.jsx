@@ -14,8 +14,8 @@ const LabTestList = () => {
             try {
                 const response = await fetch("https://khmc-xdlm.onrender.com/api/testName");
                 const data = await response.json();
-                console.log(data,"data");
-                
+                console.log(data, "data");
+
                 setLabTests(data); // Set the response data in the LabTests state
                 setLoading(false); // Stop the loading state
             } catch (error) {
@@ -36,7 +36,7 @@ const LabTestList = () => {
         <>
             <Topbar />
             <div className="container-fluid p-0 page-body-wrapper">
-              {/* <SideNavbar /> */}
+                {/* <SideNavbar /> */}
                 <div className="main-panel">
                     <div className="content-wrapper">
                         <div className="page-header">
@@ -69,7 +69,7 @@ const LabTestList = () => {
                                                         <th>Code</th>
                                                         <th>Rate</th>
                                                         <th>Deparment</th>
-                                                        
+
                                                     </tr>
                                                 </thead>
                                                 <tbody id="patient-table-body">
@@ -96,25 +96,22 @@ const LabTestList = () => {
                                                                     >
                                                                         <div className="row">
                                                                             <div className="col-12">
+                                                                                <Link to={`/master/testname/${labtest._id}`} className="dropdown-item text-dark text-decoration-none">
+                                                                                    <li>Edit</li>
+                                                                                </Link>
 
-                                                                            <li className="dropdown-item">Delete</li>
-                                                                                <li className="dropdown-item">
-                                                                                <Link to={`/master/testEdit/${labtest._id}`}
-                                                                                       className="text-dark text-decoration-none" > Edit </Link>
-                                                                                    </li>
-                                                                                <li className="dropdown-item">Comment</li>
-                                                                                <li className="dropdown-item">
-                                                                                <Link to={`/master/testComment/${labtest._id}`}
-                                                                                       className="text-dark text-decoration-none" >  Add Comment </Link>
-                                                                                    
-                                                                                   </li>
-                                                                                <li className="dropdown-item">
-                                                                                <Link to={`/master/testComment/${labtest._id}`}
-                                                                                       className="text-dark text-decoration-none" > Show Comment </Link>
-                                                                                       </li>
+                                                                                <Link to={`/master/testComment/${labtest._id}`} className="dropdown-item text-dark text-decoration-none">
+                                                                                    <li>Add Comment</li>
+                                                                                </Link>
 
+                                                                                <Link to={`/master/testComment/${labtest._id}`} className="dropdown-item text-dark text-decoration-none">
+                                                                                    <li>Show Comment</li>
+                                                                                </Link>
+
+                                                                                {/* Delete button not wrapped in Link if it’s not a navigational action */}
+                                                                                <li className="dropdown-item" onClick={() => handleDelete(labtest._id)}>Delete</li>
                                                                             </div>
-                                                                            
+
 
                                                                         </div>
                                                                     </ul>
@@ -124,7 +121,7 @@ const LabTestList = () => {
                                                             <td>{labtest.TestCode}</td>
                                                             <td>{labtest.Rate}</td>
                                                             <td>{labtest.Department}</td>
-                                                            
+
                                                         </tr>
                                                     ))}
                                                 </tbody>

@@ -4,14 +4,15 @@ import Topbar from '../component/TopNavBar';
 import SideNavbar from '../component/SideNavbar';
 import { useNavigate, useParams  } from 'react-router-dom';
 
-const labentrys = () => {
+const LablogsP = () => {
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
+    
     labReg: '',
     sno: '',
     labId: '',
     patientName: '',
-    TestType:'Radiology',
+    testType:'Pathology',
     careofstatus: '',
     careofName: '',
     address: '',
@@ -382,7 +383,7 @@ const labentrys = () => {
               <div className="col-8">
                 <div className="card">
                   <div className="card-body">
-                    <h2 className='pb-2'> Patient Entry Radiology</h2>
+                  <h2 className='pb-2'> Patient Entry Pathology </h2>
                     <form onSubmit={handleSubmit}>
                       <div className="form-group">
 
@@ -572,7 +573,7 @@ const labentrys = () => {
                           <select
                             value={formData.reffby}
                             onChange={handleChange}
-                            name='reffBy'
+                            name='reffby'
                             className='form-control'>
                             <option value=''>Select Reff</option>
                             {Reffby.map((item) => (
@@ -785,4 +786,4 @@ const labentrys = () => {
   );
 };
 
-export default labentrys;
+export default LablogsP;

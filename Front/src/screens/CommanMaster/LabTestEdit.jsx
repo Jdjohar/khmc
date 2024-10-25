@@ -32,8 +32,7 @@ const LabTestEdit = () => {
     const fetchData = async () => {
       try {
         // Fire both API requests simultaneously
-        const [
-          FetchTestDetailResponse] = await Promise.all([
+        const [FetchTestDetailResponse] = await Promise.all([
             fetch(`https://khmc-xdlm.onrender.com/api/testName/${id}`),
           ]);
 
@@ -48,7 +47,7 @@ const LabTestEdit = () => {
       console.log(FetchTestDetailData,"FetchTestDetailData");
       // setSno(snoData.sno);
         setFormData(FetchTestDetailData)
-        setEditor(FetchTestDetailData.Comment)
+        setEditor('sdds')
       } catch (error) {
         console.error("Error fetching data:", error);
         setLoading(false); // Set loading to false on error
@@ -213,7 +212,7 @@ console.log(Editor.Comment, 'Before');
                                                 </div>
 
                                                 <div className="col-12 mt-3">
-                                                  {console.log(formData.Comment,"Editor")
+                                                  {console.log(formData,"Editor")
                                                   }
                                                     <label htmlFor="Comment">Comment</label>
                                                     <CKEditor

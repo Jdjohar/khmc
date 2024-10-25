@@ -4,11 +4,13 @@ import SideNavbar from '../component/SideNavbar';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
 import 'ckeditor5/ckeditor5.css';
+import { useParams } from 'react-router-dom';
 
 
 const TestName = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(true);
+    const {id} = useParams();
     const [formData, setFormData] = useState({
         TestName: '',
         Department: '',
@@ -20,9 +22,36 @@ const TestName = () => {
     });
     const [testNames, setTestNames] = useState([]);
     const [selectedTestId, setSelectedTestId] = useState(null); // State to track the selected test
-
+    const [testDetails, setTestDetails] = useState([
+        { Investigation: '', Result: '', Unit: '', NormalRange: { start: '', end: '' } }
+    ])
     // Fetch data from the API when the component is mounted
     useEffect(() => {
+        console.log(id, "Use Params");
+
+        const FindTestDetail = async () => {
+            try {
+                const response = await fetch(`https://khmc-xdlm.onrender.com/api/testName/${id}`);
+                const data = await response.json();
+                console.log(data,"FindTestDetail");
+                setFormData({
+                    TestName: data.TestName,
+                    Department: data.Department,
+                    Rate: data.Rate,
+                    TestCode: data.TestCode,
+                    Comment: data.Comment,
+                    AadharCard: data.AadharCard,
+                    FormF: data.FormF,
+                });
+                
+            } catch (error) {
+                
+            }
+
+        }
+
+        
+        
         const fetchTestNames = async () => {
             try {
                 const response = await fetch("https://khmc-xdlm.onrender.com/api/testName");
@@ -38,7 +67,22 @@ const TestName = () => {
         };
 
         fetchTestNames(); // Call the function
+        FindTestDetail(); // Call the function
     }, []); // Empty dependency array to run only once
+
+    // Handle dynamic changes to Investigation, Result, Unit, and Normal Range
+    const handleTestDetailChange = (index, field, value) => {
+        const updatedDetails = [...testDetails];
+        
+        if (field === 'NormalRangeStart' || field === 'NormalRangeEnd') {
+            const rangeField = field === 'NormalRangeStart' ? 'start' : 'end';
+            updatedDetails[index].NormalRange[rangeField] = value;
+        } else {
+            updatedDetails[index][field] = value;
+        }
+
+        setTestDetails(updatedDetails);
+    };
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -46,7 +90,7 @@ const TestName = () => {
         setFormData((prevData) => ({
             ...prevData,
             [name]: type === 'checkbox' ? checked : value,
-           
+
         }));
     };
     const handleChange1 = (event, editor) => {
@@ -58,34 +102,35 @@ const TestName = () => {
     };
 
     // Handle form submission (add new test or update an existing test)
+    // Handle form submission (add new test or update an existing test)
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (selectedTestId) {
-            console.log("selectedTestId:", selectedTestId);
+        const finalFormData = {
+            ...formData,
+            testDetails: testDetails, // Include the dynamic test details in the final data
+        };
+        console.log(finalFormData, "Start Submit finalFormData Data")
 
-            // If a test is selected, update the test
+        if (selectedTestId) {
+            // Update the test
             try {
                 const response = await fetch(`https://khmc-xdlm.onrender.com/api/testName/${selectedTestId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(formData)
+                    body: JSON.stringify(finalFormData)
                 });
 
                 if (response.ok) {
                     const updatedTest = await response.json();
                     alert('Test updated successfully!');
-
-                    // Update the test in the testNames array
                     setTestNames((prevTestNames) =>
                         prevTestNames.map((test) =>
                             test._id === selectedTestId ? updatedTest : test
                         )
                     );
-
-                    // Reset the form and the selected test ID
                     setFormData({
                         TestName: '',
                         Department: '',
@@ -104,25 +149,22 @@ const TestName = () => {
                 console.error('Error updating test:', error);
             }
         } else {
-            // If no test is selected, add a new test
+            // Add a new test
+            console.log(finalFormData, "finalFormData Data")
+
             try {
                 const response = await fetch('https://khmc-xdlm.onrender.com/api/testName', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(formData)
+                    body: JSON.stringify(finalFormData)
                 });
 
                 if (response.ok) {
                     const newTest = await response.json();
                     alert('Test data submitted successfully!');
-                    console.log(newTest);
-
-                    // Update the testNames array with the newly added test
                     setTestNames((prevTestNames) => [...prevTestNames, newTest]);
-
-                    // Clear the form
                     setFormData({
                         TestName: '',
                         Department: '',
@@ -132,6 +174,7 @@ const TestName = () => {
                         AadharCard: false,
                         FormF: false,
                     });
+                    setTestDetails([{ Investigation: '', Result: '', Unit: '', NormalRange: { start: '', end: '' } }]);
                 } else {
                     alert('Failed to submit test data');
                 }
@@ -139,6 +182,16 @@ const TestName = () => {
                 console.error('Error submitting test data:', error);
             }
         }
+    };
+
+    // Add a new row of fields for Investigation, Result, Unit, and Normal Range
+    const handleAddTestDetail = () => {
+        setTestDetails([...testDetails, { Investigation: '', Result: '', Unit: '', NormalRange: { start: '', end: '' } }]);
+    };
+
+    const handleRemoveTestDetail = (index) => {
+        const updatedTestDetails = testDetails.filter((_, i) => i !== index);
+        setTestDetails(updatedTestDetails);
     };
 
     // Handle deleting a test
@@ -191,7 +244,15 @@ const TestName = () => {
             Comment: test.Comment,
             AadharCard: test.AadharCard,
             FormF: test.FormF,
+
         });
+        // If testDetails exist, set them as well
+        if (test.testDetails && test.testDetails.length > 0) {
+            setTestDetails(test.testDetails); // Assuming you have a state for testDetails
+        } else {
+            setTestDetails([{ Investigation: '', Result: '', Unit: '', NormalRange: { start: '', end: '' } }]);
+        }
+
         setSelectedTestId(test._id); // Set the selected test ID for editing
     };
 
@@ -199,7 +260,7 @@ const TestName = () => {
         <>
             <Topbar />
             <div className="container-fluid p-0 page-body-wrapper">
-              {/* <SideNavbar /> */}
+                {/* <SideNavbar /> */}
                 <div className="main-panel">
                     <div className="content-wrapper">
                         <div className="page-header">
@@ -250,13 +311,7 @@ const TestName = () => {
                                                 <div className="col-6 mt-3">
                                                     <label htmlFor="TestName">Test Name</label>
                                                     <input
-                                                        type="text"
-                                                        className="form-control"
-                                                        name="TestName"
-                                                        value={formData['TestName']}
-                                                        onChange={handleChange}
-                                                        id="TestName"
-                                                        placeholder="Enter Test Name"
+                                                        type="text" className="form-control" name="TestName" value={formData['TestName']} onChange={handleChange} id="TestName"  placeholder="Enter Test Name"
                                                     />
                                                 </div>
                                                 <div className="col-6 mt-3">
@@ -278,23 +333,13 @@ const TestName = () => {
                                                 <div className="col-6 mt-3">
                                                     <label htmlFor="Rate">Rate</label>
                                                     <input
-                                                        type="number"
-                                                        className="form-control"
-                                                        name="Rate"
-                                                        value={formData['Rate']}
-                                                        onChange={handleChange}
-                                                        placeholder="Enter Rate"
+                                                        type="number" className="form-control" name="Rate"  value={formData['Rate']} onChange={handleChange} placeholder="Enter Rate"
                                                     />
                                                 </div>
                                                 <div className="col-6 mt-3">
                                                     <label htmlFor="TestCode">Test Code</label>
                                                     <input
-                                                        type="text"
-                                                        className="form-control"
-                                                        name="TestCode"
-                                                        value={formData['TestCode']}
-                                                        onChange={handleChange}
-                                                        placeholder="Enter Test Code"
+                                                        type="text" className="form-control" name="TestCode" value={formData['TestCode']} onChange={handleChange} placeholder="Enter Test Code"
                                                     />
                                                 </div>
 
@@ -327,26 +372,73 @@ const TestName = () => {
                                             </div>
                                             <div className="form-check">
                                                 <input
-                                                    type="checkbox"
-                                                    className="form-check-input"
-                                                    name="FormF"
-                                                    checked={formData['FormF']}
-                                                    onChange={handleChange}
-                                                    id="FormF"
+                                                    type="checkbox" className="form-check-input" name="FormF" checked={formData['FormF']} onChange={handleChange} id="FormF"
                                                 />
                                                 <label className="form-check-label" htmlFor="FormF">Form F</label>
                                             </div>
                                             <div className="form-check">
                                                 <input
                                                     type="checkbox"
-                                                    className="form-check-input"
-                                                    name="AadharCard"
-                                                    checked={formData['AadharCard']}
-                                                    onChange={handleChange}
-                                                    id="AadharCard"
+                                                    className="form-check-input"  name="AadharCard" checked={formData['AadharCard']}  onChange={handleChange}  id="AadharCard"
                                                 />
                                                 <label className="form-check-label" htmlFor="Aadhar Card">Aadhar Card</label>
                                             </div>
+
+                                            <div className='py-5'>
+                                                {testDetails.map((detail, index) => (
+                                                    <div key={index} className="row mb-3">
+                                                        <div className="col-3">
+                                                            <input
+                                                                type="text" className="form-control" placeholder="Investigation"  value={detail.Investigation} onChange={(e) => handleTestDetailChange(index, 'Investigation', e.target.value)}
+                                                            />
+                                                        </div>
+                                                        <div className="col-2">
+                                                            <input
+                                                                type="text" className="form-control"  placeholder="Result"  value={detail.Result}
+                                                                onChange={(e) => handleTestDetailChange(index, 'Result', e.target.value)}
+                                                            />
+                                                        </div>
+                                                        <div className="col-2">
+                                                            <input
+                                                                type="text" className="form-control" placeholder="Unit" value={detail.Unit}
+                                                                onChange={(e) => handleTestDetailChange(index, 'Unit', e.target.value)}
+                                                            />
+                                                        </div>
+                                                        <div className="col-2">
+                                                        <input
+                                                            type="number"
+                                                            className="form-control"
+                                                            placeholder="Normal Range Start"
+                                                            value={detail.NormalRange.start}
+                                                            onChange={(e) => handleTestDetailChange(index, 'NormalRangeStart', e.target.value)}
+                                                        />
+                                                    </div>
+                                                    <div className="col-2">
+                                                        <input
+                                                            type="number"
+                                                            className="form-control"
+                                                            placeholder="Normal Range End"
+                                                            value={detail.NormalRange.end}
+                                                            onChange={(e) => handleTestDetailChange(index, 'NormalRangeEnd', e.target.value)}
+                                                        />
+                                                    </div>
+                                                        <div className="col-2">
+                                                            <button
+                                                                type="button"
+                                                                className="btn btn-danger"
+                                                                onClick={() => handleRemoveTestDetail(index)}
+                                                            >
+                                                                Remove
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                ))}
+
+                                                <button type="button" className="btn btn-success mb-3" onClick={handleAddTestDetail}>
+                                                    Add More
+                                                </button>
+                                            </div>
+
                                             <button type="submit" className="btn btn-gradient-primary me-2">
                                                 {selectedTestId ? 'Update' : 'Submit'}
                                             </button>

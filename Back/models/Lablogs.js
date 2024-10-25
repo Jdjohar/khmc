@@ -20,6 +20,10 @@ const LabSchema = new Schema({
         type: String,
         required: true
     },
+    testType: {
+        type: String,
+        required: true
+    },
     careofstatus: {
         type: String,
         required: false
