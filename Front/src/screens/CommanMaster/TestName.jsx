@@ -308,13 +308,13 @@ const TestName = () => {
                                     <div className="card-body">
                                         <form className="forms-sample" onSubmit={handleSubmit}>
                                             <div className="form-group row">
-                                                <div className="col-6 mt-3">
+                                                <div className="col-3 mt-3">
                                                     <label htmlFor="TestName">Test Name</label>
                                                     <input
                                                         type="text" className="form-control" name="TestName" value={formData['TestName']} onChange={handleChange} id="TestName"  placeholder="Enter Test Name"
                                                     />
                                                 </div>
-                                                <div className="col-6 mt-3">
+                                                <div className="col-3 mt-3">
                                                     <label htmlFor="Department">Department</label>
                                                     <select
                                                         className='form-control'
@@ -330,13 +330,13 @@ const TestName = () => {
 
                                                 </div>
 
-                                                <div className="col-6 mt-3">
+                                                <div className="col-3 mt-3">
                                                     <label htmlFor="Rate">Rate</label>
                                                     <input
                                                         type="number" className="form-control" name="Rate"  value={formData['Rate']} onChange={handleChange} placeholder="Enter Rate"
                                                     />
                                                 </div>
-                                                <div className="col-6 mt-3">
+                                                <div className="col-3 mt-3">
                                                     <label htmlFor="TestCode">Test Code</label>
                                                     <input
                                                         type="text" className="form-control" name="TestCode" value={formData['TestCode']} onChange={handleChange} placeholder="Enter Test Code"

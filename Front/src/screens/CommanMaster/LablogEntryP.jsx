@@ -8,7 +8,7 @@ const LablogEntryP = () => {
     const [LabEntries, setLabentries] = useState([]);
     const [loading, setLoading] = useState(true); // For loading state
 
-    
+
     // Fetch test data from API and create a map of test IDs to test names
     const fetchTestNames = async () => {
         try {
@@ -26,7 +26,7 @@ const LablogEntryP = () => {
             console.error("Error fetching test names:", error);
         }
     };
-    
+
     const [testNames, setTestNames] = useState({}); // For storing test ID to TestName mapping
 
 
@@ -56,6 +56,31 @@ const LablogEntryP = () => {
     if (loading) {
         return <p>Loading...</p>;
     }
+    const handleDelete = async (id) => {
+        console.log(id,"Delete operation triggered");
+
+        try {
+            // Make a DELETE request to the API
+            const response = await fetch(`https://khmc-xdlm.onrender.com/api/labentry/${id}`, {
+                method: 'DELETE',
+            });
+
+            const data = await response.json();
+            console.log(data, "Response from delete operation");
+
+            if (data.success) {
+                // Update the state to remove the deleted patient
+                setLabentries((prevEntries) => prevEntries.filter((entry) => entry._id !== id));
+                alert("Test successfully deleted!");
+            } else {
+                alert("Failed to delete the patient. Please try again.");
+            }
+
+        } catch (error) {
+            console.error("Error deleting patient:", error);
+            alert("An error occurred while deleting the patient.");
+        }
+    };
 
     return (
         <>
@@ -142,19 +167,21 @@ const LablogEntryP = () => {
                                                                         <div className="row">
                                                                             <div className="col-12">
 
-                                                                                <li className="dropdown-item">Delete</li>
-                                                                                <li className="dropdown-item">
+                                                                                <li className="dropdown-item" onClick={() => handleDelete(labtest._id)}>
+                                                                                    Delete
+                                                                                </li>
+                                                                                {/* <li className="dropdown-item">
                                                                                     <Link to={`/master/testEdit/${labtest._id}`}
                                                                                         className="text-dark text-decoration-none" > Edit </Link>
-                                                                                </li>
-                                                                                <li className="dropdown-item">Comment</li>
+                                                                                </li> */}
+                                                                                {/* <li className="dropdown-item">Comment</li> */}
                                                                                 <li className="dropdown-item">
                                                                                     <Link to={`/master/LablogResultp/${labtest._id}`}
                                                                                         className="text-dark text-decoration-none" >  Result Entry </Link>
 
                                                                                 </li>
                                                                                 <li className="dropdown-item">
-                                                                                    <Link to={`/master/LablogResult/${labtest._id}`}
+                                                                                    <Link to={`/master/LablogResultp/${labtest._id}`}
                                                                                         className="text-dark text-decoration-none" > Report Print </Link>
                                                                                 </li>
                                                                                 <li className="dropdown-item">

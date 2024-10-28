@@ -1191,7 +1191,7 @@ const getCurrentDateTime = () => {
                                     <div className="card-body">
                                         <form className="forms-sample" onSubmit={handleSubmit}>
                                             <div className="form-group row">
-                                            <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                            <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                     <label htmlFor="patientType">Patient Type</label>
                                                     <select
                                                         className="form-control"
@@ -1213,7 +1213,7 @@ const getCurrentDateTime = () => {
                                                         {dataFetched
                                                             ?
                                                             <>
-                                                                {/* <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                                {/* <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                                     <label htmlFor="uhid">UHID f</label>
                                                                     <input
                                                                         type="text"
@@ -1226,7 +1226,7 @@ const getCurrentDateTime = () => {
                                                                         placeholder="Enter UHID"
                                                                     />
                                                                 </div>
-                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                                     <label htmlFor="mobilenumber">Mobile Number</label>
                                                                     <input
                                                                         type="text"
@@ -1245,7 +1245,7 @@ const getCurrentDateTime = () => {
 
                                                             <>
 
-                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                                     <label htmlFor="uhid">UHID w</label>
                                                                     <input
                                                                         type="text"
@@ -1256,7 +1256,7 @@ const getCurrentDateTime = () => {
                                                                         placeholder="Enter UHID"
                                                                     />
                                                                 </div>
-                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                                     <label htmlFor="mobilenumber">Mobile Number</label>
                                                                     <input
                                                                         type="text"
@@ -1279,7 +1279,7 @@ const getCurrentDateTime = () => {
                                                                 {console.log(OldformData, "OldformData")}
 
 
-                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                                     <label htmlFor="uhid">UHID O</label>
                                                                     <input
                                                                         type="text"
@@ -1291,7 +1291,7 @@ const getCurrentDateTime = () => {
                                                                         placeholder="Enter UHID"
                                                                     />
                                                                 </div>
-                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                                     <label htmlFor="mobilenumber">Mobile Number </label>
                                                                     <input
                                                                         type="text"
@@ -1304,7 +1304,7 @@ const getCurrentDateTime = () => {
                                                                     />
                                                                 </div>
 
-                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                                     <label htmlFor="date">Date</label>
                                                                     <input
                                                                         type="text"
@@ -1316,7 +1316,7 @@ const getCurrentDateTime = () => {
                                                                         id="date"
                                                                     />
                                                                 </div>
-                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                                     <label htmlFor="opdno">OPD No</label>
                                                                     <div className="input-group">
                                                                         <div className="input-group-prepend"></div>
@@ -1338,7 +1338,7 @@ const getCurrentDateTime = () => {
                                                                         />
                                                                     </div>
                                                                 </div>
-                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                                     <label for="exampleInputName1">Email</label>
                                                                     <input
                                                                         type="email"
@@ -1350,9 +1350,9 @@ const getCurrentDateTime = () => {
                                                                         placeholder="Enter email" />
 
                                                                 </div>
-                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                                     <div className="mb-3 d-flex">
-                                                                        <div className="me-2" style={{ width: '30%' }}>
+                                                                        <div className="me-2" style={{ width: '40%' }}>
                                                                             <label htmlFor="status" className="form-label">Status</label>
                                                                             <select
                                                                                 className="form-select"
@@ -1384,9 +1384,9 @@ const getCurrentDateTime = () => {
                                                                 </div>
 
 
-                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                                     <div className="mb-3 d-flex">
-                                                                        <div className="me-2" style={{ width: '30%' }}>
+                                                                        <div className="me-2" style={{ width: '40%' }}>
                                                                             <label htmlFor="status" className="form-label">Status</label>
                                                                             <select
                                                                                 className="form-select"
@@ -1418,7 +1418,7 @@ const getCurrentDateTime = () => {
 
                                                                 </div>
 
-                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                                     <label for="GuardianNumber">Guardian Number</label>
                                                                     <input
                                                                         type="text"
@@ -1440,7 +1440,7 @@ const getCurrentDateTime = () => {
                                                                         onChange={oldhandleChange}
                                                                         placeholder="Enter full address" />
                                                                 </div>
-                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                                     <label for="city">City</label>
                                                                     <input
                                                                         type="text"
@@ -1451,7 +1451,7 @@ const getCurrentDateTime = () => {
                                                                         onChange={oldhandleChange}
                                                                         placeholder="Enter city name" />
                                                                 </div>
-                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                                     <label for="exampleInputName1">Gender</label>
 
                                                                     <select
@@ -1469,7 +1469,7 @@ const getCurrentDateTime = () => {
                                                                         ))}
                                                                     </select>
                                                                 </div>
-                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                                     <label for="exampleInputName1">Religion</label>
                                                                     <select
                                                                         value={OldformData.religion}
@@ -1488,7 +1488,7 @@ const getCurrentDateTime = () => {
 
                                                                     </select>
                                                                 </div>
-                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                                     <div className="mb-3 d-flex">
                                                                         <div className="me-2" style={{ width: '30%' }}>
                                                                             <label htmlFor="status" className="form-label">Age</label>
@@ -1517,7 +1517,7 @@ const getCurrentDateTime = () => {
 
                                                                 </div>
 
-                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                                     <label for="exampleInputName1">Ref By</label>
                                                                     <select
                                                                         value={OldformData.refBy}
@@ -1534,7 +1534,7 @@ const getCurrentDateTime = () => {
                                                                     </select>
                                                                 </div>
 
-                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                                     <label for="exampleInputName1">Type</label>
                                                                     <select
                                                                         value={OldformData.type}
@@ -1547,7 +1547,7 @@ const getCurrentDateTime = () => {
                                                                         <option value='Tele Medicine'>Tele Medicine</option>
                                                                     </select>
                                                                 </div>
-                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                                     <label for="exampleInputName1">Department</label>
                                                                     <select
                                                                         value={OldformData.department}
@@ -1563,7 +1563,7 @@ const getCurrentDateTime = () => {
 
                                                                     </select>
                                                                 </div>
-                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                                     {console.log(selectedDoctor)}
 
                                                                     <label for="exampleInputName1">Reff To</label>
@@ -1580,7 +1580,7 @@ const getCurrentDateTime = () => {
                                                                         ))}
                                                                     </select>
                                                                 </div>
-                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                                     <div className="mb-3 d-flex">
                                                                         <div className="me-2" style={{ width: '30%' }}>
                                                                             <label htmlFor="status" className="form-label">Status</label>
@@ -1613,7 +1613,7 @@ const getCurrentDateTime = () => {
                                                                     </div>
 
                                                                 </div>
-                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                                     <label for="exampleInputName1">Visit Type</label>
                                                                     <select value={OldformData.visitType}
                                                                         name='visitType'
@@ -1627,7 +1627,7 @@ const getCurrentDateTime = () => {
                                                                         <option value='LFP'>LFP</option>
                                                                     </select>
                                                                 </div>
-                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                                     <label for="exampleInputName1">Payment Type</label>
                                                                     <select
                                                                         value={OldformData.paymentType}
@@ -1642,7 +1642,7 @@ const getCurrentDateTime = () => {
                                                                     </select>
                                                                 </div>
 
-                                                                <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                                <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                                     <div className="mb-3 d-flex">
                                                                         <div className="me-2" style={{ width: '30%' }}>
                                                                             <label htmlFor="status" className="form-label">Type </label>
@@ -1715,7 +1715,7 @@ const getCurrentDateTime = () => {
                                                     {/* Full form content goes here */}
                                                     <div className="form-group row">
 
-                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                             <label htmlFor="mobilenumber">Mobile Number <span className='text-danger'>*</span></label>
                                                             <input
                                                                 type="text"
@@ -1727,7 +1727,7 @@ const getCurrentDateTime = () => {
                                                                 id="mobilenumber"
                                                                 placeholder="Enter Mobile Number" />
                                                         </div>
-                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                             <label htmlFor="date">Date</label>
                                                             <input
                                                                 type="text"
@@ -1739,7 +1739,7 @@ const getCurrentDateTime = () => {
                                                                 id="date" />
                                                         </div>
 
-                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                             <label for="exampleInputName1">UHID</label>
                                                             <div className="input-group">
                                                                 <div className="input-group-prepend">
@@ -1755,7 +1755,7 @@ const getCurrentDateTime = () => {
                                                             </div>
 
                                                         </div>
-                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                             <label for="exampleInputName1">OPD No</label>
                                                             <div className="input-group">
                                                                 <div className="input-group-prepend">
@@ -1780,7 +1780,7 @@ const getCurrentDateTime = () => {
 
                                                         </div>
 
-                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                             <label for="exampleInputName1">Email</label>
                                                             <input
                                                                 type="email"
@@ -1794,7 +1794,7 @@ const getCurrentDateTime = () => {
                                                         </div>
                                                         <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                             <div className="mb-3 d-flex">
-                                                                <div className="me-2" style={{ width: '30%' }}>
+                                                                <div className="me-2" style={{ width: '70%' }}>
                                                                     <label htmlFor="status" className="form-label">Status</label>
                                                                     <select
                                                                         className="form-select"
@@ -1828,7 +1828,7 @@ const getCurrentDateTime = () => {
 
                                                         <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
                                                             <div className="mb-3 d-flex">
-                                                                <div className="me-2" style={{ width: '30%' }}>
+                                                                <div className="me-2" style={{ width: '70%' }}>
                                                                     <label htmlFor="status" className="form-label">Status <span className='text-danger'>*</span></label>
                                                                     <select
                                                                         className="form-select"
@@ -1860,7 +1860,7 @@ const getCurrentDateTime = () => {
 
                                                         </div>
 
-                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                             <label for="GuardianNumber">Guardian Number</label>
                                                             <input
                                                                 type="text"
@@ -1882,7 +1882,7 @@ const getCurrentDateTime = () => {
                                                                 onChange={handleChange}
                                                                 placeholder="Enter full address" />
                                                         </div>
-                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                             <label for="city">City</label>
                                                             <input
                                                                 type="text"
@@ -1893,7 +1893,7 @@ const getCurrentDateTime = () => {
                                                                 onChange={handleChange}
                                                                 placeholder="Enter city name" />
                                                         </div>
-                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                             <label for="exampleInputName1">Gender <span className='text-danger'>*</span></label>
 
                                                             <select
@@ -1911,7 +1911,7 @@ const getCurrentDateTime = () => {
                                                                 ))}
                                                             </select>
                                                         </div>
-                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                             <label for="exampleInputName1">Religion</label>
                                                             <select
                                                                 value={formData.religion}
@@ -1930,7 +1930,7 @@ const getCurrentDateTime = () => {
 
                                                             </select>
                                                         </div>
-                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                             <div className="mb-3 d-flex">
                                                                 <div className="me-2" style={{ width: '30%' }}>
                                                                     <label htmlFor="status" className="form-label">Age <span className='text-danger'>*</span></label>
@@ -1959,7 +1959,7 @@ const getCurrentDateTime = () => {
 
                                                         </div>
 
-                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                             <label for="exampleInputName1">Ref By <span className='text-danger'>*</span></label>
                                                             <select
                                                                 value={formData.refBy}
@@ -1976,7 +1976,7 @@ const getCurrentDateTime = () => {
                                                             </select>
                                                         </div>
 
-                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                             <label for="exampleInputName1">Type <span className='text-danger'>*</span></label>
                                                             <select
                                                                 value={formData.type}
@@ -1989,7 +1989,7 @@ const getCurrentDateTime = () => {
                                                                 <option value='Tele Medicine'>Tele Medicine</option>
                                                             </select>
                                                         </div>
-                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                             <label for="exampleInputName1">Department</label>
                                                             <select
                                                                 value={formData.department}
@@ -2005,7 +2005,7 @@ const getCurrentDateTime = () => {
 
                                                             </select>
                                                         </div>
-                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                             <label for="exampleInputName1">Reff To <span className='text-danger'>*</span></label>
                                                             <select
                                                                 value={formData.refTo}
@@ -2021,9 +2021,9 @@ const getCurrentDateTime = () => {
                                                             </select>
                                                         </div>
                                                         {console.log(selectedDoctor, "selectedDoctor")}
-                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                             <div className="mb-3 d-flex">
-                                                                <div className="me-2" style={{ width: '30%' }}>
+                                                                <div className="me-2" style={{ width: '60%' }}>
                                                                     <label htmlFor="status" className="form-label">Status</label>
                                                                     <select
                                                                         value={formData.identStatus}
@@ -2054,8 +2054,8 @@ const getCurrentDateTime = () => {
                                                             </div>
 
                                                         </div>
-                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
-                                                            <label for="exampleInputName1">Visit Type</label>
+                                                        <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
+                                                            <label for="exampleInputName1">Visit Type <span className='text-danger'>*</span></label>
                                                             <select value={formData.visitType}
                                                                 name='visitType'
                                                                 onChange={handleChange}
@@ -2068,8 +2068,8 @@ const getCurrentDateTime = () => {
                                                                 <option value='LFP'>LFP</option>
                                                             </select>
                                                         </div>
-                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
-                                                            <label for="exampleInputName1">Payment Type</label>
+                                                        <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
+                                                            <label for="exampleInputName1">Payment Type <span className='text-danger'>*</span></label>
                                                             <select
                                                                 value={formData.paymentType}
                                                                 onChange={handleChange}
@@ -2084,10 +2084,10 @@ const getCurrentDateTime = () => {
                                                             </select>
                                                         </div>
 
-                                                        <div className="col-lg-3 col-md-6 col-sm-12 mt-3">
+                                                        <div className="col-lg-2 col-md-6 col-sm-12 mt-3">
                                                             <div className="mb-3 d-flex">
-                                                                <div className="me-2" style={{ width: '30%' }}>
-                                                                    <label htmlFor="status" className="form-label">Discount Type </label>
+                                                                <div className="me-2" style={{ width: '60%' }}>
+                                                                    <label htmlFor="status" className="form-label">Type </label>
                                                                     <select
                                                                         value={formData.discountType}
                                                                         onChange={handleChange}

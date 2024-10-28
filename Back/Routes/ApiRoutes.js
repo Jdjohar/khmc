@@ -1334,7 +1334,7 @@ router.delete('/labentry/:id', async (req, res) => {
         if (!deletedlabentry) {
             return res.status(404).json({ message: 'labentry not found' });
         }
-        res.status(200).json({ message: 'labentry deleted successfully' });
+        res.status(200).json({ success: true, message: 'labentry deleted successfully' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

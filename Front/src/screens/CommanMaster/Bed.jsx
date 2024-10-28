@@ -300,7 +300,7 @@ const Bed = () => {
                   <div className="card-body">
                     <form className="forms-sample" onSubmit={handleSubmit}>
                       <div className="form-group row">
-                        <div className="col-6 mt-3">
+                        <div className="col-3 mt-3">
                           <label htmlFor="ward">Select Ward *</label>
                           <select className="form-control" name="ward" value={formData.ward} onChange={handleChange} required>
                             {/* Replace with actual wards fetched from API if needed */}
@@ -312,7 +312,7 @@ const Bed = () => {
                             ))}
                           </select>
                         </div>
-                        <div className="col-6 mt-3">
+                        <div className="col-3 mt-3">
                           <label htmlFor="department">Department</label>
                           <select className="form-control"
                             name="department"
@@ -329,7 +329,7 @@ const Bed = () => {
                           </select>
 
                         </div>
-                        <div className="col-6 mt-3">
+                        <div className="col-3 mt-3">
                           <label htmlFor="bedname">Bed Name</label>
                           <input
                             type="text"
@@ -342,7 +342,7 @@ const Bed = () => {
                             placeholder="Enter Bed Name"
                           />
                         </div>
-                        <div className="col-6 mt-3">
+                        <div className="col-3 mt-3">
                           <label htmlFor="rate">Rate</label>
                           <input
                             type="text"
@@ -354,7 +354,7 @@ const Bed = () => {
                             placeholder="Enter Rate"
                           />
                         </div>
-                        <div className="col-6 mt-3">
+                        <div className="col-3 mt-3">
                           <label htmlFor="gst">GST</label>
                           <input
                             type="number"
@@ -366,7 +366,7 @@ const Bed = () => {
                             placeholder="Enter GST"
                           />
                         </div>
-                        <div className="col-6 mt-3">
+                        <div className="col-3 mt-3">
                           <label htmlFor="hsncode">HSN Code</label>
                           <input
                             type="text"
@@ -378,7 +378,7 @@ const Bed = () => {
                             placeholder="Enter HSN Code"
                           />
                         </div>
-                        <div className="col-6 mt-3">
+                        <div className="col-3 mt-3">
                           <label htmlFor="slotStart">Slot Start</label>
                           <input
                             type="text"
@@ -390,7 +390,7 @@ const Bed = () => {
                             placeholder="Enter Slot Start"
                           />
                         </div>
-                        <div className="col-6 mt-3">
+                        <div className="col-3 mt-3">
                           <label htmlFor="slotCount">Slot Count</label>
                           <input
                             type="text"

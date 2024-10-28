@@ -393,7 +393,7 @@ const labentrys = () => {
                       <div className="form-group row">
 
 {console.log(formData, "formData Print Check")}
-                        <div className="col-md-6 col-12">
+                        <div className="col-md-3 col-12">
                           <label className="my-2">Lab Reg No.</label>
                           <div className="input-group">
                             <div className="input-group-prepend"></div>
@@ -416,7 +416,7 @@ const labentrys = () => {
                             />
                           </div>
                         </div>
-                        <div className="col-md-6 col-12">
+                        <div className="col-md-3 col-12">
                           <label className="my-2">Patient Name</label>
                           <input
                             type="text"
@@ -428,7 +428,7 @@ const labentrys = () => {
                           />
                         </div>
 
-                        <div className="col-md-6 col-12">
+                        <div className="col-md-3 col-12">
                           <label className="my-2">Care Of Status</label>
                           <select
                             className='form-control'
@@ -453,7 +453,7 @@ const labentrys = () => {
                             placeholder="Enter Care Of Status"
                           /> */}
                         </div>
-                        <div className="col-md-6 col-12">
+                        <div className="col-md-3 col-12">
                           <label className="my-2">Care Of Name</label>
                           <input
                             type="text"
@@ -464,7 +464,7 @@ const labentrys = () => {
                             placeholder="Enter Care Of Name"
                           />
                         </div>
-                        <div className="col-md-6 col-12">
+                        <div className="col-md-3 col-12">
                           <label className="my-2">Address</label>
                           <input
                             type="text"
@@ -475,7 +475,7 @@ const labentrys = () => {
                             placeholder="Enter Address"
                           />
                         </div>
-                        <div className="col-md-6 col-12">
+                        <div className="col-md-3 col-12">
                           <label className="my-2">City</label>
                           <input
                             type="text"
@@ -486,7 +486,7 @@ const labentrys = () => {
                             placeholder="Enter City"
                           />
                         </div>
-                        <div className="col-md-6 col-12">
+                        <div className="col-md-3 col-12">
                           <label className="my-2">Mobile</label>
                           <input
                             type="text"
@@ -497,7 +497,7 @@ const labentrys = () => {
                             placeholder="Enter Mobile"
                           />
                         </div>
-                        <div className="col-md-6 col-12">
+                        <div className="col-md-3 col-12">
                           <label className="my-2">Email</label>
                           <input
                             type="text"
@@ -508,7 +508,7 @@ const labentrys = () => {
                             placeholder="Enter Email"
                           />
                         </div>
-                        <div className="col-md-6 col-12">
+                        <div className="col-md-3 col-12">
                           <label className="my-2">Category</label>
                           <select
                             value={formData.category}
@@ -526,7 +526,7 @@ const labentrys = () => {
                           </select>
 
                         </div>
-                        <div className="col-md-6 col-12">
+                        <div className="col-md-3 col-12">
                           <label className="my-2">Age</label>
                           <div className="input-group">
                             <div className="input-group-prepend"></div>
@@ -556,7 +556,7 @@ const labentrys = () => {
 
 
 
-                        <div className="col-md-6 col-12">
+                        <div className="col-md-3 col-12">
                           <label className="my-2">Aadhar Number</label>
                           <input
                             type="text"
@@ -567,7 +567,7 @@ const labentrys = () => {
                             placeholder="Enter Aadhar Number"
                           />
                         </div>
-                        <div className="col-md-6 col-12">
+                        <div className="col-md-3 col-12">
                           <label className="my-2">Referred By</label>
                           <select
                             value={formData.reffby}
@@ -584,7 +584,7 @@ const labentrys = () => {
                           </select>
 
                         </div>
-                        <div className="col-md-6 col-12">
+                        <div className="col-md-3 col-12">
                           <label className="my-2">Remarks</label>
                           <input
                             type="text"
@@ -595,7 +595,7 @@ const labentrys = () => {
                             placeholder="Enter Remarks"
                           />
                         </div>
-                        <div className="col-md-6 col-12">
+                        <div className="col-md-3 col-12">
                           <label className="my-2">Payment Mode</label>
                           <select
                             value={formData.payment}
@@ -616,7 +616,7 @@ const labentrys = () => {
                             placeholder="Enter Payment"
                           /> */}
                         </div>
-                        <div className="col-md-6 col-12">
+                        <div className="col-md-3 col-12">
                           <label className="my-2">Discount Type</label>
                           <select
                             value={formData.discountType}
@@ -629,7 +629,7 @@ const labentrys = () => {
                           </select>
 
                         </div>
-                        <div className="col-md-6 col-12">
+                        <div className="col-md-3 col-12">
                           <label className="my-2">Discount</label>
                           <input
                             type="text"
@@ -640,7 +640,7 @@ const labentrys = () => {
                             placeholder="Enter Discount"
                           />
                         </div>
-                        <div className="col-md-6 col-12">
+                        <div className="col-md-3 col-12">
                           <label className="my-2">Tests</label>
                           <Select
                             isMulti
@@ -653,7 +653,7 @@ const labentrys = () => {
                           />
 
                         </div>
-                        <div className="col-md-6 col-12">
+                        <div className="col-md-3 col-12">
                           <label className="my-2">Total Amount</label>
                           <input
                             type="text"
@@ -665,7 +665,7 @@ const labentrys = () => {
                             placeholder="Enter Total Amount"
                           />
                         </div>
-                        <div className="col-md-6 col-12">
+                        <div className="col-md-3 col-12">
                           <label className="my-2">Received Amount</label>
                           <input
                             type="text"
@@ -676,7 +676,7 @@ const labentrys = () => {
                             placeholder="Enter Received Amount"
                           />
                         </div>
-                        <div className="col-md-6 col-12">
+                        <div className="col-md-3 col-12">
                           <label className="my-2">Due Amount</label>
                           <input
                             type="text"
@@ -688,7 +688,7 @@ const labentrys = () => {
                             placeholder="Enter Due Amount"
                           />
                         </div>
-                        <div className="col-md-6 col-12">
+                        <div className="col-md-3 col-12">
                           <label className="my-2">Sample Date</label>
                           <input
                             type="date"

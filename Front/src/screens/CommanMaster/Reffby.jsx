@@ -377,7 +377,7 @@ const Reffby = () => {
                     <form className="forms-sample" onSubmit={handleSubmit}>
                       <div className="row">
                         {/* Type */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="type">Type</label>
                           <select
                             className="form-control"
@@ -397,7 +397,7 @@ const Reffby = () => {
                         </div>
 
                         {/* Doctor Name (dynamic label based on type) */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="doctorName">{formData.type} Name</label>
                           <input
                             type="text"
@@ -411,7 +411,7 @@ const Reffby = () => {
                         </div>
 
                         {/* Department */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="department">Department</label>
                           <select
                             className="form-control"
@@ -430,7 +430,7 @@ const Reffby = () => {
                         </div>
 
                         {/* Status */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="status">Status</label>
                           <select
                             className="form-control"
@@ -461,7 +461,7 @@ const Reffby = () => {
                         </div>
 
                         {/* City */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="city">City</label>
                           <input
                             type="text"
@@ -475,7 +475,7 @@ const Reffby = () => {
                         </div>
 
                         {/* Mobile Number */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="mobileNumber">Mobile Number</label>
                           <input
                             type="text"
@@ -489,7 +489,7 @@ const Reffby = () => {
                         </div>
 
                         {/* DOB */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="dob">Date of Birth (DOB)</label>
                           <input
                             type="date"
@@ -502,7 +502,7 @@ const Reffby = () => {
                         </div>
 
                         {/* DOM */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="dom">Date of Marriage (DOM)</label>
                           <input
                             type="date"
@@ -515,7 +515,7 @@ const Reffby = () => {
                         </div>
 
                         {/* Email */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="email">Email</label>
                           <input
                             type="email"
@@ -529,7 +529,7 @@ const Reffby = () => {
                         </div>
 
                         {/* Account Number */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="accountNumber">Account Number</label>
                           <input
                             type="text"
@@ -543,7 +543,7 @@ const Reffby = () => {
                         </div>
 
                         {/* IFSC Code */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="ifscCode">IFSC Code</label>
                           <input
                             type="text"
@@ -557,7 +557,7 @@ const Reffby = () => {
                         </div>
 
                         {/* Bank Name */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="bankName">Bank Name</label>
                           <select
                             className="form-control"
@@ -576,7 +576,7 @@ const Reffby = () => {
                         </div>
 
                         {/* A/C @ Branch */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="branch">A/C @ Branch</label>
                           <input
                             type="text"
@@ -590,7 +590,7 @@ const Reffby = () => {
                         </div>
 
                         {/* Managed By */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="managedBy">Managed By</label>
                           <input
                             type="text"
@@ -604,7 +604,7 @@ const Reffby = () => {
                         </div>
 
                         {/* Background */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="background">Background</label>
                           <input
                             type="text"
@@ -627,7 +627,7 @@ const Reffby = () => {
                         {/* Investigation and Rate for each row */}
                         {formData.investigations.map((investigation) => (
   <div key={investigation._id} className="row mb-3">
-    <div className="col-6 form-group">
+    <div className="col-3 form-group">
       <label htmlFor={`investigation-${investigation.id}`}>Investigation</label>
       <select
         className="form-control"
@@ -641,7 +641,7 @@ const Reffby = () => {
       </select>
     </div>
 
-    <div className="col-6 form-group">
+    <div className="col-3 form-group">
       <label htmlFor={`rate-${investigation.id}`}>Rate</label>
       <input
         type="text"
@@ -653,7 +653,7 @@ const Reffby = () => {
       />
     </div>
 
-    <div className="col-6 form-group">
+    <div className="col-3 form-group">
       <label htmlFor={`incentiveType-${investigation.id}`}>Incentive Type</label>
       <select
         className="form-control"
@@ -667,7 +667,7 @@ const Reffby = () => {
       </select>
     </div>
 
-    <div className="col-6 form-group">
+    <div className="col-3 form-group">
       <label htmlFor={`incentiveValue-${investigation.id}`}>Incentive Value</label>
       <input
         type="text"
@@ -679,7 +679,7 @@ const Reffby = () => {
       />
     </div>
 
-    <div className="col-6 form-group">
+    <div className="col-3 form-group">
       <button type="button" className="btn btn-danger" onClick={() => handleDeleteRow(investigation.id)}>
         Delete
       </button>

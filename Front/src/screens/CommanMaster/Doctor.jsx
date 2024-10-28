@@ -297,7 +297,7 @@ const Doctor = () => {
                     <form className="forms-sample" onSubmit={handleSubmit}>
                       <div className="row">
                         {/* Type */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="type">Type</label>
                           <select
                             className="form-control"
@@ -318,7 +318,7 @@ const Doctor = () => {
                         </div>
 
                         {/* Doctor Name */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="doctorname">{formData.type} Name</label>
                           <input
                             type="text"
@@ -332,7 +332,7 @@ const Doctor = () => {
                         </div>
 
                         {/* Department */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="doctordepartment">Department</label>
                           <select
                             className="form-control"
@@ -351,7 +351,7 @@ const Doctor = () => {
                         </div>
 
                         {/* Status */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="doctorstatus">Status</label>
                           <select
                             className="form-control"
@@ -381,7 +381,7 @@ const Doctor = () => {
                         </div>
 
                         {/* City */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="city">City</label>
                           <input
                             type="text"
@@ -395,7 +395,7 @@ const Doctor = () => {
                         </div>
 
                         {/* Mobile Number */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="mobilenumber">Mobile Number</label>
                           <input
                             type="text"
@@ -409,7 +409,7 @@ const Doctor = () => {
                         </div>
 
                         {/* DOB */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="dob">Date of Birth (DOB)</label>
                           <input
                             type="date"
@@ -422,7 +422,7 @@ const Doctor = () => {
                         </div>
 
                         {/* DOM */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="dom">Date of Marriage (DOM)</label>
                           <input
                             type="date"
@@ -435,7 +435,7 @@ const Doctor = () => {
                         </div>
 
                         {/* Email */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="email">Email</label>
                           <input
                             type="email"
@@ -449,7 +449,7 @@ const Doctor = () => {
                         </div>
 
                         {/* Account Number */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="accountnumber">Account Number</label>
                           <input
                             type="text"
@@ -463,7 +463,7 @@ const Doctor = () => {
                         </div>
 
                         {/* IFSC Code */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="ifsccode">IFSC Code</label>
                           <input
                             type="text"
@@ -477,7 +477,7 @@ const Doctor = () => {
                         </div>
 
                         {/* Bank Name */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="bankname">Bank Name</label>
                           <select
                             className="form-control"
@@ -496,7 +496,7 @@ const Doctor = () => {
                         </div>
 
                         {/* A/C @ Branch */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="acbranch">A/C @ Branch</label>
                           <input
                             type="text"
@@ -510,7 +510,7 @@ const Doctor = () => {
                         </div>
 
                         {/* Managed By */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="manageby">Managed By</label>
                           <input
                             type="text"
@@ -524,7 +524,7 @@ const Doctor = () => {
                         </div>
 
                         {/* Background */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="background">Background</label>
                           <input
                             type="text"
@@ -538,7 +538,7 @@ const Doctor = () => {
                         </div>
 
                         {/* Incentive On Visit */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="incentiveonvisit">Incentive On Visit</label>
                           <input
                             type="text"
@@ -552,7 +552,7 @@ const Doctor = () => {
                         </div>
 
                         {/* Cons. Fee */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="consfee">Cons. Fee</label>
                           <input
                             type="text"
@@ -562,11 +562,12 @@ const Doctor = () => {
                             value={formData.consfee}
                             onChange={handleChange}
                             placeholder="Enter Cons. Fee"
+                            required
                           />
                         </div>
 
                         {/* 2nd Shift Fee */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="secondshiftfee">2nd Shift Fee</label>
                           <input
                             type="text"
@@ -580,7 +581,7 @@ const Doctor = () => {
                         </div>
 
                         {/* Emergency Fee */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="emergencyfee">Emergency Fee</label>
                           <input
                             type="text"
@@ -590,11 +591,12 @@ const Doctor = () => {
                             value={formData.emergencyfee}
                             onChange={handleChange}
                             placeholder="Enter Emergency Fee"
+                            required
                           />
                         </div>
 
                         {/* Revisit Fee After */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="revisitfeeafter">Revisit Fee After</label>
                           <input
                             type="text"
@@ -608,7 +610,7 @@ const Doctor = () => {
                         </div>
 
                         {/* Visit Schedule */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="visitschedule">Visit Schedule</label>
                           <input
                             type="text"
@@ -622,7 +624,7 @@ const Doctor = () => {
                         </div>
 
                         {/* Time Per Patient (Minute) */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="tpp">Time Per Patient (Minute)</label>
                           <input
                             type="text"
@@ -636,7 +638,7 @@ const Doctor = () => {
                         </div>
 
                         {/* Patient Per Day */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           
                           <label htmlFor="ppd">Patient Per Day</label>
                           <input
@@ -651,7 +653,7 @@ const Doctor = () => {
                         </div>
 
                         {/* Header (Pad) */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="headerpad">Header (Pad)</label>
                           <textarea
                             className="form-control"
@@ -665,7 +667,7 @@ const Doctor = () => {
                         </div>
 
                         {/* Footer */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="footer">Footer</label>
                           <textarea
                             className="form-control"
@@ -679,7 +681,7 @@ const Doctor = () => {
                         </div>
 
                         {/* Footer Height */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="footerheight">Footer Height</label>
                           <input
                             type="number"
@@ -693,7 +695,7 @@ const Doctor = () => {
                         </div>
 
                         {/* Profile */}
-                        <div className="col-6 form-group">
+                        <div className="col-3 form-group">
                           <label htmlFor="profile">Profile</label>
                           <input
                             type="text"

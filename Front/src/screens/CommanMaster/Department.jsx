@@ -258,7 +258,7 @@ const Department = () => {
                   <div className="card-body">
                     <form className="forms-sample" onSubmit={handleSubmit}>
                       <div className="form-group row">
-                        <div className="col-6 mt-3">
+                        <div className="col-4 mt-3">
                           <label htmlFor="departmentname">Department Name</label>
                           <input
                             type="text"
@@ -272,7 +272,7 @@ const Department = () => {
                           />
                         </div>
 
-                        <div className="col-6 mt-3">
+                        <div className="col-4 mt-3">
                           <label htmlFor="usein">Use in</label>
                           <select
                             className="form-control"
@@ -290,7 +290,7 @@ const Department = () => {
                           </select>
                         </div>
 
-                        <div className="col-6 mt-3">
+                        <div className="col-4 mt-3">
                           <label htmlFor="order">Order</label>
                           <input
                             type="text"

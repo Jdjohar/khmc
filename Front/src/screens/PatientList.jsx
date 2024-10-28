@@ -96,7 +96,7 @@ const PatientList = () => {
                         <div className="row">
                             <div className="col-12 grid-margin stretch-card">
                                 <div className="card">
-                                    <div className="card-body">
+                                    <div className="card-body" style={{minHeight:"600px"}}>
                                         <h4 className="card-title">Patient List</h4>
                                         <div className="table-responsive">
                                             <table className="table">
@@ -151,7 +151,7 @@ const PatientList = () => {
                                                                         aria-labelledby={`dropdownMenuButton${patient._id}`}
                                                                     >
                                                                         <div className="row">
-                                                                            <div className="col-lg-4">
+                                                                            <div className="col-lg-12">
                                                                                 <Link to={patient?.documents[2]?.url || '#'} target="_blank" rel="noopener noreferrer" className="dropdown-item text-dark text-decoration-none">
                                                                                     <li>Print Bill</li>
                                                                                 </Link>
@@ -160,8 +160,11 @@ const PatientList = () => {
                                                                                     <li>Print Prescription</li>
                                                                                 </Link>
 
-                                                                                <li className="dropdown-item">Lab</li>
+                                                                                
 
+                                                                                <Link to={`/master/labLogsP/${patient._id}`} className="dropdown-item text-dark text-decoration-none">
+                                                                                    <li>Lab</li>
+                                                                                </Link>
                                                                                 <Link to={`/master/labentry/${patient._id}`} className="dropdown-item text-dark text-decoration-none">
                                                                                     <li>Ultra Sound</li>
                                                                                 </Link>
@@ -169,14 +172,12 @@ const PatientList = () => {
                                                                                 <Link to={`/master/patientEdit/${patient._id}`} className="dropdown-item text-dark text-decoration-none">
                                                                                     <li>Edit</li>
                                                                                 </Link>
-                                                                            </div>
-
-                                                                            <div className="col-lg-4">
                                                                                 <li className="dropdown-item" onClick={() => handleDelete(patient._id)}>Delete</li>
                                                                                 <li className="dropdown-item">Ladger Daycare Bill</li>
                                                                                 <li className="dropdown-item">WhatsApp Bill & Prescription</li>
-
                                                                             </div>
+
+                                                                            
 
                                                                         </div>
                                                                     </ul>

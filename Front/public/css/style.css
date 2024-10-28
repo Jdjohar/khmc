@@ -23534,8 +23534,8 @@ code {
   box-shadow: 0px 1px 15px 1px rgba(230, 234, 236, 0.35);
 }
 .dropdown .dropdown-menu .dropdown-item {
-  font-size: 1rem;
-  padding: 0.25rem 1.5rem;
+  font-size: 12px;
+  padding: 0.1rem 1.5rem;
 }
 .dropdown .dropdown-menu .dropdown-item:active {
   background: initial;
@@ -23813,7 +23813,7 @@ dl {
 ul li,
 ol li,
 dl li {
-  line-height: 1.8;
+  line-height: 1.4;
 }
 
 .list-ticked,
