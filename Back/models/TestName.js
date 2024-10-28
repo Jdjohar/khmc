@@ -4,15 +4,15 @@ const { Schema } = mongoose;
 const TestDetailSchema = new Schema({
     Investigation: {
         type: String,
-        required: true // This field is required
+        required: false // This field is required
     },
     Result: {
         type: String,
-        required: true // This field is required
+        required: false // This field is required
     },
     Unit: {
         type: String,
-        required: true // This field is required
+        required: false // This field is required
     },
     NormalRange: {}
 });
