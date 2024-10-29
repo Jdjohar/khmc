@@ -15,10 +15,47 @@ const LablogResultP = () => {
     const [error, setError] = useState(null); // For error state
     const [updatedResults, setUpdatedResults] = useState({}); // To store updated results for each test
     const [prescriptionPdfUrl, setPrescriptionPdfUrl] = useState('');
-
+    const [billPdfUrl, setBillPdfUrl] = useState('');
+    const [BillNumber, setBillNumber] = useState('')
     // Fetch lab entry and then fetch the test details
     useEffect(() => {
+        const billnogen = async () => {
+            try {
+                // Fetch existing bills to determine the latest billNo
+                const billsResponse = await fetch('https://khmc-xdlm.onrender.com/api/labtestbills');
+                if (!billsResponse.ok) {
+                    throw new Error('Failed to fetch existing bills');
+                }
+
+                const billsData = await billsResponse.json();
+                console.log(billsData, "billsData");
+
+
+                // Find the latest billNo
+                let latestBillNo = 50; // Default starting number
+                if (billsData.length > 0) {
+                    // Filter and convert billNo to integers, ignoring invalid values
+                    const billNumbers = billsData
+                        .map(bill => parseInt(bill.billNo, 10)) // Convert to integer
+                        .filter(billNo => !isNaN(billNo)); // Keep only valid numbers
+
+                    if (billNumbers.length > 0) {
+                        latestBillNo = Math.max(...billNumbers); // Get the maximum valid bill number
+                    }
+                }
+                console.log(latestBillNo, "latestBillNo");
+
+                const nextBillNo = latestBillNo + 1; // Next bill number
+                setBillNumber(nextBillNo)
+
+            } catch (error) {
+
+            }
+
+        }
         const fetchResultEntryP = async () => {
+            console.log(id, "FetchResult");
+
             try {
                 console.log("Fetching test result data...");
                 const testEntryResponse = await fetch(`https://khmc-xdlm.onrender.com/api/testResultP/${id}`);
@@ -29,7 +66,6 @@ const LablogResultP = () => {
                     setLoading(false);
                     return;
                 }
-
                 const TestEntryData = await testEntryResponse.json();
                 console.log("TestEntryData received:", TestEntryData);
 
@@ -38,6 +74,7 @@ const LablogResultP = () => {
                     console.log(TestEntryData, "Test result data found, setting test details.");
                     setTestDetail(TestEntryData[0].result);
                     setPrescriptionPdfUrl(TestEntryData[0].documents[0].url);
+                    setBillPdfUrl(TestEntryData[0].documents[1].url);
 
                     setLoading(false);
                 } else {
@@ -50,7 +87,6 @@ const LablogResultP = () => {
                 setLoading(false);
             }
         };
-
         const fetchLabEntriesAndTestDetails = async () => {
             try {
                 console.log("Fetching lab entry details...");
@@ -93,13 +129,9 @@ const LablogResultP = () => {
                 setLoading(false);
             }
         };
-
+        billnogen();
         fetchResultEntryP(); // Initiate the fetch process
-
     }, [id]);
-
-
-
     // Handle input change for test results
     const handleInputChange = (testId, detailId, newValue) => {
         setUpdatedResults((prevState) => ({
@@ -110,14 +142,11 @@ const LablogResultP = () => {
             }
         }));
     };
-
     const isValueOutOfRange = (value, normalRange) => {
         if (value === "" || normalRange.start === undefined || normalRange.end === undefined) return false; // Ensure safe comparison
         const numericValue = parseFloat(value);
         return numericValue < normalRange.start || numericValue > normalRange.end;
     };
-
-
     const uploadPdfToCloudinary = async (pdfBlob, fileName) => {
         const formData = new FormData();
         formData.append('file', pdfBlob, fileName); // PDF as Blob
@@ -140,10 +169,8 @@ const LablogResultP = () => {
             throw error;
         }
     };
-
     const generatePrescriptionPdf = (value) => {
         const doc = new jsPDF();
-
         // Add 60px space from the top
         const topMargin = 60;
         const bottomMargin = 20; // Bottom margin to leave space at the bottom
@@ -265,16 +292,108 @@ const LablogResultP = () => {
                 doc.text("No details available", leftStart, currentY);
                 currentY += lineHeight;
             }
-
             currentY += 5; // Add space after each test block for better readability
         });
 
-
-
-        // Return Blob for Cloudinary upload
         return doc.output('blob');
     };
+    const createLabTestBill = async (patientData, tests) => {
+        console.log(patientData, "jsdkjdffd dfklldfn fdf");
+        console.log(tests, "jsdksdf");
+        
+        setLoading(true);
 
+        try {
+        
+            // Prepare bill details
+            const total = tests.reduce((sum, test) => sum + test.Rate, 0);
+            const billDetails = {
+                patientId: patientData._id,
+                billNo: BillNumber,
+                patientName: patientData.patientName,
+                mobile: patientData.mobile,
+                email: patientData.email || '',
+                total: total,
+                received: patientData.received || total, // Received amount if available, otherwise total
+                refund: patientData.refund || 0,
+                discount: patientData.discount || 0,
+                paymentType: patientData.payment || 0,
+                tests: patientData.tests,
+                date: new Date(),
+               
+            };
+
+            // Send bill to labtestbills API
+            const response = await fetch('https://khmc-xdlm.onrender.com/api/labtestbills', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(billDetails)
+            });
+
+            if (!response.ok) {
+                const errorMessage = await response.text();
+                throw new Error(`Failed to create bill: ${errorMessage}`);
+            }
+
+            console.log('Bill created and uploaded to Cloudinary successfully!');
+        } catch (error) {
+            console.error('Error creating lab test bill:', error);
+            alert(`Error: ${error.message}`);
+        } finally {
+            setLoading(false);
+        }
+    };
+    const generateLabTestBillPdf = (patientData, tests) => {
+        console.log(tests, "tests");
+        console.log(patientData, "patientData");
+
+        const doc = new jsPDF();
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const centerX = pageWidth / 2;
+
+        // Header
+        doc.setFontSize(14).setFont('bold');
+        doc.text('KAISHVI HEALTH & MATERNITY CENTRE', centerX, 20, { align: 'center' });
+        doc.setFontSize(10).setFont('normal');
+        doc.text('Nehru Nagar, Ward No.:1, Pharenda Road, Maharajganj (U.P.)', centerX, 28, { align: 'center' });
+
+        // Patient Info
+        let currentY = 50;
+        doc.text(`Patient Name: ${patientData.patientName}`, 10, currentY);
+        doc.text(`Bill No: ${BillNumber}`, 150, currentY); // Adjust alignment for right
+        currentY += 10;
+        doc.text(`Age/Gender: ${patientData.age}/${patientData.gender}`, 10, currentY);
+        doc.text(`Date: ${new Date().toLocaleDateString()}`, 150, currentY);
+        currentY += 20;
+
+        // Table Header
+        doc.setFillColor(200, 200, 200);
+        doc.rect(10, currentY, pageWidth - 20, 7, 'F');
+        doc.setFont('bold');
+        doc.text('S/No', 12, currentY + 5);
+        doc.text('Test Name', 30, currentY + 5);
+        doc.text('Rate', 100, currentY + 5);
+        doc.text('Amount', 150, currentY + 5);
+        currentY += 10;
+
+        // Lab Test Rows
+        doc.setFont('normal');
+        let totalAmount = 0;
+        tests.forEach((test, index) => {
+            const amount = test.Rate;
+            doc.text(`${index + 1}`, 12, currentY);
+            doc.text(test.TestName, 30, currentY);
+            doc.text(`${test.Rate}`, 100, currentY);
+            doc.text(`${amount}`, 150, currentY);
+            totalAmount += amount;
+            currentY += 10;
+        });
+
+        // Total
+        doc.setFont('bold');
+        doc.text(`Total: ${totalAmount}`, 150, currentY);
+        return doc.output('blob'); // Return as blob for Cloudinary
+    };
 
     const handleSubmit = async () => {
         const result = testDetail.map(test => {
@@ -296,26 +415,39 @@ const LablogResultP = () => {
             documents: [],
         };
 
-        console.log(JSON.stringify(jsonOutput, null, 2)); // For demonstration, logs the output
+        console.log("JSON output for test result:", JSON.stringify(jsonOutput, null, 2));
 
-        // Generate the PDF
-        const pdfBlob = generatePrescriptionPdf(PatienttestDetail);
+        // Generate the Test Report PDF
+        const prescriptionPdfBlob = generatePrescriptionPdf(PatienttestDetail);
+        const billPdfBlob = generateLabTestBillPdf(PatienttestDetail, testDetail);
 
         try {
-            // Upload PDF to Cloudinary
-            const pdfUrl = await uploadPdfToCloudinary(pdfBlob, `prescription_${id}.pdf`);
-            setPrescriptionPdfUrl(pdfUrl);
+            // Upload Test Report PDF to Cloudinary
+            const prescriptionPdfUrl = await uploadPdfToCloudinary(prescriptionPdfBlob, `prescription_${id}.pdf`);
+            setPrescriptionPdfUrl(prescriptionPdfUrl);
 
             jsonOutput.documents.push({
-                url: pdfUrl,
+                url: prescriptionPdfUrl,
                 documentType: 'pathologyTestReport',
                 uploadedAt: new Date(),
             });
 
-            console.log('Final JSON Output:', JSON.stringify(jsonOutput, null, 2)); // Final output after PDF upload
+            console.log("Prescription PDF uploaded:", prescriptionPdfUrl);
 
-            // First, submit the form data with a POST request
-            const response = await fetch('https://khmc-xdlm.onrender.com/api/testResultP', { // Corrected the URL
+            // Upload Bill PDF to Cloudinary
+            const billPdfUrl = await uploadPdfToCloudinary(billPdfBlob, `bill_${id}.pdf`);
+            setBillPdfUrl(billPdfUrl);
+
+            jsonOutput.documents.push({
+                url: billPdfUrl,
+                documentType: 'billReceipt',
+                uploadedAt: new Date(),
+            });
+
+            console.log("Bill PDF uploaded:", billPdfUrl);
+
+            // Submit the test result data with a POST request
+            const response = await fetch('https://khmc-xdlm.onrender.com/api/testResultP', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -329,38 +461,110 @@ const LablogResultP = () => {
                 console.log("After submission:", newTest);
 
                 // Now, send the PUT request to update the result field after successful POST
-                const updateResult = await fetch(`https://khmc-xdlm.onrender.com/api/UpdateResultlabEntry/${id}`, { // Corrected the URL
+                const updateResult = await fetch(`https://khmc-xdlm.onrender.com/api/UpdateResultlabEntry/${id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ result: true }) // Update 'result' to true
+                    body: JSON.stringify({ result: true, documents:jsonOutput.documents })
                 });
 
                 if (updateResult.ok) {
                     alert('Result Value updated successfully!');
+                    createLabTestBill(PatienttestDetail, testDetail)
                     console.log('Result updated successfully.');
-
-                    // Optionally redirect or refresh
-                    // navigate('/master/testlist') 
                 } else {
                     alert('Failed to update lab entry result.');
                     console.error('Error updating result:', await updateResult.text());
                 }
             } else {
-                alert('Failed to submit comment data');
+                alert('Failed to submit test result data');
                 console.error('Error submitting form data:', await response.text());
             }
-
         } catch (error) {
             console.error("Error during PDF upload:", error);
         }
     };
 
+    // const handleSubmit = async () => {
+    //     const result = testDetail.map(test => {
+    //         return {
+    //             TestName: test.TestName || "N/A",
+    //             testDetails: Array.isArray(test.testDetails) ? test.testDetails.map(detail => ({
+    //                 Investigation: detail.Investigation || "N/A",
+    //                 Result: updatedResults[test._id]?.[detail._id] || detail.Result || "",
+    //                 Unit: detail.Unit || "N/A",
+    //                 NormalRange: { start: detail.NormalRange.start, end: detail.NormalRange.end } || "N/A",
+    //             })) : [],
+    //             id: test._id,
+    //         };
+    //     });
+
+    //     const jsonOutput = {
+    //         TestlablogId: id,
+    //         result: result,
+    //         documents: [],
+    //     };
+
+    //     console.log(JSON.stringify(jsonOutput, null, 2)); // For demonstration, logs the output
+
+    //     // Generate the PDF
+    //     const pdfBlob = generatePrescriptionPdf(PatienttestDetail);
+
+    //     try {
+    //         // Upload PDF to Cloudinary
+    //         const pdfUrl = await uploadPdfToCloudinary(pdfBlob, `prescription_${id}.pdf`);
+    //         setPrescriptionPdfUrl(pdfUrl);
+
+    //         jsonOutput.documents.push({
+    //             url: pdfUrl,
+    //             documentType: 'pathologyTestReport',
+    //             uploadedAt: new Date(),
+    //         });
+
+    //         console.log('Final JSON Output:', JSON.stringify(jsonOutput, null, 2)); // Final output after PDF upload
+
+    //         // First, submit the form data with a POST request
+    //         const response = await fetch('https://khmc-xdlm.onrender.com/api/testResultP', { // Corrected the URL
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json'
+    //             },
+    //             body: JSON.stringify(jsonOutput, null, 2)
+    //         });
+
+    //         if (response.ok) {
+    //             const newTest = await response.json();
+    //             alert('Result submitted successfully!');
+    //             console.log("After submission:", newTest);
+
+    //             // Now, send the PUT request to update the result field after successful POST
+    //             const updateResult = await fetch(`https://khmc-xdlm.onrender.com/api/UpdateResultlabEntry/${id}`, { // Corrected the URL
+    //                 method: 'PUT',
+    //                 headers: {
+    //                     'Content-Type': 'application/json',
+    //                 },
+    //                 body: JSON.stringify({ result: true }) // Update 'result' to true
+    //             });
+
+    //             if (updateResult.ok) {
+    //                 alert('Result Value updated successfully!');
+    //                 console.log('Result updated successfully.');
+    //             } else {
+    //                 alert('Failed to update lab entry result.');
+    //                 console.error('Error updating result:', await updateResult.text());
+    //             }
+    //         } else {
+    //             alert('Failed to submit comment data');
+    //             console.error('Error submitting form data:', await response.text());
+    //         }
+    //     } catch (error) {
+    //         console.error("Error during PDF upload:", error);
+    //     }
+    // };
     return (
         <>
             <Topbar />
-
             <div className="container-fluid p-0 page-body-wrapper">
                 <div className="main-panel">
                     <div className="content-wrapper">
@@ -372,7 +576,6 @@ const LablogResultP = () => {
                                 Pathology Result Report
                             </h3>
                         </div>
-
                         <div className="row">
                             <div className="card">
                                 <div className="card-body">
@@ -446,21 +649,9 @@ const LablogResultP = () => {
                                             </tbody>
                                         </table>
                                     )}
-
-                                    {/* Submit button to save the updated results */}
-
-
-                                    {prescriptionPdfUrl
-                                        ?
-                                        ''
-                                        :
-                                        <button onClick={handleSubmit} className="btn btn-primary mt-4">
-                                        Update Results
-                                    </button>
+                                    {prescriptionPdfUrl ? '' : <button onClick={handleSubmit} className="btn btn-primary mt-4"> Update Results </button>
                                     }
-
-
-                                    
+                                    {billPdfUrl && <a className="btn btn-primary mt-4" href={billPdfUrl} target="_blank" rel="noopener noreferrer">Print Bill Result</a>}
                                     {prescriptionPdfUrl && <a className="btn btn-primary mt-4" href={prescriptionPdfUrl} target="_blank" rel="noopener noreferrer">Print Result</a>}
                                 </div>
                             </div>
@@ -471,5 +662,4 @@ const LablogResultP = () => {
         </>
     );
 };
-
 export default LablogResultP;

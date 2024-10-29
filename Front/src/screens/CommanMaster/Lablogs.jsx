@@ -11,7 +11,7 @@ const labentrys = () => {
     sno: '',
     labId: '',
     patientName: '',
-    TestType:'Radiology',
+    testType:'Radiology',
     careofstatus: '',
     careofName: '',
     address: '',

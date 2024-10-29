@@ -109,7 +109,21 @@ const LabSchema = new Schema({
     tests: [{
         type: String,
         required: false
-    }]
+    }],
+    documents: [{
+        url: {
+            type: String,
+            required: false
+        },
+        documentType: {
+            type: String,  // E.g., 'prescription', 'token', etc.
+            required: false
+        },
+        uploadedAt: {
+            type: Date,
+            default: Date.now
+        }
+    }],
 
 })
 

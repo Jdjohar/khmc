@@ -28,6 +28,7 @@ const Reffby = require('../models/Reffby')
 const Ward = require('../models/Ward')
 const Bed = require('../models/Bed')
 const Bill = require('../models/Receipts')
+const LabTestBill = require('../models/LabTestBills')
 const Plog = require('../models/Plog')
 const crypto = require('crypto');
 const bodyParser = require('body-parser');
@@ -1024,7 +1025,7 @@ router.get('/testResult', async (req, res) => {
 // READ a single religion by ID (GET)
 router.get('/testResult/:id', async (req, res) => {
     try {
-        const testResult = await TestResult.find({ TestId: req.params.id });
+        const testResult = await TestResult.find({ TestlablogId: req.params.id });
         if (!testResult) {
             return res.status(404).json({ message: 'testResult not found' });
         }
@@ -1091,9 +1092,9 @@ router.get('/testResultP', async (req, res) => {
 // READ a single religion by ID (GET)
 router.get('/testResultP/:id', async (req, res) => {
     try {
-        const testResult = await TestResultP.find({ TestId: req.params.id });
+        const testResult = await TestResultP.find({ TestlablogId: req.params.id });
         if (!testResult) {
-            return res.status(404).json({ message: 'testResult not found' });
+            return res.status(404).json({ message: 'test Result not found' });
         }
         res.status(200).json(testResult);
     } catch (err) {
@@ -1269,28 +1270,38 @@ router.put('/labentry/:id', async (req, res) => {
 //update only result field
 router.put('/UpdateResultlabEntry/:id', async (req, res) => {
     try {
-        // Only extract the 'result' field from the request body
-        const { result } = req.body;
+        // Extract 'result' and 'documents' fields from the request body
+        const { result, documents } = req.body;
 
         // Check if result is provided in the request
         if (result === undefined) {
             return res.status(400).json({ message: 'Result field is required' });
         }
 
-        // Update only the 'result' field
+        // Prepare the update object
+        const updateData = { result };
+
+        // If documents are provided, include them in the update object
+        if (documents) {
+            updateData.documents = documents;
+        }
+
+        // Update the document in the database
         const updatedlabentry = await Labentry.findByIdAndUpdate(
             req.params.id,
-            { result }, // Update only the result field
+            updateData, // Update result and documents fields
             {
                 new: true, // Return the updated document
                 runValidators: true // Ensure the data is valid
             }
         );
 
+        // Check if the lab entry was found and updated
         if (!updatedlabentry) {
-            return res.status(404).json({ message: 'Labentry not found' });
+            return res.status(404).json({ message: 'Lab entry not found' });
         }
 
+        // Respond with the updated lab entry
         res.status(200).json(updatedlabentry);
     } catch (err) {
         res.status(400).json({ error: err.message });
@@ -1806,6 +1817,66 @@ router.put('/bills/:id', async (req, res) => {
 router.delete('/bills/:id', async (req, res) => {
     try {
         const deletedBill = await Bill.findByIdAndDelete(req.params.id);
+        if (!deletedBill) {
+            return res.status(404).json({ error: 'Bill not found' });
+        }
+        res.status(200).json({ message: 'Bill deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Create a new TestLabbill (receipt)
+router.post('/labtestbills', async (req, res) => {
+    try {
+        const newBill = new LabTestBill(req.body);  // Create a new instance of Bill with request data
+        const savedBill = await newBill.save();  // Save the bill to the database
+        res.status(201).json(savedBill);  // Send back the saved bill
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Get all bills
+router.get('/labtestbills', async (req, res) => {
+    try {
+        const bills = await LabTestBill.find();  // Fetch all bills, populate patient details
+        res.status(200).json(bills);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get a single bill by ID
+router.get('/labtestbills/:id', async (req, res) => {
+    try {
+        const bill = await LabTestBill.findById(req.params.id).populate('patientId');
+        if (!bill) {
+            return res.status(404).json({ error: 'Bill not found' });
+        }
+        res.status(200).json(bill);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Update a bill by ID
+router.put('/labtestbills/:id', async (req, res) => {
+    try {
+        const updatedBill = await LabTestBill.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!updatedBill) {
+            return res.status(404).json({ error: 'Bill not found' });
+        }
+        res.status(200).json(updatedBill);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Delete a bill by ID
+router.delete('/labtestbills/:id', async (req, res) => {
+    try {
+        const deletedBill = await LabTestBill.findByIdAndDelete(req.params.id);
         if (!deletedBill) {
             return res.status(404).json({ error: 'Bill not found' });
         }

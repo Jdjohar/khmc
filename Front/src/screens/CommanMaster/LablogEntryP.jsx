@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react'
-
+import React, { useState, useEffect } from 'react';
 import Topbar from '../component/TopNavBar';
 import { Link } from 'react-router-dom';
 
 const LablogEntryP = () => {
-
     const [LabEntries, setLabentries] = useState([]);
     const [loading, setLoading] = useState(true); // For loading state
-
+    const [testNames, setTestNames] = useState({}); // For storing test ID to TestName mapping
+    const [testResults, setTestResults] = useState({}); // Store results for each entry
 
     // Fetch test data from API and create a map of test IDs to test names
     const fetchTestNames = async () => {
@@ -27,9 +26,6 @@ const LablogEntryP = () => {
         }
     };
 
-    const [testNames, setTestNames] = useState({}); // For storing test ID to TestName mapping
-
-
     // Fetch data from the API when the component is mounted
     useEffect(() => {
         const fetchLabEntries = async () => {
@@ -40,8 +36,13 @@ const LablogEntryP = () => {
 
                 // Filter entries with TestType equal to "Pathology"
                 const filteredEntries = data.filter(entry => entry.testType === "Pathology");
+               console.log(filteredEntries,"filteredEntries");
+               
                 setLabentries(filteredEntries); // Set the filtered response data in the LabEntries state
                 setLoading(false); // Stop the loading state
+
+                // Fetch results for each entry
+                await fetchResultsForEntries(filteredEntries);
             } catch (error) {
                 console.error("Error fetching data:", error);
                 setLoading(false); // Stop the loading even in case of error
@@ -52,12 +53,24 @@ const LablogEntryP = () => {
         fetchTestNames();
     }, []); // Empty dependency array to run only once
 
-    // If still loading, show a loading message
-    if (loading) {
-        return <p>Loading...</p>;
-    }
+    const fetchResultsForEntries = async (entries) => {
+        const results = {};
+        await Promise.all(entries.map(async (entry) => {
+            try {
+                const response = await fetch(`https://khmc-xdlm.onrender.com/api/testResultP/${entry._id}`);
+                const resultData = await response.json();
+                results[entry._id] = resultData;
+                console.log(resultData,"resultData");
+                
+            } catch (error) {
+                console.error("Error fetching test result for entry:", entry._id, error);
+            }
+        }));
+        setTestResults(results);
+    };
+
     const handleDelete = async (id) => {
-        console.log(id,"Delete operation triggered");
+        console.log(id, "Delete operation triggered");
 
         try {
             // Make a DELETE request to the API
@@ -82,11 +95,15 @@ const LablogEntryP = () => {
         }
     };
 
+    // If still loading, show a loading message
+    if (loading) {
+        return <p>Loading...</p>;
+    }
+
     return (
         <>
             <Topbar />
             <div className="container-fluid p-0 page-body-wrapper">
-                {/* <SideNavbar /> */}
                 <div className="main-panel">
                     <div className="content-wrapper">
                         <div className="page-header">
@@ -108,7 +125,8 @@ const LablogEntryP = () => {
                         <div className="row">
                             <div className="col-12 grid-margin stretch-card">
                                 <div className="card">
-                                    <div className="card-body">
+                                    <div className="card-body"  style={{ minHeight: "600px" }}>
+
                                         <h4 className="card-title">Lab Test List</h4>
                                         <div className="table-responsive">
                                             <table className="table">
@@ -124,82 +142,59 @@ const LablogEntryP = () => {
                                                         <th>Mobile No</th>
                                                         <th>Test Name</th>
                                                         <th>City</th>
-
                                                     </tr>
                                                 </thead>
                                                 <tbody id="patient-table-body">
-                                                    {console.log(LabEntries, "LabEntries")
-                                                    }
                                                     {LabEntries.map((labtest) => (
                                                         <tr key={labtest._id}>
                                                             <td>
                                                                 {/* Dropdown menu */}
                                                                 <div className="dropdown">
-                                                                    {labtest.result == false
-                                                                        ?
-                                                                        <i
-                                                                            className="mdi mdi-menu bg-warning"
-                                                                            type="button"
+                                                                    {labtest.result === false
+                                                                        ? <i className="mdi mdi-menu bg-warning" type="button"
                                                                             id={`dropdownMenuButton${labtest._id}`}
                                                                             data-bs-toggle="dropdown"
                                                                             aria-expanded="false"
-                                                                            style={{ cursor: "pointer" }}
-                                                                        >
-                                                                            {/* Menu Icon */}
+                                                                            style={{ cursor: "pointer" }}>
                                                                         </i>
-                                                                        :
-                                                                        <i
-                                                                            className="mdi mdi-menu"
-                                                                            type="button"
+                                                                        : <i className="mdi mdi-menu" type="button"
                                                                             id={`dropdownMenuButton${labtest._id}`}
                                                                             data-bs-toggle="dropdown"
                                                                             aria-expanded="false"
-                                                                            style={{ cursor: "pointer" }}
-                                                                        >
-                                                                            {/* Menu Icon */}
+                                                                            style={{ cursor: "pointer" }}>
                                                                         </i>
                                                                     }
 
-                                                                    <ul
-                                                                        className="dropdown-menu mega-menu1"
-                                                                        aria-labelledby={`dropdownMenuButton${labtest._id}`}
-                                                                    >
+                                                                    <ul className="dropdown-menu mega-menu1" aria-labelledby={`dropdownMenuButton${labtest._id}`}>
                                                                         <div className="row">
                                                                             <div className="col-12">
-
                                                                                 <li className="dropdown-item" onClick={() => handleDelete(labtest._id)}>
                                                                                     Delete
                                                                                 </li>
-                                                                                {/* <li className="dropdown-item">
-                                                                                    <Link to={`/master/testEdit/${labtest._id}`}
-                                                                                        className="text-dark text-decoration-none" > Edit </Link>
-                                                                                </li> */}
-                                                                                {/* <li className="dropdown-item">Comment</li> */}
                                                                                 <li className="dropdown-item">
                                                                                     <Link to={`/master/LablogResultp/${labtest._id}`}
-                                                                                        className="text-dark text-decoration-none" >  Result Entry </Link>
-
+                                                                                        className="text-dark text-decoration-none">Result Entry</Link>
+                                                                                </li>
+                                                                               
+                                                                                <li className="dropdown-item">
+                                                                                    <Link to={labtest?.documents[0]?.url || '#'}
+                                                                                        target="_blank"
+                                                                                        className="text-dark text-decoration-none">Report Print</Link>
                                                                                 </li>
                                                                                 <li className="dropdown-item">
                                                                                     <Link to={`/master/LablogResultp/${labtest._id}`}
-                                                                                        className="text-dark text-decoration-none" > Report Print </Link>
+                                                                                        className="text-dark text-decoration-none">Show Result</Link>
                                                                                 </li>
                                                                                 <li className="dropdown-item">
-                                                                                    <Link to={`/master/testComment/${labtest._id}`}
-                                                                                        className="text-dark text-decoration-none" > Show Result </Link>
+                                                                                    <Link to={labtest?.documents[1]?.url || '#'}
+                                                                                        className="text-dark text-decoration-none">Receipt</Link>
                                                                                 </li>
-                                                                                <li className="dropdown-item">
-                                                                                    <Link to={`/master/testComment/${labtest._id}`}
-                                                                                        className="text-dark text-decoration-none" >Receipt </Link>
-                                                                                </li>
-
                                                                             </div>
-
-
                                                                         </div>
                                                                     </ul>
                                                                 </div>
                                                             </td>
+                                                            <td>{labtest._id}</td>
                                                             <td>{labtest.sno}</td>
                                                             <td>{labtest.date}</td>
                                                             <td>{labtest.labReg}</td>
@@ -209,26 +204,24 @@ const LablogEntryP = () => {
                                                             <td>{labtest.mobile}</td>
                                                             <td>
                                                                 {labtest.tests.map((testId, index) => (
-                                                                    <p key={index}>{testNames[testId] || 'Unknown Test'}</p> // Display test name, or 'Unknown Test' if not found
+                                                                    <p key={index}>{testNames[testId] || 'Unknown Test'}</p>
                                                                 ))}
                                                             </td>
                                                             <td>{labtest.city}</td>
-
                                                         </tr>
                                                     ))}
                                                 </tbody>
                                             </table>
-                                        </div></div>
+                                        </div>
+                                    </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </>
-
     )
 }
 
-export default LablogEntryP
+export default LablogEntryP;

@@ -7,7 +7,25 @@ const LablogEntry = () => {
 
     const [LabEntries, setLabentries] = useState([]);
     const [loading, setLoading] = useState(true); // For loading state
+    const [testNames, setTestNames] = useState({}); 
 
+    const fetchTestNames = async () => {
+        try {
+            const response = await fetch("https://khmc-xdlm.onrender.com/api/testName");
+            const testData = await response.json();
+
+            // Create a mapping of test _id to TestName
+            const testNameMap = {};
+            testData.forEach(test => {
+                testNameMap[test._id] = test.TestName;
+            });
+
+            setTestNames(testNameMap);
+        } catch (error) {
+            console.error("Error fetching test names:", error);
+        }
+    };
+    
     // Fetch data from the API when the component is mounted
     useEffect(() => {
         const fetchLabEntries = async () => {
@@ -27,8 +45,33 @@ const LablogEntry = () => {
         };
 
         fetchLabEntries(); // Call the function
+        fetchTestNames(); // Call the function
     }, []); // Empty dependency array to run only once
+    const handleDelete = async (id) => {
+        console.log(id, "Delete operation triggered");
 
+        try {
+            // Make a DELETE request to the API
+            const response = await fetch(`https://khmc-xdlm.onrender.com/api/labentry/${id}`, {
+                method: 'DELETE',
+            });
+
+            const data = await response.json();
+            console.log(data, "Response from delete operation");
+
+            if (data.success) {
+                // Update the state to remove the deleted patient
+                setLabentries((prevEntries) => prevEntries.filter((entry) => entry._id !== id));
+                alert("Test successfully deleted!");
+            } else {
+                alert("Failed to delete the patient. Please try again.");
+            }
+
+        } catch (error) {
+            console.error("Error deleting patient:", error);
+            alert("An error occurred while deleting the patient.");
+        }
+    };
     // If still loading, show a loading message
     if (loading) {
         return <p>Loading...</p>;
@@ -60,7 +103,7 @@ const LablogEntry = () => {
                         <div className="row">
                             <div className="col-12 grid-margin stretch-card">
                                 <div className="card">
-                                    <div className="card-body">
+                                    <div className="card-body" style={{ minHeight: "600px" }}>
                                         <h4 className="card-title">labtest List</h4>
                                         <div className="table-responsive">
                                             <table className="table">
@@ -119,27 +162,29 @@ const LablogEntry = () => {
                                                                         <div className="row">
                                                                             <div className="col-12">
 
-                                                                                <li className="dropdown-item">Delete</li>
-                                                                                <li className="dropdown-item">
+                                                                            <li className="dropdown-item" onClick={() => handleDelete(labtest._id)}>
+                                                                                    Delete
+                                                                                </li>
+                                                                                {/* <li className="dropdown-item">
                                                                                     <Link to={`/master/testEdit/${labtest._id}`}
                                                                                         className="text-dark text-decoration-none" > Edit </Link>
-                                                                                </li>
-                                                                                <li className="dropdown-item">Comment</li>
+                                                                                </li> */}
+                                                                              
                                                                                 <li className="dropdown-item">
                                                                                     <Link to={`/master/LablogResult/${labtest._id}`}
                                                                                         className="text-dark text-decoration-none" >  Result Entry </Link>
 
                                                                                 </li>
                                                                                 <li className="dropdown-item">
-                                                                                    <Link to={`/master/LablogResult/${labtest._id}`}
+                                                                                    <Link to={labtest?.documents[0]?.url || '#'}
                                                                                         className="text-dark text-decoration-none" > Report Print </Link>
                                                                                 </li>
                                                                                 <li className="dropdown-item">
-                                                                                    <Link to={`/master/testComment/${labtest._id}`}
+                                                                                    <Link to={`/master/LablogResult/${labtest._id}`}
                                                                                         className="text-dark text-decoration-none" > Show Result </Link>
                                                                                 </li>
                                                                                 <li className="dropdown-item">
-                                                                                    <Link to={`/master/testComment/${labtest._id}`}
+                                                                                    <Link to={labtest?.documents[1]?.url || '#'}
                                                                                         className="text-dark text-decoration-none" >Receipt </Link>
                                                                                 </li>
 
@@ -157,7 +202,11 @@ const LablogEntry = () => {
                                                             <td>{labtest.category}</td>
                                                             <td>{labtest.age}</td>
                                                             <td>{labtest.mobile}</td>
-                                                            <td>{labtest.tests[0]._id}</td>
+                                                            <td>
+                                                                {labtest.tests.map((testId, index) => (
+                                                                    <p key={index}>{testNames[testId] || 'Unknown Test'}</p>
+                                                                ))}
+                                                            </td>
                                                             <td>{labtest.city}</td>
 
                                                         </tr>

@@ -519,41 +519,40 @@ const getCurrentDateTime = () => {
         doc.setFontSize(14);
         doc.setFont('bold');
         doc.text('KAISHVI HEALTH & MATERNITY CENTRE', centerX, 20, { align: 'center' });
-
         doc.setFontSize(10);
         doc.setFont('normal');
-        doc.text('Nehru Nagar, Ward No.:1, Pharenda Road, Maharajganj (U.P.)', centerX, 28, { align: 'center' });
-        doc.text('E-mail: info@kaishvihospital.com   www.kaishvihospital.com', centerX, 35, { align: 'center' });
-        doc.text('Mob.No: 8948150069', centerX, 42, { align: 'center' });
+        doc.text('Nehru Nagar, Ward No.:1, Pharenda Road, Maharajganj (U.P.)', centerX, 24, { align: 'center' });
+        doc.text('E-mail: info@kaishvihospital.com   www.kaishvihospital.com', centerX, 28, { align: 'center' });
+        doc.text('Mob.No: 8948150069', centerX, 32, { align: 'center' });
 
         // Header Border
-        doc.rect(10, 10, pageWidth - 20, 40); // Creates a border around the header content
+        doc.rect(10, 10, pageWidth - 20, 25); // Creates a border around the header content
 
         // Bill Title
         doc.setFontSize(16);
         doc.setFont('bold');
-        doc.text('BILL', centerX, 60, { align: 'center' });
+        doc.text('BILL', centerX, 43, { align: 'center' });
 
         // Patient Details Section - Left Aligned with Borders
         doc.setFontSize(12);
         const leftMargin = 10;
-        let currentY = 70;
+        let currentY = 52;
 
         // Patient Details
         doc.text(`Patient Name: ${selectedFormData.patientName}`, leftMargin, currentY);
         doc.text(`Bill No: ${BillNumber}`, leftMargin + 120, currentY); // Right-aligned text
-        currentY += 7;
+        currentY += 5;
         doc.text(`Age/Gender: ${selectedFormData.age}/${selectedFormData.gender}`, leftMargin, currentY);
         doc.text(`Bill Date: ${new Date().toLocaleDateString('en-GB')}`, leftMargin + 120, currentY); // Format: dd/mm/yyyy
-        currentY += 7;
+        currentY += 5;
         doc.text(`Consultant Dr.: ${selectedDoctor.doctorname}`, leftMargin, currentY);
         doc.text(`UHID: ${selectedFormData.uhid}`, leftMargin + 120, currentY); // Right-aligned text
-        currentY += 7;
+        currentY += 5;
         doc.text(`Address: ${selectedFormData.address}`, leftMargin, currentY);
-        currentY += 7;
+        currentY += 5;
         doc.text(`Ref. by: ${selectedFormData.refBy}`, leftMargin, currentY);
-        doc.text(`CARE TYPE: ${selectedFormData.careType || ''}  `, leftMargin + 120, currentY); // Right-aligned text
-        currentY += 10;
+        doc.text(`CARE TYPE: ${selectedFormData.gStatus || ''}  `, leftMargin + 120, currentY); // Right-aligned text
+        currentY += 4;
 
         // Table Heading with background color and border
         doc.setFillColor(200, 200, 200); // Light grey background color for table heading
@@ -581,23 +580,21 @@ const getCurrentDateTime = () => {
 
 
         // Total, Received, Refund
-        currentY += 10;
+        currentY += 6;
         doc.setFont('bold');
         doc.text(`Total: ${applyFee}`, leftMargin + 120, currentY);
-        currentY += 7;
+        currentY += 4;
         doc.text(`Received: ${applyFee - selectedFormData.discount.toString()}`, leftMargin + 120, currentY);
-        currentY += 7;
+        currentY += 4;
         doc.text(`Refund: 0`, leftMargin + 120, currentY);
-        currentY += 10;
+        currentY += 4;
 
         // Amount in Words
-        const totalInWords = numberToWords(formData.total);
+        const totalInWords = numberToWords(selectedFormData.total);
         doc.setFont('normal');
         doc.text(`Amount Payable in words: ${totalInWords}`, leftMargin, currentY);
-        currentY += 15;
-
-        // Signature Section - Right Aligned with Margin before it
-        currentY += 10; // Add margin before the signature
+      
+        currentY += 5; // Add margin before the signature
         doc.setFont('bold');
         doc.text('Authorised Sign.', leftMargin + 150, currentY);
 
@@ -1377,6 +1374,7 @@ const getCurrentDateTime = () => {
                                                                                 name='patientName'
                                                                                 value={OldformData.patientName}
                                                                                 onChange={oldhandleChange}
+                                                                                required
                                                                                 placeholder="Enter patient name" />
                                                                         </div>
                                                                     </div>
@@ -1816,6 +1814,7 @@ const getCurrentDateTime = () => {
                                                                         type="text"
                                                                         className="form-control"
                                                                         id="patientName"
+                                                                        required
                                                                         name='patientName'
                                                                         value={formData.patientName}
                                                                         onChange={handleChange}

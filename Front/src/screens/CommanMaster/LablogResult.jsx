@@ -11,27 +11,85 @@ import { Link } from 'react-router-dom';
 const LablogResult = () => {
     const navigate = useNavigate();
     const { id } = useParams();
-
+    const [PatienttestDetail, setPatientTestDetail] = useState([]);
+    const [labTests, setLabTests] = useState([]);
+    const [PatienttestDetailR, setPatientTestDetailR] = useState([]);
+    const [testNames, setTestNames] = useState({}); 
     const [formData, setFormData] = useState({
         TestlablogId: '',
         result: '', // Use result to match your form submission field name
     });
-
+    const [testDetailR, setTestDetailR] = useState([]);
+    const [prescriptionPdfUrl, setPrescriptionPdfUrl] = useState('');
+    const [billPdfUrl, setBillPdfUrl] = useState('');
+    const [BillNumber, setBillNumber] = useState('')
     const [testDetail, settestDetail] = useState([]);
     const [testResults, settestResults] = useState([]);
     const [testComments, settestComments] = useState(''); // State to hold CKEditor content
     const [testId, settestId] = useState('');
     const [loading, setLoading] = useState(true); // For loading state
+    const fetchTestNames = async () => {
+        try {
+            const response = await fetch("https://khmc-xdlm.onrender.com/api/testName");
+            const testData = await response.json();
 
+            // Create a mapping of test _id to TestName
+            const testNameMap = {};
+            testData.forEach(test => {
+                testNameMap[test._id] = test.TestName;
+            });
+
+            console.log(testNameMap,"sds");
+            
+            setTestNames(testNameMap);
+        } catch (error) {
+            console.error("Error fetching test names:", error);
+        }
+    };
+    const billnogen = async () => {
+        try {
+            // Fetch existing bills to determine the latest billNo
+            const billsResponse = await fetch('https://khmc-xdlm.onrender.com/api/labtestbills');
+            if (!billsResponse.ok) {
+                throw new Error('Failed to fetch existing bills');
+            }
+
+            const billsData = await billsResponse.json();
+            console.log(billsData, "billsData");
+
+
+            // Find the latest billNo
+            let latestBillNo = 50; // Default starting number
+            if (billsData.length > 0) {
+                // Filter and convert billNo to integers, ignoring invalid values
+                const billNumbers = billsData
+                    .map(bill => parseInt(bill.billNo, 10)) // Convert to integer
+                    .filter(billNo => !isNaN(billNo)); // Keep only valid numbers
+
+                if (billNumbers.length > 0) {
+                    latestBillNo = Math.max(...billNumbers); // Get the maximum valid bill number
+                }
+            }
+            console.log(latestBillNo, "latestBillNo");
+
+            const nextBillNo = latestBillNo + 1; // Next bill number
+            setBillNumber(nextBillNo)
+
+        } catch (error) {
+
+        }
+
+    }
     // Fetch data from the API when the component is mounted
     useEffect(() => {
         const fetchLabEntries = async () => {
             try {
-                const response = await fetch(`http://localhsot:3001/api/labentry/${id}`);
+                const response = await fetch(`https://khmc-xdlm.onrender.com/api/labentry/${id}`);
                 const data = await response.json();
                 console.log(data, "data");
 
                 settestDetail([data]); // Set the response data in the LabEntries state
+                setPatientTestDetail([data]);
                 settestId(data.tests[0]); // Assuming the test ID is at data.tests[0]
                 setLoading(false); // Stop the loading state
 
@@ -42,7 +100,7 @@ const LablogResult = () => {
         };
         const fetchLabresults = async () => {
             try {
-                const response = await fetch(`http://localhsot:3001/api/testResult/${id}`);
+                const response = await fetch(`https://khmc-xdlm.onrender.com/api/testResult/${id}`);
                 const data = await response.json();
                 console.log(data, "Results");
 
@@ -56,13 +114,16 @@ const LablogResult = () => {
             }
         };
         fetchLabresults()
+        fetchResultEntry()
+        billnogen()
+        fetchTestNames()
         fetchLabEntries(); // Call the function
     }, [id]); // Dependency array includes id
 
     // Fetch test comments
     const fetchTestComments = async () => {
         try {
-            const response = await fetch(`http://localhsot:3001/api/testComment/${testId}`);
+            const response = await fetch(`https://khmc-xdlm.onrender.com/api/testComment/${testId}`);
             const data = await response.json();
             console.log(data, "testComment");
 
@@ -115,161 +176,6 @@ const LablogResult = () => {
         }
     };
 
-    // Function to generate the prescription PDF
-    //   const generatePrescriptionPdf = (testDetail, result) => {
-    //     const doc = new jsPDF();
-
-    //     // Add 60px space from the top
-    //     const topMargin = 60;
-    //     const bottomMargin = 20; // Bottom margin to leave space at the bottom
-    //     const pageHeight = doc.internal.pageSize.height;
-    //     const maxY = pageHeight - bottomMargin; // Maximum Y position to keep content within bounds
-    //     const textWidth = doc.internal.pageSize.width - 20; // Maximum text width
-    //     const lineHeight = 5; // Reduced line height for closer spacing
-
-    //     // Set font size to 10
-    //     doc.setFontSize(10);
-
-    //     // Left side (Patient Details)
-    //     const leftStart = 10; // Starting X point for left text
-    //     const labelWidth = 40; // Define a constant width for the labels
-    //     let currentY = topMargin;
-
-    //     // Labels and values for left side
-    //     doc.text('Patient Name:', leftStart, currentY);
-    //     doc.text(`${testDetail.patientName}`, leftStart + labelWidth, currentY); // Value aligned
-    //     currentY += lineHeight;
-
-    //     doc.text('Age/Gender:', leftStart, currentY);
-    //     doc.text(`${testDetail.age}/${testDetail.category}`, leftStart + labelWidth, currentY); // Value aligned
-    //     currentY += lineHeight;
-
-    //     doc.text('Consultant Dr:', leftStart, currentY);
-    //     doc.text(`${testDetail.reffby || 'no'}`, leftStart + labelWidth, currentY); // Value aligned
-    //     currentY += lineHeight;
-
-    //     doc.text('Transaction Id:', leftStart, currentY);
-    //     doc.text(`${testDetail.labReg}`, leftStart + labelWidth, currentY); // Value aligned
-    //     currentY += 10; // Extra space before the right side
-
-    //     // Right side (OPD Details)
-    //     const rightStart = 120; // Starting X point for right text
-    //     currentY = topMargin; // Reset Y position for the right side
-
-    //     // Labels and values for right side
-    //     doc.text('Collection Date:', rightStart, currentY);
-    //     doc.text(`${testDetail.sampledate}`, rightStart + labelWidth, currentY); // Value aligned
-    //     currentY += lineHeight;
-
-    //     doc.text('Reporting Date:', rightStart, currentY);
-    //     doc.text(`${testDetail.reportDate || 'No'}`, rightStart + labelWidth, currentY); // Value aligned
-    //     currentY += lineHeight;
-
-    //     doc.text('Contact No:', rightStart, currentY);
-    //     doc.text(`${testDetail.mobile}`, rightStart + labelWidth, currentY); // Value aligned
-    //     currentY += lineHeight;
-
-    //     doc.text('S No:', rightStart, currentY);
-    //     doc.text(`${testDetail.sno}`, rightStart + labelWidth, currentY); // Value aligned
-    //     currentY += 4; // Space before barcode and content
-
-    //     // Generate barcode for UHID
-    //     const barcodeCanvas = document.createElement('canvas');
-    //     JsBarcode(barcodeCanvas, testDetail.labReg, {
-    //         format: 'CODE128',
-    //         displayValue: true,
-    //     });
-
-    //     // Add barcode to PDF, aligned to the right
-    //     const barcodeDataUrl = barcodeCanvas.toDataURL('image/png');
-    //     doc.addImage(barcodeDataUrl, 'PNG', rightStart + labelWidth, currentY, 30, 10); // Width 30, Height 10
-
-
-    //     // Horizontal line after finishing both sides
-    //     const finalY = currentY + 10; // Adjust based on the height of the text and barcode
-    //     doc.line(leftStart, finalY, 200, finalY); // Draw a single horizontal line from (10, finalY) to (200, finalY)
-    //     currentY += 15; // Adjust based on the height of the barcode
-    //     // Function to handle style and alignment
-    //     const applyStyle = (node) => {
-    //         let fontStyle = 'normal';
-    //         let fontWeight = 'normal';
-
-    //         if (node.tagName === 'STRONG' || node.style.fontWeight === 'bold') {
-    //             fontWeight = 'bold';
-    //         }
-    //         if (node.tagName === 'EM' || node.style.fontStyle === 'italic') {
-    //             fontStyle = 'italic';
-    //         }
-
-    //         // Set the font style in jsPDF
-    //         doc.setFont(fontWeight, fontStyle); // Use setFont to set weight and style
-    //     };
-
-    //     // Function to check if new page is needed
-    //     const checkAndAddPage = () => {
-    //         if (currentY > maxY) {
-    //             doc.addPage(); // Add a new page
-    //             currentY = topMargin; // Reset Y position for new page
-    //         }
-    //     };
-
-    //     // Parsing and rendering CKEditor HTML content
-    //     const parseAndRenderHtml = (htmlContent) => {
-    //         const parser = new DOMParser();
-    //         const docElement = parser.parseFromString(htmlContent, 'text/html');
-    //         const body = docElement.body;
-
-    //         // Function to recursively process child nodes
-    //         const processNode = (node) => {
-    //             if (node.nodeType === Node.ELEMENT_NODE) {
-    //                 const align = node.style.textAlign; // Get the text alignment directly from the style
-
-    //                 // Default position for the text
-    //                 let xPos = 10; // Default left alignment position
-
-    //                 if (align === 'center') {
-    //                     xPos = doc.internal.pageSize.width / 2; // Center align position
-    //                 } else if (align === 'right') {
-    //                     xPos = doc.internal.pageSize.width - 10; // Right align position
-    //                 }
-
-    //                 // Handle different tag types
-    //                 if (node.tagName === 'P' || node.tagName === 'H1' || node.tagName === 'H2' || node.tagName === 'H3') {
-    //                     applyStyle(node);
-    //                     // Wrap text if too long
-    //                     const wrappedText = doc.splitTextToSize(node.innerText.trim(), textWidth);
-    //                     wrappedText.forEach(line => {
-    //                         checkAndAddPage(); // Check if a new page is needed
-    //                         doc.text(line, xPos, currentY, { align }); // Use the calculated x position
-    //                         currentY += lineHeight; // Move to next line after paragraph
-    //                     });
-    //                 } else if (node.tagName === 'LI') {
-    //                     const bullet = node.parentElement.tagName === 'OL' ? `${node.parentElement.children.length}. ` : '• ';
-
-    //                     // Wrap text if too long
-    //                     const wrappedText = doc.splitTextToSize(`${bullet}${node.innerText.trim()}`, textWidth);
-    //                     wrappedText.forEach(line => {
-    //                         checkAndAddPage(); // Check if a new page is needed
-    //                         doc.text(line, xPos + 10, currentY); // Indent list items
-    //                         currentY += lineHeight; // Move down for next list item
-    //                     });
-    //                 } else if (node.tagName === 'UL' || node.tagName === 'OL') {
-    //                     // Handle unordered or ordered list
-    //                     node.childNodes.forEach(processNode); // Process each <li>
-    //                 }
-    //             }
-    //         };
-
-    //         // Recursively process all child nodes of the body
-    //         Array.from(body.childNodes).forEach(processNode);
-    //     };
-
-    //     // Call the parsing and rendering function for the result
-    //     parseAndRenderHtml(result);
-
-    //     // Return Blob for Cloudinary upload
-    //     return doc.output('blob');
-    // };
     const generatePrescriptionPdf = (testDetail, result) => {
         const doc = new jsPDF();
 
@@ -432,22 +338,196 @@ const LablogResult = () => {
         return doc.output('blob');
     };
 
+    const createLabTestBill = async (patientData, tests) => {
+        console.log(patientData, "jsdkjdffd dfklldfn fdf");
+        
+        setLoading(true);
+        try {
+        
+            // Prepare bill details
+            const total = tests.reduce((sum, test) => sum + test.Rate, 0);
+            const billDetails = {
+                patientId: patientData._id || 'null',
+                billNo: BillNumber,
+                patientName: patientData.patientName || 0,
+                mobile: patientData.mobile || 0,
+                email: patientData.email || '',
+                total: total || 0,
+                received: patientData.received || total, // Received amount if available, otherwise total
+                refund: patientData.refund || 0,
+                discount: patientData.discount || 0,
+                paymentType: patientData.payment || 0,
+                tests: patientData.tests,
+                date: new Date(),
+            };
+
+            // Send bill to labtestbills API
+            const response = await fetch('https://khmc-xdlm.onrender.com/api/labtestbills', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(billDetails)
+            });
+
+            if (!response.ok) {
+                const errorMessage = await response.text();
+                throw new Error(`Failed to create bill: ${errorMessage}`);
+            }
+
+            console.log('Bill created and uploaded to Cloudinary successfully!');
+        } catch (error) {
+            console.error('Error creating lab test bill:', error);
+            alert(`Error: ${error.message}`);
+        } finally {
+            setLoading(false);
+        }
+    };
+    const generateLabTestBillPdf = (patientData, tests) => {
+        console.log(tests, "tests");
+        console.log(patientData, "patientData");
+
+        const doc = new jsPDF();
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const centerX = pageWidth / 2;
+
+        // Header
+        doc.setFontSize(14).setFont('bold');
+        doc.text('KAISHVI HEALTH & MATERNITY CENTRE', centerX, 20, { align: 'center' });
+        doc.setFontSize(10).setFont('normal');
+        doc.text('Nehru Nagar, Ward No.:1, Pharenda Road, Maharajganj (U.P.)', centerX, 28, { align: 'center' });
+
+        // Patient Info
+        let currentY = 50;
+        doc.text(`Patient Name: ${patientData.patientName}`, 10, currentY);
+        doc.text(`Bill No: ${BillNumber}`, 150, currentY); // Adjust alignment for right
+        currentY += 10;
+        doc.text(`Age/Gender: ${patientData.age}/${patientData.gender}`, 10, currentY);
+        doc.text(`Date: ${new Date().toLocaleDateString()}`, 150, currentY);
+        currentY += 20;
+
+        // Table Header
+        doc.setFillColor(200, 200, 200);
+        doc.rect(10, currentY, pageWidth - 20, 7, 'F');
+        doc.setFont('bold');
+        doc.text('S/No', 12, currentY + 5);
+        doc.text('Test Name', 30, currentY + 5);
+        doc.text('Rate', 100, currentY + 5);
+        doc.text('Amount', 150, currentY + 5);
+        currentY += 10;
+
+        // Lab Test Rows
+        doc.setFont('normal');
+        let totalAmount = 0;
+        tests.forEach((test, index) => {
+            const amount = test.Rate;
+            doc.text(`${index + 1}`, 12, currentY);
+            doc.text(test.TestName, 30, currentY);
+            doc.text(`${test.Rate}`, 100, currentY);
+            doc.text(`${amount}`, 150, currentY);
+            totalAmount += amount;
+            currentY += 10;
+        });
+
+        // Total
+        doc.setFont('bold');
+        doc.text(`Total: ${totalAmount}`, 150, currentY);
+        return doc.output('blob'); // Return as blob for Cloudinary
+    };
 
 
 
+    const fetchResultEntry = async () => {
+        console.log(id, "FetchResult");
+
+        try {
+            console.log("Fetching test result data...");
+            const testEntryResponse = await fetch(`https://khmc-xdlm.onrender.com/api/testResult/${id}`);
+
+            if (!testEntryResponse.ok) {
+                console.error("Failed to fetch test result data, status:", testEntryResponse.status);
+                setError("Error fetching test result data.");
+                setLoading(false);
+                return;
+            }
+            const TestEntryData = await testEntryResponse.json();
+            console.log("TestEntryData received:", TestEntryData);
+
+            // Check if result data exists
+            if (TestEntryData && TestEntryData.length > 0 && TestEntryData[0].result) {
+                console.log(TestEntryData, "Test result data found, setting test details.");
+                setTestDetailR(TestEntryData[0].result);
+                setPrescriptionPdfUrl(TestEntryData[0].documents[0].url);
+                setBillPdfUrl(TestEntryData[0].documents[1].url);
+
+                setLoading(false);
+            } else {
+                console.log("No test result data found, fetching lab entry details.");
+                fetchLabEntriesAndTestDetails(); // Fetch lab entries if no test result data is found
+            }
+        } catch (error) {
+            console.error("Error fetching test result data:", error);
+            setError("Failed to fetch test result data.");
+            setLoading(false);
+        }
+    };
+    const fetchLabEntriesAndTestDetails = async () => {
+        try {
+            console.log("Fetching lab entry details...");
+            const labEntryResponse = await fetch(`https://khmc-xdlm.onrender.com/api/labentry/${id}`);
+
+            if (!labEntryResponse.ok) {
+                console.error("Failed to fetch lab entry details, status:", labEntryResponse.status);
+                setError("Error fetching lab entry details.");
+                setLoading(false);
+                return;
+            }
+
+            const labEntryData = await labEntryResponse.json();
+            console.log("Lab entry data received:", labEntryData);
+            setPatientTestDetailR(labEntryData);
+
+            const testIds = labEntryData.tests;
+            setLabTests(testIds);
+
+            // Fetch test names and details
+            console.log("Fetching test names and details...");
+            const testDetailsResponse = await fetch(`https://khmc-xdlm.onrender.com/api/testName`);
+
+            if (!testDetailsResponse.ok) {
+                console.error("Failed to fetch test names, status:", testDetailsResponse.status);
+                setError("Error fetching test names.");
+                setLoading(false);
+                return;
+            }
+
+            const testDetailsData = await testDetailsResponse.json();
+            console.log("Test names and details received:", testDetailsData);
+
+            const filteredTestDetails = testDetailsData.filter(test => testIds.includes(test._id));
+            setTestDetailR(filteredTestDetails);
+            console.log(filteredTestDetails,"filteredTestDetails");
+            
+            setLoading(false);
+        } catch (error) {
+            console.error("Error fetching lab entry or test details:", error);
+            setError("Failed to fetch lab entry or test details.");
+            setLoading(false);
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         // Debugging form data before submission
-        console.log("Submitting form data:", formData);
+        console.log("Submitting form testDetailR:", testDetailR);
         console.log("Submitting form data:", testDetail[0]);
 
         try {
             const prescriptionPdfBlob = generatePrescriptionPdf(testDetail[0], formData.result);
+            const billPdfBlob = generateLabTestBillPdf(testDetail[0], testDetailR);
 
             // Upload PDFs to Cloudinary
-            const prescriptionPdfUrl = await uploadPdfToCloudinary(prescriptionPdfBlob, 'prescription.pdf');
+            const prescriptionPdfUrl = await uploadPdfToCloudinary(prescriptionPdfBlob, `prescription_${id}.pdf`);
+            const billPdfUrl = await uploadPdfToCloudinary(billPdfBlob, `bill_${id}.pdf`);
 
             // Create documents array with URLs and document types
             const documents = [
@@ -455,10 +535,15 @@ const LablogResult = () => {
                     url: prescriptionPdfUrl,
                     documentType: 'testreport',
                     uploadedAt: new Date(),
+                },
+                {
+                    url: billPdfUrl,
+                    documentType: 'testbill',
+                    uploadedAt: new Date(),
                 }
             ];
             // First, submit the form data with a POST request
-            const response = await fetch('http://localhsot:3001/api/testResult', {
+            const response = await fetch('https://khmc-xdlm.onrender.com/api/testResult', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -476,19 +561,19 @@ const LablogResult = () => {
                 console.log("After submission:", newTest);
 
                 // Now, send the PUT request to update the result field after successful POST
-                const updateResult = await fetch(`http://localhsot:3001/api/UpdateResultlabEntry/${id}`, {
+                const updateResult = await fetch(`https://khmc-xdlm.onrender.com/api/UpdateResultlabEntry/${id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ result: true }) // Update 'result' to true
+                    body: JSON.stringify({ result: true, documents:documents  }) // Update 'result' to true
                 });
 
                 // Check if the result update was successful
                 if (updateResult.ok) {
                     alert('Result Value updated successfully!');
-                    console.log('Result updated successfully.');
-
+                    console.log(testDetail,"Test Detail" , testDetailR, 'Result updated successfully.');
+                    createLabTestBill(testDetail[0], testDetailR)
                     // Clear the form after both requests are successful
                     setFormData({
                         TestlablogId: '',
@@ -539,7 +624,7 @@ const LablogResult = () => {
                                             <tr>
                                                 <th>Sno</th>
                                                 <th>Test</th>
-                                                <th>Normal Value</th>
+                                              
                                                 <th>Result</th>
                                             </tr>
                                         </thead>
@@ -547,8 +632,10 @@ const LablogResult = () => {
                                             {testDetail.map((labtest, index) => (
                                                 <tr key={labtest._id}>
                                                     <td>{index + 1}</td>
-                                                    <td>{labtest.tests}</td>
-                                                    <td>Normal Value</td>
+                                                    <td> {labtest.tests.map((testId, index) => (
+                                                                    <p key={index}>{testNames[testId] || 'Unknown Test'}</p>
+                                                                ))}</td>
+                                                  
                                                     <td>
                                                         <button
                                                             className="btn btn-danger text-dark"
