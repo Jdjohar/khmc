@@ -745,7 +745,7 @@ const LablogsP = () => {
                           className="btn btn-light"
                           onClick={() => {
                             setFormData({
-                              labReg: '',
+                              
                               patientName: '',
                               careofstatus: '',
                               careofName: '',

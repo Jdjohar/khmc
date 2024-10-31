@@ -38,6 +38,7 @@ const TestNameSchema = new Schema({
         type: Boolean,
         default: false, // Assuming Form F is a checkbox, defaults to false
     },
+    Catid: { type: mongoose.Schema.Types.ObjectId, ref: 'TestCategories', required: true },
     FormF: {
         type: Boolean,
         default: false, // Assuming Form F is a checkbox, defaults to false

@@ -20,6 +20,7 @@ const Bank = require('../models/Bank')
 const Lab = require('../models/Labs')
 const Labentry = require('../models/Lablogs')
 const TestName = require('../models/TestName')
+const TestCat = require('../models/TestCategories')
 const TestComment = require('../models/TestComments')
 const TestResult = require('../models/TestResults')
 const TestResultP = require('../models/TestResultsP')
@@ -992,6 +993,73 @@ router.delete('/testComment/:id', async (req, res) => {
             return res.status(404).json({ message: 'testComment not found' });
         }
         res.status(200).json({ message: 'testComment deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// CREATE a new religion (POST)
+router.post('/testCat', async (req, res) => {
+    try {
+        const newtestCat = new TestCat(req.body);
+        const savedtestCat = await newtestCat.save();
+        res.status(201).json({ 
+            success: true,
+            data:savedtestCat
+         });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// READ all religion (GET)
+router.get('/testCat', async (req, res) => {
+    try {
+        const testCatdata = await TestCat.find();
+        res.status(200).json(testCatdata);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+// READ a single religion by ID (GET)
+router.get('/testCat/:id', async (req, res) => {
+    try {
+        const testCat = await TestCat.find({ TestId: req.params.id });
+        if (!testCat) {
+            return res.status(404).json({ message: 'testCat not found' });
+        }
+        res.status(200).json(testCat);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// UPDATE a state by ID (PUT)
+router.put('/testCat/:id', async (req, res) => {
+    try {
+        const updatedtestCat = await TestCat.findByIdAndUpdate(req.params.id, req.body, {
+            new: true, // Return the updated document
+            runValidators: true // Ensure the data is valid
+        });
+        if (!updatedtestCat) {
+            return res.status(404).json({ message: 'testCat not found' });
+        }
+        res.status(200).json(updatedtestCat);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// DELETE a religion by ID (DELETE)
+router.delete('/testCat/:id', async (req, res) => {
+    try {
+        const deletedtestCat = await TestCat.findByIdAndDelete(req.params.id);
+        if (!deletedtestCat) {
+            return res.status(404).json({ message: 'testCat not found' });
+        }
+        res.status(200).json({ message: 'testCat deleted successfully' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

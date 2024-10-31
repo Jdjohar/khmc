@@ -167,6 +167,11 @@ const Topbar = () => {
                           Test List
                         </Link>
                       </li>
+                      <li>
+                        <Link className="dropdown-item" to="/master/testCat">
+                          Test Category
+                        </Link>
+                      </li>
                     </ul>
                   </li>
                  

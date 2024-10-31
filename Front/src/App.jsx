@@ -42,6 +42,11 @@ import {
 
 
 } from './screens/CommanMaster/index'
+import {
+  TestCat
+
+
+} from './screens/Test/index'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -81,6 +86,8 @@ function App() {
     <Route exact path='/master/testlist' element={<LabTestList />}/>
     <Route exact path='/master/testEdit/:id' element={<LabTestEdit />}/>
     <Route exact path='/master/testComment/:id' element={<LabTestComments />}/>
+
+    <Route exact path='/master/testCat/' element={<TestCat />}/>
     </Routes>
 
     </Router>
