@@ -234,7 +234,7 @@ const LabName = () => {
                     <form className="forms-sample" onSubmit={handleSubmit}>
                       <div className="form-group row">
                         <div className="col-6 mt-3">
-                          <label htmlFor="labname">lab Name</label>
+                          <label htmlFor="labname">Lab Name</label>
                           <input
                             type="text"
                             name='labname'
@@ -242,10 +242,10 @@ const LabName = () => {
                             onChange={handleChange}
                             className="form-control"
                             id="labname"
-                            placeholder="Enter lab Name" />
+                            placeholder="Enter Lab Name" />
                         </div>
                         <div className="col-6 mt-3">
-                          <label htmlFor="labid">lab Name</label>
+                          <label htmlFor="labid">Set Lab ID</label>
                           <input
                             type="text"
                             name='labid'

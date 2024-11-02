@@ -9,6 +9,7 @@ const Reffby = () => {
     type: 'Doctor',
     doctorName: '',
     department: '',
+    incentiveType: '',
     status: '',
     address: '',
     city: '',
@@ -30,6 +31,7 @@ const Reffby = () => {
   const [reffbyList, setreffby] = useState([]);
   const [selectedReffbyId, setSelectedReffbyId] = useState(null);
   const [bank, setBank] = useState([])
+  const [incentiveType, setincentiveType] = useState([])
   const [Department, setDepartment] = useState([])
 
 
@@ -40,7 +42,7 @@ const Reffby = () => {
       }
       return investigation;
     });
-  
+
     setFormData({ ...formData, investigations: updatedInvestigations });
   };
 
@@ -50,28 +52,32 @@ const Reffby = () => {
     const fetchData = async () => {
       try {
         // Run both API requests in parallel
-        const [reffbyResponse, departmentResponse, bankResponse] = await Promise.all([
+        const [reffbyResponse, departmentResponse, bankResponse, incentiveTypeResponse] = await Promise.all([
           fetch("https://khmc-xdlm.onrender.com/api/reffby"),
           fetch("https://khmc-xdlm.onrender.com/api/bank"),
-          fetch("https://khmc-xdlm.onrender.com/api/department")
+          fetch("https://khmc-xdlm.onrender.com/api/department"),
+          fetch("https://khmc-xdlm.onrender.com/api/incentiveType")
         ]);
 
         // Parse the JSON responses
-        const [reffbyData, departmentData, bankData] = await Promise.all([
+        const [reffbyData, departmentData, bankData, incentiveTypeData] = await Promise.all([
           reffbyResponse.json(),
           bankResponse.json(),
-          departmentResponse.json()
+          departmentResponse.json(),
+          incentiveTypeResponse.json()
         ]);
 
         // Log the type of each response to verify it's an array
         console.log("reffby Data:", reffbyData);
         console.log("Department Data:", departmentData);
         console.log("Bank Data:", bankData);
+        console.log("incentiveTypeData Data:", incentiveTypeData);
 
         // Set the state with the fetched data
         setreffby(reffbyData);
         setDepartment(departmentData);
         setBank(bankData);
+        setincentiveType(incentiveTypeData);
 
         // Stop the loading state when all data is fetched
         setLoading(false);
@@ -175,7 +181,7 @@ const Reffby = () => {
             branch: '',
             managedBy: '',
             background: '',
-            investigations: rows 
+            investigations: rows
           });
           setSelectedReffbyId(null);
         } else {
@@ -191,8 +197,8 @@ const Reffby = () => {
       }
     } else {
 
-      console.log("Before formData: ",formData);
-      console.log("Before row: ",rows);
+      console.log("Before formData: ", formData);
+      console.log("Before row: ", rows);
 
 
       try {
@@ -205,9 +211,9 @@ const Reffby = () => {
         });
 
 
-        console.log("After formData: ",formData);
-        console.log("After row: ",rows);
-        
+        console.log("After formData: ", formData);
+        console.log("After row: ", rows);
+
         if (response.ok) {
           const newReffby = await response.json();
           alert('Reffby data submitted successfully!');
@@ -216,6 +222,7 @@ const Reffby = () => {
             type: 'Doctor',
             doctorName: '',
             department: '',
+            incentiveType: '',
             status: '',
             address: '',
             city: '',
@@ -265,6 +272,7 @@ const Reffby = () => {
             type: 'Doctor',
             doctorName: '',
             department: '',
+            incentiveType: '',
             status: '',
             address: '',
             city: '',
@@ -294,11 +302,12 @@ const Reffby = () => {
 
   const handleRowClick = (reffby) => {
     console.log("reffby", reffby);
-    
+
     setFormData({
       type: reffby.type,
       doctorName: reffby.doctorName,
       department: reffby.department,
+      incentiveType: reffby.incentiveType,
       status: reffby.status,
       address: reffby.address,
       city: reffby.city,
@@ -313,7 +322,7 @@ const Reffby = () => {
       managedBy: reffby.managedBy,
       background: reffby.background,
       investigations: reffby.investigations
-      
+
     });
     setRows(reffby.rows || []);
     setSelectedReffbyId(reffby._id);
@@ -353,15 +362,17 @@ const Reffby = () => {
                         <tr>
                           <th>Doctor Name</th>
                           <th>Department</th>
+                          <th>Type</th>
                         </tr>
                       </thead>
                       <tbody>
-                        
-                        
+
+
                         {reffbyList.map((doctor) => (
                           <tr key={doctor._id} onClick={() => handleRowClick(doctor)} style={{ cursor: 'pointer' }}>
                             <td>{doctor.doctorName}</td>
                             <td>{doctor.department}</td>
+                            <td>{doctor.incentiveType || '-'}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -424,6 +435,25 @@ const Reffby = () => {
                             {Department.map((item) => (
                               <option key={item._id} value={item.type}>
                                 {item.departmentname}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        {/* IncentiveType */}
+                        <div className="col-3 form-group">
+                          <label htmlFor="incentiveType">Incentive Type</label>
+                          <select
+                            className="form-control"
+                            id="incentiveType"
+                            name="incentiveType"
+                            value={formData.incentiveType}
+                            onChange={handleChange}
+                          >
+                            <option value="">Select IncentiveType</option>
+                            {incentiveType.map((item) => (
+                              <option key={item._id} value={item._id}>
+                                {item.typeName}
                               </option>
                             ))}
                           </select>
@@ -617,75 +647,75 @@ const Reffby = () => {
                           />
                         </div>
 
-                        
 
-                        
+
+
 
                         {console.log("s", formData.investigations)}
 
 
                         {/* Investigation and Rate for each row */}
                         {formData.investigations.map((investigation) => (
-  <div key={investigation._id} className="row mb-3">
-    <div className="col-3 form-group">
-      <label htmlFor={`investigation-${investigation.id}`}>Investigation</label>
-      <select
-        className="form-control"
-        id={`investigation-${investigation.id}`}
-        value={investigation.investigation}
-        onChange={(e) => handleInvestigationChange(investigation.id, 'investigation', e.target.value)}
-      >
-        <option value="">Select Investigation</option>
-        <option value="Investigation1">Investigation 1</option>
-        <option value="Investigation2">Investigation 2</option>
-      </select>
-    </div>
+                          <div key={investigation._id} className="row mb-3">
+                            <div className="col-3 form-group">
+                              <label htmlFor={`investigation-${investigation.id}`}>Investigation</label>
+                              <select
+                                className="form-control"
+                                id={`investigation-${investigation.id}`}
+                                value={investigation.investigation}
+                                onChange={(e) => handleInvestigationChange(investigation.id, 'investigation', e.target.value)}
+                              >
+                                <option value="">Select Investigation</option>
+                                <option value="Investigation1">Investigation 1</option>
+                                <option value="Investigation2">Investigation 2</option>
+                              </select>
+                            </div>
 
-    <div className="col-3 form-group">
-      <label htmlFor={`rate-${investigation.id}`}>Rate</label>
-      <input
-        type="text"
-        className="form-control"
-        id={`rate-${investigation.id}`}
-        value={investigation.rate}
-        onChange={(e) => handleInvestigationChange(investigation.id, 'rate', e.target.value)}
-        placeholder="Enter Rate"
-      />
-    </div>
+                            <div className="col-3 form-group">
+                              <label htmlFor={`rate-${investigation.id}`}>Rate</label>
+                              <input
+                                type="text"
+                                className="form-control"
+                                id={`rate-${investigation.id}`}
+                                value={investigation.rate}
+                                onChange={(e) => handleInvestigationChange(investigation.id, 'rate', e.target.value)}
+                                placeholder="Enter Rate"
+                              />
+                            </div>
 
-    <div className="col-3 form-group">
-      <label htmlFor={`incentiveType-${investigation.id}`}>Incentive Type</label>
-      <select
-        className="form-control"
-        id={`incentiveType-${investigation.id}`}
-        value={investigation.incentiveType}
-        onChange={(e) => handleInvestigationChange(investigation.id, 'incentiveType', e.target.value)}
-      >
-        <option value="">Select Incentive Type</option>
-        <option value="fixed">Fixed Price</option>
-        <option value="percentage">Percentage</option>
-      </select>
-    </div>
+                            <div className="col-3 form-group">
+                              <label htmlFor={`incentiveType-${investigation.id}`}>Incentive Type</label>
+                              <select
+                                className="form-control"
+                                id={`incentiveType-${investigation.id}`}
+                                value={investigation.incentiveType}
+                                onChange={(e) => handleInvestigationChange(investigation.id, 'incentiveType', e.target.value)}
+                              >
+                                <option value="">Select Incentive Type</option>
+                                <option value="fixed">Fixed Price</option>
+                                <option value="percentage">Percentage</option>
+                              </select>
+                            </div>
 
-    <div className="col-3 form-group">
-      <label htmlFor={`incentiveValue-${investigation.id}`}>Incentive Value</label>
-      <input
-        type="text"
-        className="form-control"
-        id={`incentiveValue-${investigation.id}`}
-        value={investigation.incentiveValue}
-        onChange={(e) => handleInvestigationChange(investigation.id, 'incentiveValue', e.target.value)}
-        placeholder="Enter Incentive Value"
-      />
-    </div>
+                            <div className="col-3 form-group">
+                              <label htmlFor={`incentiveValue-${investigation.id}`}>Incentive Value</label>
+                              <input
+                                type="text"
+                                className="form-control"
+                                id={`incentiveValue-${investigation.id}`}
+                                value={investigation.incentiveValue}
+                                onChange={(e) => handleInvestigationChange(investigation.id, 'incentiveValue', e.target.value)}
+                                placeholder="Enter Incentive Value"
+                              />
+                            </div>
 
-    <div className="col-3 form-group">
-      <button type="button" className="btn btn-danger" onClick={() => handleDeleteRow(investigation.id)}>
-        Delete
-      </button>
-    </div>
-  </div>
-))}
+                            <div className="col-3 form-group">
+                              <button type="button" className="btn btn-danger" onClick={() => handleDeleteRow(investigation.id)}>
+                                Delete
+                              </button>
+                            </div>
+                          </div>
+                        ))}
 
                         <div className="col-12 form-group">
                           <button type="button" className="btn btn-primary" onClick={handleAddRow}>
@@ -694,7 +724,7 @@ const Reffby = () => {
                         </div>
                       </div>
 
-                      {console.log("Rows",rows)}
+                      {console.log("Rows", rows)}
 
                       {error && (
                         <div style={{ color: 'red' }}>
@@ -702,7 +732,7 @@ const Reffby = () => {
                           <pre>{error}</pre> {/* Use <pre> to preserve formatting */}
                         </div>
                       )}
-                      
+
                       <button type="submit" className="btn btn-gradient-primary me-2">
                         {selectedReffbyId ? 'Update' : 'Submit'}
                       </button>
@@ -717,7 +747,26 @@ const Reffby = () => {
                       )}
                       <button className="btn btn-light" type="button" onClick={() => {
                         setFormData({
-                          bankname: '',
+                          type: 'Doctor',
+                          doctorName: '',
+                          department: '',
+                          incentiveType: '',
+                          status: '',
+                          address: '',
+                          city: '',
+                          mobileNumber: '',
+                          dob: '',
+                          dom: '',
+                          email: '',
+                          accountNumber: '',
+                          ifscCode: '',
+                          bankName: '',
+                          branch: '',
+                          managedBy: '',
+                          background: '',
+                          investigations: [
+                            { id: 1, investigation: '', rate: '', incentiveType: '', incentiveValue: '' }
+                          ]
                         });
                         setSelectedReffbyId(null);
                       }}>

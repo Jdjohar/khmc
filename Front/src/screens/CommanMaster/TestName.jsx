@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Topbar from '../component/TopNavBar';
 import SideNavbar from '../component/SideNavbar';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
+import { ClassicEditor, Context, Bold, Essentials, Italic, Underline, Heading, Alignment, List, Paragraph, ContextWatchdog, Mention, Undo } from 'ckeditor5';
 import 'ckeditor5/ckeditor5.css';
 import { useParams } from 'react-router-dom';
 
@@ -18,6 +18,7 @@ const TestName = () => {
         Catid: '',
         TestCode: '',
         Comment: '',
+        TestComment: '',
         AadharCard: false,
         FormF: false,
     });
@@ -25,7 +26,7 @@ const TestName = () => {
     const [testCatNames, settestCatNames] = useState([]);
     const [selectedTestId, setSelectedTestId] = useState(null); // State to track the selected test
     const [testDetails, setTestDetails] = useState([
-        { Investigation: '', Result: '', Unit: '', NormalRange: { start: '', end: '' } }
+        { Investigation: '', Result: '', Unit: '', NormalRange: { start: '', end: '' }, TestComment: '' }
     ])
     // Fetch data from the API when the component is mounted
     useEffect(() => {
@@ -42,6 +43,7 @@ const TestName = () => {
                     Rate: data.Rate,
                     TestCode: data.TestCode,
                     Comment: data.Comment,
+                    TestComment: data.TestComment,
                     AadharCard: data.AadharCard,
                     FormF: data.FormF,
                 });
@@ -86,6 +88,16 @@ const TestName = () => {
         fetchTestCat(); // Call the function
     }, []); // Empty dependency array to run only once
 
+    // Function to handle changes for each test detail
+    const handleTestDetailChange1 = (index, field, value) => {
+        const updatedDetails = [...testDetails];
+        if (field === 'TestComment') {
+            updatedDetails[index].TestComment = value; // For CKEditor content
+        } else {
+            updatedDetails[index][field] = value;
+        }
+        setTestDetails(updatedDetails);
+    };
     // Handle dynamic changes to Investigation, Result, Unit, and Normal Range
     const handleTestDetailChange = (index, field, value) => {
         const updatedDetails = [...testDetails];
@@ -124,7 +136,7 @@ const TestName = () => {
         const finalFormData = {
             ...formData,
             testDetails: testDetails, // Include the dynamic test details in the final data
-            Catid:formData.Catid
+            Catid: formData.Catid
         };
         console.log(finalFormData, "Start Submit finalFormData Data")
 
@@ -153,6 +165,7 @@ const TestName = () => {
                         Rate: '',
                         TestCode: '',
                         Catid: '',
+                        TestComment: '',
                         Comment: '',
                         AadharCard: false,
                         FormF: false,
@@ -188,6 +201,7 @@ const TestName = () => {
                         Rate: '',
                         TestCode: '',
                         Comment: '',
+                        TestComment: '',
                         Catid: '',
                         AadharCard: false,
                         FormF: false,
@@ -238,6 +252,7 @@ const TestName = () => {
                         Rate: '',
                         Catid: '',
                         TestCode: '',
+                        TestComment: '',
                         Comment: '',
                         AadharCard: false,
                         FormF: false,
@@ -259,12 +274,12 @@ const TestName = () => {
             TestName: test.TestName,
             Department: test.Department,
             Rate: test.Rate,
-            Catid:test.Catid,
+            Catid: test.Catid,
             TestCode: test.TestCode,
+            TestComment: test.TestComment,
             Comment: test.Comment,
             AadharCard: test.AadharCard,
-            FormF: test.FormF,
-
+            FormF: test.FormF
         });
         // If testDetails exist, set them as well
         if (test.testDetails && test.testDetails.length > 0) {
@@ -288,7 +303,7 @@ const TestName = () => {
                                 <span className="page-title-icon bg-gradient-primary text-white me-2">
                                     <i className="mdi mdi-home"></i>
                                 </span>
-                                Test Names {console.log(formData,"Test formData")}
+                                Test Names {console.log(formData, "Test formData")}
                             </h3>
                             <nav aria-label="breadcrumb">
                                 <ul className="breadcrumb">
@@ -379,7 +394,11 @@ const TestName = () => {
                                                 <div className="col-3 mt-3">
                                                     <label htmlFor="TestCode">Test Code</label>
                                                     <input
-                                                        type="text" className="form-control" name="TestCode" value={formData['TestCode']} onChange={handleChange} placeholder="Enter Test Code"
+                                                        type="text" 
+                                                        className="form-control" 
+                                                        name="TestCode" 
+                                                        value={formData['TestCode']} 
+                                                        onChange={handleChange} placeholder="Enter Test Code"
                                                     />
                                                 </div>
 
@@ -388,18 +407,14 @@ const TestName = () => {
                                                     <CKEditor
                                                         editor={ClassicEditor}
                                                         name="Comment"
+                                                        data={formData.Comment || ""}
                                                         config={{
-                                                            toolbar: {
-                                                                items: ['undo', 'redo', '|', 'bold', 'italic'],
-                                                            },
                                                             plugins: [
-                                                                Bold, Essentials, Italic, Mention, Paragraph, Undo
+                                                                Essentials, Bold, Italic, Underline, Heading, Alignment, List, Paragraph, Undo
                                                             ],
-
-                                                            mention: {
-                                                                // Mention configuration
-                                                            },
-                                                            initialData: '<p>Hello!</p>',
+                                                            toolbar: [
+                                                                'heading', '|', 'bold', 'italic', 'underline', '|', 'alignment', '|', 'bulletedList', 'numberedList', '|', 'undo', 'redo'
+                                                            ]
                                                         }}
                                                         onReady={(editor) => {
                                                             // You can store the "editor" and use it later.
@@ -412,14 +427,21 @@ const TestName = () => {
                                             </div>
                                             <div className="form-check">
                                                 <input
-                                                    type="checkbox" className="form-check-input" name="FormF" checked={formData['FormF']} onChange={handleChange} id="FormF"
+                                                    type="checkbox" 
+                                                    className="form-check-input" 
+                                                    name="FormF" 
+                                                    checked={formData['FormF']} 
+                                                    onChange={handleChange} id="FormF"
                                                 />
                                                 <label className="form-check-label" htmlFor="FormF">Form F</label>
                                             </div>
                                             <div className="form-check">
                                                 <input
                                                     type="checkbox"
-                                                    className="form-check-input" name="AadharCard" checked={formData['AadharCard']} onChange={handleChange} id="AadharCard"
+                                                    className="form-check-input" 
+                                                    name="AadharCard" 
+                                                    checked={formData['AadharCard']} 
+                                                    onChange={handleChange} id="AadharCard"
                                                 />
                                                 <label className="form-check-label" htmlFor="Aadhar Card">Aadhar Card</label>
                                             </div>
@@ -428,23 +450,28 @@ const TestName = () => {
                                                 {testDetails.map((detail, index) => (
                                                     <div key={index} className="row mb-3">
                                                         <div className="col-3">
+                                                            <labe>Investigation</labe>
                                                             <input
                                                                 type="text" className="form-control" placeholder="Investigation" value={detail.Investigation} onChange={(e) => handleTestDetailChange(index, 'Investigation', e.target.value)}
                                                             />
                                                         </div>
                                                         <div className="col-2">
+                                                            <labe>Result</labe>
                                                             <input
                                                                 type="text" className="form-control" placeholder="Result" value={detail.Result}
                                                                 onChange={(e) => handleTestDetailChange(index, 'Result', e.target.value)}
                                                             />
                                                         </div>
+
                                                         <div className="col-2">
+                                                            <labe>Unit</labe>
                                                             <input
                                                                 type="text" className="form-control" placeholder="Unit" value={detail.Unit}
                                                                 onChange={(e) => handleTestDetailChange(index, 'Unit', e.target.value)}
                                                             />
                                                         </div>
                                                         <div className="col-2">
+                                                            <labe>Range Start</labe>
                                                             <input
                                                                 type="number"
                                                                 className="form-control"
@@ -454,6 +481,7 @@ const TestName = () => {
                                                             />
                                                         </div>
                                                         <div className="col-2">
+                                                            <labe>Range End</labe>
                                                             <input
                                                                 type="number"
                                                                 className="form-control"
@@ -462,10 +490,28 @@ const TestName = () => {
                                                                 onChange={(e) => handleTestDetailChange(index, 'NormalRangeEnd', e.target.value)}
                                                             />
                                                         </div>
+                                                        <div className="col-6">
+                                                            <labe>Test Comment</labe>
+                                                            <CKEditor
+                                                                editor={ClassicEditor}
+                                                                config={{
+                                                                    plugins: [Essentials, Bold, Italic, Underline, Heading, Alignment, List, Paragraph, Undo],
+                                                                    toolbar: [
+                                                                        'heading', '|', 'bold', 'italic', 'underline', '|', 'alignment', '|', 'bulletedList', 'numberedList', '|', 'undo', 'redo'
+                                                                    ]
+                                                                }}
+                                                                data={detail.TestComment || ""}  // Ensure data is a string
+                                                                onChange={(event, editor) => {
+                                                                    const data = editor.getData();
+                                                                    handleTestDetailChange(index, 'TestComment', data); // Update `TestComment` on change
+                                                                }}
+                                                            />
+                                                        </div>
                                                         <div className="col-2">
+
                                                             <button
                                                                 type="button"
-                                                                className="btn btn-danger"
+                                                                className="btn mt-4 btn-danger"
                                                                 onClick={() => handleRemoveTestDetail(index)}
                                                             >
                                                                 Remove
@@ -497,6 +543,7 @@ const TestName = () => {
                                                     Department: '',
                                                     Rate: '',
                                                     TestCode: '',
+                                                    TestComment: '',
                                                     Catid: '',
                                                     Comment: '',
                                                     AadharCard: '',

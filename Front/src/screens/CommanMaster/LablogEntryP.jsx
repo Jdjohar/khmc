@@ -194,7 +194,7 @@ const LablogEntryP = () => {
                                                                     </ul>
                                                                 </div>
                                                             </td>
-                                                            <td>{labtest._id}</td>
+                                                            
                                                             <td>{labtest.sno}</td>
                                                             <td>{labtest.date}</td>
                                                             <td>{labtest.labReg}</td>

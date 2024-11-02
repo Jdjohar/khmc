@@ -446,9 +446,7 @@ const getCurrentDateTime = () => {
     const handleDoctorChange = (e) => {
         const selectedDoctorName = e.target.value;
         console.log(Doctor, selectedDoctorName);
-
-
-
+        
         // Find the selected doctor object based on the selected name
         const selectedDoctorObj = Doctor.find(doctor => doctor.doctorname === selectedDoctorName);
         patientType === 'new'

@@ -2,17 +2,17 @@ import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import Topbar from '../component/TopNavBar';
 import SideNavbar from '../component/SideNavbar';
-import { useNavigate, useParams  } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const LablogsP = () => {
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
-    
+
     labReg: '',
     sno: '',
     labId: '',
     patientName: '',
-    testType:'Pathology',
+    testType: 'Pathology',
     careofstatus: '',
     careofName: '',
     address: '',
@@ -43,14 +43,21 @@ const LablogsP = () => {
   const [Reffby, setReffby] = useState([])
   const [sno, setSno] = useState('');
   const [selectedLabId, setSelectedLabId] = useState(null);
+  const [selectedReffby, setSelectedReffby] = useState([]);
+  const [selectedTestbyUser, setSelectedTestbyUser] = useState([]);
+  const [incentiveTypeData, setIncentiveTypeData] = useState([]);
 
   const navigate = useNavigate();
-  
+
   // Create `testOptions` by mapping over `test` state
-  const testOptions = tests.map(t => ({
-    value: t._id, // Use unique ID as value
-    label: t.TestName // Use TestName as label
-  }));
+
+
+  const testOptions = tests
+    .filter(t => t.Department === "pathology") // Filter tests by department
+    .map(t => ({
+      value: t._id, // Use unique ID as value
+      label: t.TestName // Use TestName as label
+    }));
 
   // Helper to format date as YYYY-MM-DD (to compare only by day)
   const formatDate = (date) => {
@@ -58,6 +65,7 @@ const LablogsP = () => {
   };
   // Fetch lab logs from the API when the component is mounted
   useEffect(() => {
+
     const fetchPatientDetails = async () => {
       if (patientid) {
         console.log('Patient ID:', patientid);
@@ -65,18 +73,18 @@ const LablogsP = () => {
           const response = await fetch(`https://khmc-xdlm.onrender.com/api/patients/${patientid}`);
           const data = await response.json();
           console.log(data, "Patient Data");
-  
+
           // Update the form data with patient details
           setFormData((prevFormData) => ({
             ...prevFormData,  // Retain previous form data
             ...data,  // Overwrite with fetched patient data
-    careofstatus: data.gStatus,
-    careofName: data.guardianName,
-    category: data.gender,
-    reffby: data.refTo,
+            careofstatus: data.gStatus,
+            careofName: data.guardianName,
+            category: data.gender,
+            reffby: data.refTo,
             tests: [], // Ensure 'tests' is set to an empty array (or based on your need)
           }));
-          
+
           setLoading(false); // Stop the loading state
         } catch (error) {
           console.error("Error fetching patient data:", error);
@@ -86,7 +94,7 @@ const LablogsP = () => {
         console.log('No Patient ID provided');
       }
     };
-  
+
     const fetchData = async () => {
       try {
         // Fire all API requests simultaneously
@@ -107,7 +115,7 @@ const LablogsP = () => {
           fetch("https://khmc-xdlm.onrender.com/api/category"),
           fetch("https://khmc-xdlm.onrender.com/api/reffby"),
         ]);
-  
+
         // Convert all responses to JSON
         const [
           snoData,
@@ -126,7 +134,7 @@ const LablogsP = () => {
           genderResponse.json(),
           reffbyResponse.json(),
         ]);
-  
+
         // Update the form state and other states
         setSno(snoData.sno);
         setLabs(labData);
@@ -135,26 +143,28 @@ const LablogsP = () => {
         setLabentry(labEntryData);
         setGender(genderData);
         setReffby(reffbyData);
-  
+
+        console.log(reffbyData, "reffbyData");
+
         // Update form data with labReg while retaining the rest
         setFormData((prevFormData) => ({
           ...prevFormData,
           labReg: labRegData.nextLabReg,  // Update lab registration field
         }));
-  
+
         console.log(labRegData, "Lab Registration Data");
       } catch (error) {
         console.error("Error fetching data:", error);
         setLoading(false); // Stop loading if there is an error
       }
     };
-  
+
     // Call the async functions
     fetchPatientDetails(); // Fetch patient details if patientid is available
     fetchData(); // Fetch other lab-related data
-  
+
   }, [patientid]); // Add patientid as a dependency to re-fetch if it changes
-  
+
 
 
   // Handle input changes for form fields
@@ -165,6 +175,45 @@ const LablogsP = () => {
       [name]: value,
     });
   };
+
+  const handleReffbyChange = async (e) => {
+    const selectedReffbyName = e.target.value;
+    console.log(Reffby, selectedReffbyName);
+    
+    // Find the selected doctor object based on the selected name
+    const selectedReffbyObj = Reffby.find(doctor => doctor.doctorName === selectedReffbyName);
+    
+    console.log(selectedReffbyObj, "selectedReffbyObj");
+    
+    // Update the form data
+    setFormData(prevState => ({
+        ...prevState,
+        refTo: selectedReffbyName
+    }));
+
+    // Update the selectedReffby state with the selected doctor object
+    setSelectedReffby(selectedReffbyObj || {});
+
+    // If the selected doctor object exists, fetch the incentive type data
+    if (selectedReffbyObj && selectedReffbyObj._id) {
+        try {
+            const response = await fetch(`https://khmc-xdlm.onrender.com/api/incentiveType/${selectedReffbyObj.incentiveType}`);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            console.log(data,"data ======");
+            
+            // Store the retrieved data in setIncentiveTypeData
+            setIncentiveTypeData(data);
+        } catch (error) {
+            console.error('Error fetching incentive type data:', error);
+        }
+    }
+};
+
+
+
   // Handle input changes for form fields
   const handleChangeReceived = (e) => {
     const { name, value } = e.target;
@@ -183,15 +232,18 @@ const LablogsP = () => {
 
   // Handle changes in the select dropdown
   const handleTestChange = (selectedOptions) => {
+
+    console.log(incentiveTypeData,"from Test Select ");
+    
     // Map selected options to only include their `value` (which is _id)
     const selectedTests = selectedOptions ? selectedOptions.map(option => option.value) : [];
 
-    
+
     // Calculate the total amount based on the selected test rates
     const totalAmount = selectedTests.reduce((sum, selectedTestId) => {
       const selectedTest = tests.find(t => t._id === selectedTestId);
 
-      
+
       return sum + (selectedTest ? selectedTest.Rate : 0); // Add the test rate to the total
     }, 0);
 
@@ -201,94 +253,148 @@ const LablogsP = () => {
       tests: selectedTests,
       totalamount: totalAmount // Set the total amount of the selected tests
     }));
+    setSelectedTestbyUser(selectedTests)
 
-
-    
   };
+
+  // Handle changes in the select dropdown
+  const createFilteredOutput = (selectedTestbyUser, incentiveTypeData, selectedReffbyId) => {
+    // Map through each selected test ID
+    return selectedTestbyUser.map(testId => {
+        // Find the matching test object in incentiveTypeData.typeTests
+        const matchingTest = incentiveTypeData.typeTests.find(test => test.TestId === testId);
+        
+        // If a matching test is found, format it as needed
+        if (matchingTest) {
+            return {
+                TesttypeId: incentiveTypeData._id,
+                Reffby: selectedReffbyId,
+                testid: testId,
+                amount: matchingTest.TestIncentiveValue
+            };
+        }
+
+        // If no match is found, return null (we'll filter these out later)
+        return null;
+    }).filter(result => result !== null); // Remove any null entries in case no match is found
+};
+const handleButtonClick = () => {
+  const result = createFilteredOutput(selectedTestbyUser, incentiveTypeData, selectedReffby._id);
   
+  // Print each entry in the result array to the console
+  result.forEach(entry => {
+      console.log("TesttypeId:", entry.TesttypeId);
+      console.log("Reffby:", entry.Reffby);
+      console.log("testid:", entry.testid);
+      console.log("amount:", entry.amount);
+      console.log("----"); // Separator for readability between entries
+  });
+};
+
+
 
   // Handle form submission (add or update lab)
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (selectedLabId) {
-      // Update lab log
-      try {
-        const response = await fetch(`https://khmc-xdlm.onrender.com/api/labentry/${selectedLabId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
-        });
+        // Update lab log
+        try {
+            const response = await fetch(`https://khmc-xdlm.onrender.com/api/labentry/${selectedLabId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
 
-        if (response.ok) {
-          alert('Lab log updated successfully!');
-          setSelectedLabId(null);
-          window.location.reload();
-        } else {
-          alert('Failed to update lab log');
+            if (response.ok) {
+                alert('Lab log updated successfully!');
+                setSelectedLabId(null);
+                window.location.reload();
+            } else {
+                alert('Failed to update lab log');
+            }
+        } catch (error) {
+            console.error('Error updating lab log:', error);
         }
-      } catch (error) {
-        console.error('Error updating lab log:', error);
-      }
     } else {
-      // Add new lab log
-      console.log(labs[0]._id, "labs==========");
+        // Add new lab log
+        try {
+            const response = await fetch('https://khmc-xdlm.onrender.com/api/labentry', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    ...formData, // Send the formData without _id
+                    sno: sno,
+                    labId: labs[0]._id,
+                    labReg: LabReg.nextLabReg,
+                }),
+            });
 
-      try {
-        const response = await fetch('https://khmc-xdlm.onrender.com/api/labentry', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            ...formData, // Send the formData without _id
-            sno: sno,
-            labId: labs[0]._id,
-            labReg: LabReg.nextLabReg,
-          }),
+            if (response.ok) {
+                alert('Lab log submitted successfully!');
 
-        });
+                // Run createFilteredOutput after successful lab log submission
+                const filteredResults = createFilteredOutput(selectedTestbyUser, incentiveTypeData, selectedReffby._id);
+                
+                // Submit each filtered entry to the incentiveReport API
+                for (const entry of filteredResults) {
+                    try {
+                        const incentiveResponse = await fetch('https://khmc-xdlm.onrender.com/api/incentiveReport', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(entry),
+                        });
 
-        if (response.ok) {
-          alert(sno, 'Lab log submitted successfully!');
-          setFormData({
-            sno: '',
-            labId: '',
-            labReg: '',
-            patientName: '',
-            careofstatus: '',
-            careofName: '',
-            address: '',
-            city: '',
-            mobile: '',
-            email: '',
-            category: '',
-            agetype: '',
-            age: '',
-            aadharnumber: '',
-            reffby: '',
-            remarks: '',
-            payment: '',
-            discountType: '',
-            discount: '',
-            totalamount: '',
-            recivedamount: '',
-            dueamount: '',
-            sampledate: '',
-            tests: [],
-          });
-          window.location.reload();
-        } else {
-          alert('Failed to submit lab log');
+                        if (!incentiveResponse.ok) {
+                            console.error(`Failed to submit incentive report for testId: ${entry.testid}`);
+                        }
+                    } catch (error) {
+                        console.error('Error submitting incentive report:', error);
+                    }
+                }
+
+                // Reset the form data after submission
+                setFormData({
+                    sno: '',
+                    labId: '',
+                    labReg: '',
+                    patientName: '',
+                    careofstatus: '',
+                    careofName: '',
+                    address: '',
+                    city: '',
+                    mobile: '',
+                    email: '',
+                    category: '',
+                    agetype: '',
+                    age: '',
+                    aadharnumber: '',
+                    reffby: '',
+                    remarks: '',
+                    payment: '',
+                    discountType: '',
+                    discount: '',
+                    totalamount: '',
+                    recivedamount: '',
+                    dueamount: '',
+                    sampledate: '',
+                    tests: [],
+                });
+                window.location.reload();
+            } else {
+                alert('Failed to submit lab log');
+            }
+        } catch (error) {
+            console.error('Error submitting lab log:', error);
         }
-      } catch (error) {
-        console.error('Error submitting lab log:', error);
-      }
     }
-  };
-
+};
   // Handle deleting a lab log
   const handleDelete = async () => {
     if (selectedLabId) {
@@ -342,7 +448,7 @@ const LablogsP = () => {
     <>
       <Topbar />
       <div className="container-fluid p-0 page-body-wrapper">
-      {/* <SideNavbar /> */}
+        {/* <SideNavbar /> */}
         <div className="main-panel">
           <div className="content-wrapper">
             <div className="page-header">
@@ -353,6 +459,10 @@ const LablogsP = () => {
                 Lab Logs {patientid}
               </h3>
             </div>
+
+            {console.log(selectedTestbyUser,"selectedTestbyUser 123")}
+            {console.log(incentiveTypeData,"incentiveTypeData 123")}
+            {console.log(selectedReffby,"selectedReffby 123")}
 
             <div className="row">
               <div className="col-4">
@@ -383,7 +493,9 @@ const LablogsP = () => {
               <div className="col-8">
                 <div className="card">
                   <div className="card-body">
-                  <h2 className='pb-2'> Patient Entry Pathology </h2>
+                    <h2 className='pb-2'> Patient Entry Pathology </h2>
+
+                    <button onClick={handleButtonClick}>Click Me</button>
                     <form onSubmit={handleSubmit}>
                       <div className="form-group">
 
@@ -393,7 +505,7 @@ const LablogsP = () => {
                       </div>
                       <div className="form-group row">
 
-{console.log(formData, "formData Print Check")}
+                        {console.log(formData, "formData Print Check")}
                         <div className="col-md-3 col-12">
                           <label className="my-2">Lab Reg No.</label>
                           <div className="input-group">
@@ -572,7 +684,7 @@ const LablogsP = () => {
                           <label className="my-2">Referred By</label>
                           <select
                             value={formData.reffby}
-                            onChange={handleChange}
+                            onChange={handleReffbyChange}
                             name='reffby'
                             className='form-control'>
                             <option value=''>Select Reff</option>
@@ -697,6 +809,7 @@ const LablogsP = () => {
                             value={formData.sampledate}
                             onChange={handleChange}
                             className="form-control"
+                            required
                           />
                         </div>
 
@@ -745,7 +858,7 @@ const LablogsP = () => {
                           className="btn btn-light"
                           onClick={() => {
                             setFormData({
-                              
+
                               patientName: '',
                               careofstatus: '',
                               careofName: '',

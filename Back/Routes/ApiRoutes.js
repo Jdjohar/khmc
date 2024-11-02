@@ -29,6 +29,8 @@ const Reffby = require('../models/Reffby')
 const Ward = require('../models/Ward')
 const Bed = require('../models/Bed')
 const Bill = require('../models/Receipts')
+const IncentiveType = require('../models/IncentiveType')
+const IncentiveReport = require('../models/IncentiveEntries')
 const LabTestBill = require('../models/LabTestBills')
 const Plog = require('../models/Plog')
 const crypto = require('crypto');
@@ -1949,6 +1951,128 @@ router.delete('/labtestbills/:id', async (req, res) => {
             return res.status(404).json({ error: 'Bill not found' });
         }
         res.status(200).json({ message: 'Bill deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+// Create a new IncentiveType 
+router.post('/incentiveType', async (req, res) => {
+    try {
+        const newincentiveType = new IncentiveType(req.body);  // Create a new instance of incentiveType with request data
+        const savedincentiveType = await newincentiveType.save();  // Save the incentiveType to the database
+        res.status(201).json(savedincentiveType);  // Send back the saved incentiveType
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Get all incentiveTypes
+router.get('/incentiveType', async (req, res) => {
+    try {
+        const incentiveTypes = await IncentiveType.find();  // Fetch all incentiveTypes, populate patient details
+        res.status(200).json(incentiveTypes);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get a single incentiveType by ID
+router.get('/incentiveType/:id', async (req, res) => {
+    try {
+        const incentiveType = await IncentiveType.findById(req.params.id);
+        if (!incentiveType) {
+            return res.status(404).json({ error: 'incentiveType not found' });
+        }
+        res.status(200).json(incentiveType);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Update a incentiveType by ID
+router.put('/incentiveType/:id', async (req, res) => {
+    try {
+        const updatedincentiveType = await IncentiveType.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!updatedincentiveType) {
+            return res.status(404).json({ error: 'incentiveType not found' });
+        }
+        res.status(200).json(updatedincentiveType);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Delete a incentiveType by ID
+router.delete('/incentiveType/:id', async (req, res) => {
+    try {
+        const deletedincentiveType = await IncentiveType.findByIdAndDelete(req.params.id);
+        if (!deletedincentiveType) {
+            return res.status(404).json({ error: 'incentiveType not found' });
+        }
+        res.status(200).json({ message: 'incentiveType deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+// Create a new IncentiveType 
+router.post('/incentiveReport', async (req, res) => {
+    try {
+        const newincentiveReport = new IncentiveReport(req.body);  // Create a new instance of incentiveReport with request data
+        const savedincentiveReport = await newincentiveReport.save();  // Save the incentiveReport to the database
+        res.status(201).json(savedincentiveReport);  // Send back the saved incentiveReport
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Get all incentiveReports
+router.get('/incentiveReport', async (req, res) => {
+    try {
+        const incentiveReports = await IncentiveReport.find();  // Fetch all incentiveReports, populate patient details
+        res.status(200).json(incentiveReports);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get a single incentiveReport by ID
+router.get('/incentiveReport/:id', async (req, res) => {
+    try {
+        const incentiveReport = await IncentiveReport.findById(req.params.id);
+        if (!incentiveReport) {
+            return res.status(404).json({ error: 'incentiveReport not found' });
+        }
+        res.status(200).json(incentiveReport);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Update a incentiveReport by ID
+router.put('/incentiveReport/:id', async (req, res) => {
+    try {
+        const updatedincentiveReport = await IncentiveReport.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!updatedincentiveReport) {
+            return res.status(404).json({ error: 'incentiveReport not found' });
+        }
+        res.status(200).json(updatedincentiveReport);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Delete a incentiveReport by ID
+router.delete('/incentiveReport/:id', async (req, res) => {
+    try {
+        const deletedincentiveReport = await IncentiveReport.findByIdAndDelete(req.params.id);
+        if (!deletedincentiveReport) {
+            return res.status(404).json({ error: 'incentiveReport not found' });
+        }
+        res.status(200).json({ message: 'incentiveReport deleted successfully' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

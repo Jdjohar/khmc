@@ -14,6 +14,10 @@ const TestDetailSchema = new Schema({
         type: String,
         required: false // This field is required
     },
+    TestComment: {
+        type: String,
+        required: false, // This field is required
+    },
     NormalRange: {}
 });
 
@@ -33,6 +37,10 @@ const TestNameSchema = new Schema({
     TestCode: {
         type: String,
         required: true, // This field is required
+    },
+    Comment: {
+        type: String,
+        required: false, // This field is required
     },
     AadharCard: {
         type: Boolean,

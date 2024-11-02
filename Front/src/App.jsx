@@ -44,9 +44,8 @@ import {
 } from './screens/CommanMaster/index'
 import {
   TestCat
-
-
 } from './screens/Test/index'
+import { IncentiveList, IncentiveType } from './screens/Incentive'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -88,6 +87,8 @@ function App() {
     <Route exact path='/master/testComment/:id' element={<LabTestComments />}/>
 
     <Route exact path='/master/testCat/' element={<TestCat />}/>
+    <Route exact path='/master/incentiveType/' element={<IncentiveType />}/>
+    <Route exact path='/master/incentiveList/' element={<IncentiveList />}/>
     </Routes>
 
     </Router>

@@ -46,10 +46,12 @@ const labentrys = () => {
   const navigate = useNavigate();
   
   // Create `testOptions` by mapping over `test` state
-  const testOptions = tests.map(t => ({
-    value: t._id, // Use unique ID as value
-    label: t.TestName // Use TestName as label
-  }));
+  const testOptions = tests
+    .filter(t => t.Department === "radiology") // Filter tests by department
+    .map(t => ({
+      value: t._id, // Use unique ID as value
+      label: t.TestName // Use TestName as label
+    }));
 
   // Helper to format date as YYYY-MM-DD (to compare only by day)
   const formatDate = (date) => {

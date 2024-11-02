@@ -154,6 +154,24 @@ const Topbar = () => {
                   </li>
                   <li>
                     <Link className="dropdown-item" to="#">
+                      Incentive &raquo;
+                    </Link>
+                    <ul className="submenu dropdown-menu">
+                      <li>
+                        <Link className="dropdown-item" to="/master/incentiveType">
+                          Incentive Type
+                        </Link>
+                      </li>
+                      <li>
+                        <Link className="dropdown-item" to="/master/incentiveList">
+                        Incentive List
+                        </Link>
+                      </li>
+                     
+                    </ul>
+                  </li>
+                  <li>
+                    <Link className="dropdown-item" to="#">
                       Investigation &raquo;
                     </Link>
                     <ul className="submenu dropdown-menu">

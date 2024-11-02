@@ -14,6 +14,10 @@ const ReffbySchema = new Schema({
         type: String,
         
     },
+    incentiveType: {
+        type: String,
+        
+    },
     status: {
         type: String,
         enum: ['active', 'inactive'],
@@ -86,7 +90,7 @@ const ReffbySchema = new Schema({
         },
         incentiveType: {
             type: String,
-            enum: ['fixed', 'percentage']
+            // enum: ['fixed', 'percentage']
         },
         incentiveValue: {
             type: Number

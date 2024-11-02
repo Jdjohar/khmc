@@ -237,6 +237,14 @@ const LablogResultP = () => {
         const labelWidth = 40;
         let currentY = topMargin;
     
+        // Function to check if new page is needed
+        const checkPageOverflow = () => {
+            if (currentY > maxY) {
+                doc.addPage();
+                currentY = topMargin;
+            }
+        };
+    
         // Left side (Patient Details)
         doc.text('Patient Name:', leftStart, currentY);
         doc.text(`${value.patientName}`, leftStart + labelWidth, currentY);
@@ -293,16 +301,16 @@ const LablogResultP = () => {
     
         // Loop through each category and render test details grouped by category
         Object.entries(groupedTestDetails).forEach(([catId, tests]) => {
-            const categoryName = categoryMap[catId]?.categoryname || "Unknown Category";
-            const description = categoryMap[catId]?.description || "No description available"
+            const categoryName = categoryMap[catId]?.categoryname || "Category Missing!";
+            const description = categoryMap[catId]?.description || "";
             
             // Render Category Name as a heading
             doc.setFontSize(12);
             doc.text(categoryName, leftStart, currentY);
             doc.setFontSize(10);
             currentY += lineHeight;
-            doc.text( stripHtml(description).result, leftStart, currentY);
-           
+            doc.text(stripHtml(description).result, leftStart, currentY);
+            
             currentY += lineHeight + 2;
     
             // Render table header for test details
@@ -316,6 +324,9 @@ const LablogResultP = () => {
                 // Print the TestName as a subheader
                 doc.text(test.TestName || "N/A", leftStart, currentY);
                 currentY += lineHeight + 2;
+    
+                // Check for page overflow
+                checkPageOverflow();
     
                 // Check if testDetails exists and is an array
                 if (Array.isArray(test.testDetails) && test.testDetails.length > 0) {
@@ -338,20 +349,50 @@ const LablogResultP = () => {
                         doc.text(detail.Unit || "N/A", leftStart + 120, currentY);
                         doc.text(`${normalRange.start || "N/A"} - ${normalRange.end || "N/A"}`, leftStart + 160, currentY);
                         currentY += lineHeight;
+    
+                        // Print TestComment below Normal Range
+                        if (detail.TestComment) {
+                            doc.setFontSize(8); // Adjust font size if needed for the comment
+                            const wrappedTestComment = doc.splitTextToSize(stripHtml(detail.TestComment).result, 40);
+                            doc.text(wrappedTestComment, leftStart + 160, currentY);
+                            doc.setFontSize(10); // Reset to default font size
+                            currentY += lineHeight * wrappedTestComment.length + 2;
+                        }
+    
+                        // Check for page overflow after TestComment
+                        checkPageOverflow();
+    
+                        // Print Comment below the test block, if available
+                        if (test.Comment) {
+                            doc.setFontSize(8); // Adjust font size if needed for the comment
+                            const wrappedComment = doc.splitTextToSize(stripHtml(test.Comment).result, textWidth);
+                            doc.text(wrappedComment, leftStart, currentY);
+                            doc.setFontSize(10); // Reset to default font size
+                            currentY += lineHeight * wrappedComment.length + 5; // Adjust spacing after Comment
+                        }
+    
+                        // Check for page overflow after each detail and comment
+                        checkPageOverflow();
                     });
                 } else {
                     doc.text("No details available", leftStart, currentY);
                     currentY += lineHeight;
                 }
                 currentY += 5; // Space after each test block for readability
+    
+                // Check for page overflow after each test
+                checkPageOverflow();
             });
     
             // Add space after each category block
             currentY += 10;
+            checkPageOverflow();
         });
     
         return doc.output('blob');
     };
+    
+    
     
     const createLabTestBill = async (patientData, tests) => {
         console.log(patientData, "jsdkjdffd dfklldfn fdf");
@@ -655,10 +696,13 @@ const LablogResultP = () => {
     {console.log(testDetail, "testDetail")}
     {Object.entries(groupedTestDetails).map(([catId, tests]) => (
         <React.Fragment key={catId}>
+            {console.log(tests,"tests tests")}
             <tr>
                 <td colSpan="6">
-                    <strong>Category: {categoryMap[catId]?.categoryname || "Unknown Category"}</strong>
-                    <div className='information-content' dangerouslySetInnerHTML={{ __html: categoryMap[catId]?.description || "No description available" }} />
+                    <p className='py-2'><strong>Category: {categoryMap[catId]?.categoryname || "Unknown Category"}</strong></p>
+                   
+                    
+                    <div className='information-content' dangerouslySetInnerHTML={{ __html: categoryMap[catId]?.description || "" }} />
                     {/* <div>{categoryMap[catId]?.description || "No description available"}</div> */}
                 </td>
             </tr>
@@ -676,6 +720,7 @@ const LablogResultP = () => {
                             const outOfRange = isValueOutOfRange(resultValue, normalRange);
 
                             return (
+                                <>
                                 <tr key={detail._id}>
                                     <td></td>
                                     <td></td>
@@ -691,8 +736,14 @@ const LablogResultP = () => {
                                     <td>{detail.Unit || "N/A"}</td>
                                     <td>
                                         {normalRange.start || "N/A"} - {normalRange.end || "N/A"}
+                                        <div className='information-content' dangerouslySetInnerHTML={{ __html: detail.TestComment || "" }} />
                                     </td>
                                 </tr>
+                                <tr>
+                                <div className='information-content w-100' dangerouslySetInnerHTML={{ __html: test.Comment || "" }} />
+                                </tr>
+                                
+                                </>
                             );
                         })
                     ) : (
@@ -708,6 +759,7 @@ const LablogResultP = () => {
 
                                         </table>
                                     )}
+                                    <button onClick={handleSubmit} className="btn btn-primary mt-4"> Update Results </button>
                                     {prescriptionPdfUrl ? '' : <button onClick={handleSubmit} className="btn btn-primary mt-4"> Update Results </button>
                                     }
                                     {billPdfUrl && <a className="btn btn-primary mt-4" href={billPdfUrl} target="_blank" rel="noopener noreferrer">Print Bill Result</a>}
