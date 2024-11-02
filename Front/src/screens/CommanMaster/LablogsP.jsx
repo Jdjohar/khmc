@@ -188,7 +188,7 @@ const LablogsP = () => {
     // Update the form data
     setFormData(prevState => ({
         ...prevState,
-        refTo: selectedReffbyName
+        reffby: selectedReffbyName
     }));
 
     // Update the selectedReffby state with the selected doctor object
