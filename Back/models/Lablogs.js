@@ -16,6 +16,10 @@ const LabSchema = new Schema({
         type: Number,
         required: true
     },
+    uhid: {
+        type: String,
+        required: false
+    },
     patientName: {
         type: String,
         required: true

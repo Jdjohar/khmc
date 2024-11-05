@@ -1225,6 +1225,7 @@ router.post('/labentry', async (req, res) => {
         // Create a new lab entry
         const newlabentry = new Labentry({
             ...req.body,
+            _id: undefined, // Remove the _id if it's being passed in
             serialNumber: nextSerialNumber // Assign the serial number
         });
 
@@ -1238,6 +1239,8 @@ router.post('/labentry', async (req, res) => {
         });
     } catch (err) {
         // Respond with error
+        console.log(err);
+        
         res.status(400).json({ error: err.message });
     }
 });
@@ -2078,5 +2081,67 @@ router.delete('/incentiveReport/:id', async (req, res) => {
     }
 });
 
+router.get('/incentiveReportFilter', async (req, res) => {
+    try {
+      const { startDate, endDate } = req.query;
+  
+      // Build a query object for filtering by date if startDate and endDate are provided
+      const query = {};
+      if (startDate && endDate) {
+        query.date = {
+          $gte: new Date(startDate),
+          $lte: new Date(endDate)
+        };
+      }
+  
+      // Query the database for matching reports
+      const reports = await IncentiveReport.find(query);
+  
+      res.status(200).json(reports);
+    } catch (error) {
+      console.error('Error fetching incentive report:', error);
+      res.status(500).json({ message: 'Error fetching incentive report' });
+    }
+  });
+
+//   router.put('/incentiveReportFilter/:id', async (req, res) => {
+//     const { id } = req.params;
+//     const { incStatus, incAmount } = req.body;
+
+//     try {
+//         // Find the report entry by ID and update the incStatus field
+//         const updatedReport = await IncentiveReport.findByIdAndUpdate(
+//             id,
+//             { incStatus, incAmount },
+//             { new: true } // Return the updated document
+//         );
+
+//         if (!updatedReport) {
+//             return res.status(404).json({ message: 'Report entry not found' });
+//         }
+
+//         res.status(200).json(updatedReport);
+//     } catch (error) {
+//         console.error("Error updating incStatus:", error);
+//         res.status(500).json({ message: 'Failed to update incStatus or incAmount' });
+//     }
+// });
+
+router.put('/incentiveReportFilter/:id', async (req, res) => {
+    const { incStatus, incAmount } = req.body;
+    try {
+        const report = await Report.findById(req.params.id);
+        if (!report) {
+            return res.status(404).send('Report not found');
+        }
+        report.incStatus = incStatus; // Assuming incStatus is a boolean
+        report.incAmount = incAmount; // Update the incentive amount
+        await report.save();
+        res.send(report);
+    } catch (error) {
+        console.error("Error updating report:", error);
+        res.status(500).send('Server error');
+    }
+});
 
 module.exports = router;

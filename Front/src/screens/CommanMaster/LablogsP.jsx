@@ -24,6 +24,7 @@ const LablogsP = () => {
     age: '',
     aadharnumber: '',
     reffby: '',
+    reffto: '',
     remarks: '',
     payment: '',
     discountType: '',
@@ -81,7 +82,8 @@ const LablogsP = () => {
             careofstatus: data.gStatus,
             careofName: data.guardianName,
             category: data.gender,
-            reffby: data.refTo,
+            reffby: data.refBy,
+            reffto:data.refTo || '-',
             tests: [], // Ensure 'tests' is set to an empty array (or based on your need)
           }));
 
@@ -179,16 +181,16 @@ const LablogsP = () => {
   const handleReffbyChange = async (e) => {
     const selectedReffbyName = e.target.value;
     console.log(Reffby, selectedReffbyName);
-    
+
     // Find the selected doctor object based on the selected name
     const selectedReffbyObj = Reffby.find(doctor => doctor.doctorName === selectedReffbyName);
-    
+
     console.log(selectedReffbyObj, "selectedReffbyObj");
-    
+
     // Update the form data
     setFormData(prevState => ({
-        ...prevState,
-        reffby: selectedReffbyName
+      ...prevState,
+      reffby: selectedReffbyName
     }));
 
     // Update the selectedReffby state with the selected doctor object
@@ -196,21 +198,23 @@ const LablogsP = () => {
 
     // If the selected doctor object exists, fetch the incentive type data
     if (selectedReffbyObj && selectedReffbyObj._id) {
-        try {
-            const response = await fetch(`https://khmc-xdlm.onrender.com/api/incentiveType/${selectedReffbyObj.incentiveType}`);
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const data = await response.json();
-            console.log(data,"data ======");
-            
-            // Store the retrieved data in setIncentiveTypeData
-            setIncentiveTypeData(data);
-        } catch (error) {
-            console.error('Error fetching incentive type data:', error);
+      console.log(selectedReffbyObj, "sdsd sd Next");
+      
+      try {
+        const response = await fetch(`https://khmc-xdlm.onrender.com/api/incentiveType/${selectedReffbyObj.incentiveType}`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
         }
+        const data = await response.json();
+        console.log(data, "data ======");
+
+        // Store the retrieved data in setIncentiveTypeData
+        setIncentiveTypeData(data);
+      } catch (error) {
+        console.error('Error fetching incentive type data:', error);
+      }
     }
-};
+  };
 
 
 
@@ -233,8 +237,8 @@ const LablogsP = () => {
   // Handle changes in the select dropdown
   const handleTestChange = (selectedOptions) => {
 
-    console.log(incentiveTypeData,"from Test Select ");
-    
+    console.log(incentiveTypeData, "from Test Select ");
+
     // Map selected options to only include their `value` (which is _id)
     const selectedTests = selectedOptions ? selectedOptions.map(option => option.value) : [];
 
@@ -258,38 +262,67 @@ const LablogsP = () => {
   };
 
   // Handle changes in the select dropdown
-  const createFilteredOutput = (selectedTestbyUser, incentiveTypeData, selectedReffbyId) => {
-    // Map through each selected test ID
+  const createFilteredOutput = (selectedTestbyUser, formData, incentiveTypeData, selectedReffbyId) => {
+    console.log("Creating Filtered Output");
+    console.log("Selected Tests by User:", selectedTestbyUser);
+    console.log("Form Data Inside createFilteredOutput:", formData);
+    console.log("Incentive Type Data:", incentiveTypeData);
+    console.log("Selected Reffby ID:", selectedReffbyId);
+
+    // Ensure incentiveTypeData and typeTests exist
+    if (!incentiveTypeData || !Array.isArray(incentiveTypeData.typeTests)) {
+        console.error("incentiveTypeData or incentiveTypeData.typeTests is undefined or not an array");
+        return [];  // Return an empty array if the data is missing
+    }
+
+    const today = new Date();
+    const todayDateOnly = today.toISOString().split('T')[0];
+    
     return selectedTestbyUser.map(testId => {
         // Find the matching test object in incentiveTypeData.typeTests
         const matchingTest = incentiveTypeData.typeTests.find(test => test.TestId === testId);
-        
-        // If a matching test is found, format it as needed
+
         if (matchingTest) {
             return {
                 TesttypeId: incentiveTypeData._id,
+                patientName: formData.patientName,
+                date: todayDateOnly,
+                regno: formData.labReg,
+                // receiveAmt:formData.receivedAmount,
+                // due:formData.dueamount,
+                // discount: formData.discount,
+                incStatus: false,
                 Reffby: selectedReffbyId,
+                Reffto: formData.reffto,
                 testid: testId,
-                amount: matchingTest.TestIncentiveValue
+                amount: matchingTest.TestPrice,
+                incAmount: matchingTest.TestIncentiveValue,
             };
         }
-
-        // If no match is found, return null (we'll filter these out later)
+        
+        // If no match is found, return null
         return null;
-    }).filter(result => result !== null); // Remove any null entries in case no match is found
+    }).filter(result => result !== null); // Remove any null entries
 };
-const handleButtonClick = () => {
-  const result = createFilteredOutput(selectedTestbyUser, incentiveTypeData, selectedReffby._id);
-  
-  // Print each entry in the result array to the console
-  result.forEach(entry => {
-      console.log("TesttypeId:", entry.TesttypeId);
-      console.log("Reffby:", entry.Reffby);
-      console.log("testid:", entry.testid);
-      console.log("amount:", entry.amount);
-      console.log("----"); // Separator for readability between entries
-  });
-};
+
+  const handleButtonClick = () => {
+    console.log("Button Clicked");
+    console.log("Selected Tests by User:", selectedTestbyUser);
+    console.log("Form Data:", formData);
+    console.log("Incentive Type Data:", incentiveTypeData);
+    console.log("Selected Reffby ID:", selectedReffby._id);
+
+
+    const result = createFilteredOutput(selectedTestbyUser, formData, incentiveTypeData, selectedReffby._id);
+
+    if (result && result.length) {
+      result.forEach(entry => {
+        console.log("Filtered Output Entry:", entry);
+      });
+    } else {
+      console.log("No valid entries generated.");
+    }
+  };
 
 
 
@@ -298,103 +331,116 @@ const handleButtonClick = () => {
     e.preventDefault();
 
     if (selectedLabId) {
-        // Update lab log
-        try {
-            const response = await fetch(`https://khmc-xdlm.onrender.com/api/labentry/${selectedLabId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            });
+      // Update lab log
+      try {
+        const response = await fetch(`https://khmc-xdlm.onrender.com/api/labentry/${selectedLabId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
 
-            if (response.ok) {
-                alert('Lab log updated successfully!');
-                setSelectedLabId(null);
-                window.location.reload();
-            } else {
-                alert('Failed to update lab log');
-            }
-        } catch (error) {
-            console.error('Error updating lab log:', error);
+        if (response.ok) {
+          alert('Lab log updated successfully!');
+          setSelectedLabId(null);
+          window.location.reload();
+        } else {
+          alert('Failed to update lab log');
         }
+      } catch (error) {
+        console.error('Error updating lab log:', error);
+      }
     } else {
-        // Add new lab log
-        try {
-            const response = await fetch('https://khmc-xdlm.onrender.com/api/labentry', {
+      // Add new lab log
+      try {
+        const response = await fetch('https://khmc-xdlm.onrender.com/api/labentry', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ...formData, // Send the formData without _id
+            sno: sno,
+            labId: labs[0]._id,
+            labReg: LabReg.nextLabReg,
+          }),
+        });
+
+        if (response.ok) {
+          alert('Lab log submitted successfully!');
+          if (!selectedTestbyUser || !formData || !incentiveTypeData || !selectedReffby._id) {
+            console.error("Missing required data for creating filtered output");
+            return;
+        }
+          // Run createFilteredOutput after successful lab log submission
+          const filteredResults = createFilteredOutput(selectedTestbyUser, formData, incentiveTypeData, selectedReffby._id);
+
+          console.log(incentiveTypeData,"incentiveTypeData sddsds sdfs");
+          
+          if (filteredResults && filteredResults.length) {
+            filteredResults.forEach(entry => {
+                console.log("Filtered Output Entry:", entry);
+            });
+        } else {
+            console.log("No valid entries generated.");
+        }
+          // Submit each filtered entry to the incentiveReport API
+          for (const entry of filteredResults) {
+            try {
+              const incentiveResponse = await fetch('https://khmc-xdlm.onrender.com/api/incentiveReport', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                  'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    ...formData, // Send the formData without _id
-                    sno: sno,
-                    labId: labs[0]._id,
-                    labReg: LabReg.nextLabReg,
-                }),
-            });
+                body: JSON.stringify(entry),
+              });
 
-            if (response.ok) {
-                alert('Lab log submitted successfully!');
-
-                // Run createFilteredOutput after successful lab log submission
-                const filteredResults = createFilteredOutput(selectedTestbyUser, incentiveTypeData, selectedReffby._id);
-                
-                // Submit each filtered entry to the incentiveReport API
-                for (const entry of filteredResults) {
-                    try {
-                        const incentiveResponse = await fetch('https://khmc-xdlm.onrender.com/api/incentiveReport', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify(entry),
-                        });
-
-                        if (!incentiveResponse.ok) {
-                            console.error(`Failed to submit incentive report for testId: ${entry.testid}`);
-                        }
-                    } catch (error) {
-                        console.error('Error submitting incentive report:', error);
-                    }
-                }
-
-                // Reset the form data after submission
-                setFormData({
-                    sno: '',
-                    labId: '',
-                    labReg: '',
-                    patientName: '',
-                    careofstatus: '',
-                    careofName: '',
-                    address: '',
-                    city: '',
-                    mobile: '',
-                    email: '',
-                    category: '',
-                    agetype: '',
-                    age: '',
-                    aadharnumber: '',
-                    reffby: '',
-                    remarks: '',
-                    payment: '',
-                    discountType: '',
-                    discount: '',
-                    totalamount: '',
-                    recivedamount: '',
-                    dueamount: '',
-                    sampledate: '',
-                    tests: [],
-                });
-                window.location.reload();
-            } else {
-                alert('Failed to submit lab log');
+              if (!incentiveResponse.ok) {
+                console.error(`Failed to submit incentive report for testId: ${entry.testid}`);
+              }
+            } catch (error) {
+              console.error('Error submitting incentive report:', error);
             }
-        } catch (error) {
-            console.error('Error submitting lab log:', error);
+          }
+
+          // Reset the form data after submission
+          setFormData({
+            sno: '',
+            labId: '',
+            labReg: '',
+            patientName: '',
+            careofstatus: '',
+            careofName: '',
+            address: '',
+            city: '',
+            mobile: '',
+            email: '',
+            category: '',
+            agetype: '',
+            age: '',
+            aadharnumber: '',
+            reffby: '',
+            reffto: '',
+            remarks: '',
+            payment: '',
+            discountType: '',
+            discount: '',
+            totalamount: '',
+            recivedamount: '',
+            dueamount: '',
+            sampledate: '',
+            tests: [],
+          });
+          // window.location.reload();
+        } else {
+          alert('Failed to submit lab log');
         }
+      } catch (error) {
+        console.error('Error submitting lab log:', error);
+      }
     }
-};
+  };
   // Handle deleting a lab log
   const handleDelete = async () => {
     if (selectedLabId) {
@@ -460,9 +506,9 @@ const handleButtonClick = () => {
               </h3>
             </div>
 
-            {console.log(selectedTestbyUser,"selectedTestbyUser 123")}
-            {console.log(incentiveTypeData,"incentiveTypeData 123")}
-            {console.log(selectedReffby,"selectedReffby 123")}
+            {console.log(selectedTestbyUser, "selectedTestbyUser 123")}
+            {console.log(incentiveTypeData, "incentiveTypeData 123")}
+            {console.log(selectedReffby, "selectedReffby 123")}
 
             <div className="row">
               <div className="col-4">
@@ -871,6 +917,7 @@ const handleButtonClick = () => {
                               age: '',
                               aadharnumber: '',
                               reffby: '',
+                              reffto: '',
                               remarks: '',
                               payment: '',
                               discountType: '',

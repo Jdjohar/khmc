@@ -253,6 +253,34 @@ const Topbar = () => {
 
                 </ul>
               </li>
+              <li className="nav-item dropdown" id="myDropdown">
+                <Link
+                  className="nav-link dropdown-toggle"
+                  to="#"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  Reports
+                </Link>
+                <ul className="dropdown-menu">
+                  
+                  <li>
+                    <Link className="dropdown-item" to="#">
+                    Collection &raquo;
+                    </Link>
+                    <ul className="submenu dropdown-menu">
+                      <li>
+                        <Link className="dropdown-item" to="/master/refincSummary">
+                        Ref.Inc.Summary
+                        </Link>
+                      </li>
+                    
+                    </ul>
+                  </li>
+                  
+
+                </ul>
+              </li>
             </ul>
           </div>
         </div>

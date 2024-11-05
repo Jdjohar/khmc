@@ -46,6 +46,8 @@ import {
   TestCat
 } from './screens/Test/index'
 import { IncentiveList, IncentiveType } from './screens/Incentive'
+import { RefIncSummary, ShowReport } from './screens/Reports'
+
 
 function App() {
   const [count, setCount] = useState(0)
@@ -89,6 +91,8 @@ function App() {
     <Route exact path='/master/testCat/' element={<TestCat />}/>
     <Route exact path='/master/incentiveType/' element={<IncentiveType />}/>
     <Route exact path='/master/incentiveList/' element={<IncentiveList />}/>
+    <Route exact path='/master/refincSummary/' element={<RefIncSummary />}/>
+    <Route exact path='/master/showReport/' element={<ShowReport />}/>
     </Routes>
 
     </Router>

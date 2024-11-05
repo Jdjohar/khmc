@@ -11,10 +11,37 @@ const IncentiveEntriesSchema = new Schema({
     Reffby: {
         type: String
     },
+    Reffto: {
+        type: String
+    },
     testid: {
         type: String
     },
     amount: {
+        type: String
+    },
+    patientName: {
+        type: String
+    },
+    date: {
+        type: String
+    },
+    regno: {
+        type: String
+    },
+    discount: {
+        type: String
+    },
+    receiveAmt: {
+        type: String
+    },
+    due: {
+        type: String
+    },
+    incStatus: {
+        type: Boolean
+    },
+    incAmount: {
         type: String
     },
 })
