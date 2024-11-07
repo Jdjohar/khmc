@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Topbar from '../component/TopNavBar';
 import Select from 'react-select';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 const RefIncSummary = () => {
     const [reffByOptions, setReffByOptions] = useState([]);
@@ -121,7 +123,43 @@ const RefIncSummary = () => {
     };
 
     const { totalAmount: calculatedTotalAmount, totalIncentiveAmount: calculatedTotalIncentiveAmount } = calculateTotals();
+ // PDF Generation function
+ const generatePDF = () => {
+    const doc = new jsPDF();
+    doc.text("Referral Incentive Summary Report", 14, 10);
+    doc.setFontSize(12);
+    doc.text(`Date Range: ${startDate} - ${endDate}`, 14, 18);
 
+    const tableRows = [];
+    reports.forEach(report => {
+        const rowData = [
+            report.date,
+            report.regno,
+            report.patientName,
+            report.amount,
+            report.discount,
+            report.receiveAmount || '0',
+            report.incAmount || 'No Data',
+            report.due || '0',
+            getReffByName(report.Reffby || 'No Data'),
+            getTestName(report.testid || 'No Data')
+        ];
+        tableRows.push(rowData);
+    });
+
+    doc.autoTable({
+        head: [['Date', 'Reg.No', 'Patient Name', 'Amount', 'Discount', 'Receive Amount', 'Incentive', 'Due', 'Ref.By', 'Test Name']],
+        body: tableRows,
+        startY: 25,
+    });
+
+    doc.autoTable({
+        head: [['', '', 'Total Amount', calculatedTotalAmount, '', 'Total Incentive', calculatedTotalIncentiveAmount, '', '', '']],
+        startY: doc.autoTable.previous.finalY + 10,
+    });
+
+    doc.save("Referral_Incentive_Summary_Report.pdf");
+};
     return (
         <>
             <Topbar />
@@ -196,6 +234,15 @@ const RefIncSummary = () => {
                                                 </button>
                                             </div>
                                         </form>
+
+                                        <div className="mt-4">
+                                            <button
+                                                className="btn btn-gradient-primary"
+                                                onClick={generatePDF}
+                                            >
+                                                Generate PDF
+                                            </button>
+                                        </div>
 
                                         {loading ? (
                                             <p>Loading reports...</p>

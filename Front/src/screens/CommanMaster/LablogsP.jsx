@@ -75,6 +75,7 @@ const LablogsP = () => {
           const data = await response.json();
           console.log(data, "Patient Data");
 
+
           // Update the form data with patient details
           setFormData((prevFormData) => ({
             ...prevFormData,  // Retain previous form data
@@ -83,9 +84,41 @@ const LablogsP = () => {
             careofName: data.guardianName,
             category: data.gender,
             reffby: data.refBy,
-            reffto:data.refTo || '-',
+            reffto: data.refTo || '-',
             tests: [], // Ensure 'tests' is set to an empty array (or based on your need)
           }));
+
+          const fetchAutoDoctor = await fetch('https://khmc-xdlm.onrender.com/api/reffby');
+          const reffdata = await fetchAutoDoctor.json();
+          console.log(reffdata, "reffdata Data");
+          // Find the selected doctor object based on the selected name
+          const selectedReffbyObj = reffdata.find(doctor => doctor.doctorName === data.refBy);
+
+          console.log(selectedReffbyObj, "selectedReffbyObj from USe Effect");
+
+          if (selectedReffbyObj && selectedReffbyObj._id) {
+            console.log(selectedReffbyObj, "sdsd sd Next");
+            // Update the selectedReffby state with the selected doctor object
+          setSelectedReffby(selectedReffbyObj || {});
+
+            try {
+              const response = await fetch(`https://khmc-xdlm.onrender.com/api/incentiveType/${selectedReffbyObj.incentiveType}`);
+              if (!response.ok) {
+                throw new Error('Network response was not ok');
+              }
+              const data = await response.json();
+              console.log(data, "data ====== from use effect");
+
+              // Store the retrieved data in setIncentiveTypeData
+              setIncentiveTypeData(data);
+            } catch (error) {
+              console.error('Error fetching incentive type data:', error);
+            }
+          }
+
+          
+
+          // If the selected doctor object exists, fetch the incentive type data
 
           setLoading(false); // Stop the loading state
         } catch (error) {
@@ -146,6 +179,8 @@ const LablogsP = () => {
         setGender(genderData);
         setReffby(reffbyData);
 
+
+
         console.log(reffbyData, "reffbyData");
 
         // Update form data with labReg while retaining the rest
@@ -180,7 +215,7 @@ const LablogsP = () => {
 
   const handleReffbyChange = async (e) => {
     const selectedReffbyName = e.target.value;
-    console.log(Reffby, selectedReffbyName);
+    console.log(Reffby, selectedReffbyName, "sdfd dsfdsfds");
 
     // Find the selected doctor object based on the selected name
     const selectedReffbyObj = Reffby.find(doctor => doctor.doctorName === selectedReffbyName);
@@ -199,7 +234,7 @@ const LablogsP = () => {
     // If the selected doctor object exists, fetch the incentive type data
     if (selectedReffbyObj && selectedReffbyObj._id) {
       console.log(selectedReffbyObj, "sdsd sd Next");
-      
+
       try {
         const response = await fetch(`https://khmc-xdlm.onrender.com/api/incentiveType/${selectedReffbyObj.incentiveType}`);
         if (!response.ok) {
@@ -271,39 +306,39 @@ const LablogsP = () => {
 
     // Ensure incentiveTypeData and typeTests exist
     if (!incentiveTypeData || !Array.isArray(incentiveTypeData.typeTests)) {
-        console.error("incentiveTypeData or incentiveTypeData.typeTests is undefined or not an array");
-        return [];  // Return an empty array if the data is missing
+      console.error("incentiveTypeData or incentiveTypeData.typeTests is undefined or not an array");
+      return [];  // Return an empty array if the data is missing
     }
 
     const today = new Date();
     const todayDateOnly = today.toISOString().split('T')[0];
-    
-    return selectedTestbyUser.map(testId => {
-        // Find the matching test object in incentiveTypeData.typeTests
-        const matchingTest = incentiveTypeData.typeTests.find(test => test.TestId === testId);
 
-        if (matchingTest) {
-            return {
-                TesttypeId: incentiveTypeData._id,
-                patientName: formData.patientName,
-                date: todayDateOnly,
-                regno: formData.labReg,
-                // receiveAmt:formData.receivedAmount,
-                // due:formData.dueamount,
-                // discount: formData.discount,
-                incStatus: false,
-                Reffby: selectedReffbyId,
-                Reffto: formData.reffto,
-                testid: testId,
-                amount: matchingTest.TestPrice,
-                incAmount: matchingTest.TestIncentiveValue,
-            };
-        }
-        
-        // If no match is found, return null
-        return null;
+    return selectedTestbyUser.map(testId => {
+      // Find the matching test object in incentiveTypeData.typeTests
+      const matchingTest = incentiveTypeData.typeTests.find(test => test.TestId === testId);
+
+      if (matchingTest) {
+        return {
+          TesttypeId: incentiveTypeData._id,
+          patientName: formData.patientName,
+          date: todayDateOnly,
+          regno: formData.labReg,
+          // receiveAmt:formData.receivedAmount,
+          // due:formData.dueamount,
+          // discount: formData.discount,
+          incStatus: false,
+          Reffby: selectedReffbyId,
+          Reffto: formData.reffto,
+          testid: testId,
+          amount: matchingTest.TestPrice,
+          incAmount: matchingTest.TestIncentiveValue,
+        };
+      }
+
+      // If no match is found, return null
+      return null;
     }).filter(result => result !== null); // Remove any null entries
-};
+  };
 
   const handleButtonClick = () => {
     console.log("Button Clicked");
@@ -369,22 +404,36 @@ const LablogsP = () => {
 
         if (response.ok) {
           alert('Lab log submitted successfully!');
-          if (!selectedTestbyUser || !formData || !incentiveTypeData || !selectedReffby._id) {
-            console.error("Missing required data for creating filtered output");
+          // Check each variable individually and log the missing ones
+          if (!selectedTestbyUser) {
+            console.error("Missing required data: selectedTestbyUser");
+          }
+          if (!formData) {
+            console.error("Missing required data: formData");
+          }
+          if (!incentiveTypeData) {
+            console.error("Missing required data: incentiveTypeData");
+          }
+          if (!selectedReffby || !selectedReffby._id) {
+            console.error("Missing required data: selectedReffby._id");
+          }
+
+          // If any of the conditions are missing, return to prevent further execution
+          if (!selectedTestbyUser || !formData || !incentiveTypeData || !selectedReffby || !selectedReffby._id) {
             return;
-        }
+          }
           // Run createFilteredOutput after successful lab log submission
           const filteredResults = createFilteredOutput(selectedTestbyUser, formData, incentiveTypeData, selectedReffby._id);
 
-          console.log(incentiveTypeData,"incentiveTypeData sddsds sdfs");
-          
+          console.log(incentiveTypeData, "incentiveTypeData sddsds sdfs");
+
           if (filteredResults && filteredResults.length) {
             filteredResults.forEach(entry => {
-                console.log("Filtered Output Entry:", entry);
+              console.log("Filtered Output Entry:", entry);
             });
-        } else {
+          } else {
             console.log("No valid entries generated.");
-        }
+          }
           // Submit each filtered entry to the incentiveReport API
           for (const entry of filteredResults) {
             try {

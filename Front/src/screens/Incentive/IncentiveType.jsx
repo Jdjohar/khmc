@@ -242,7 +242,22 @@ const IncentiveType = () => {
                                             {formData.typeTests.map((test, index) => (
                                                 <div key={index} className="form-group">
                                                     <label>Test Incentive Details for {tests.find(t => t._id === test.TestId)?.TestName}</label>
-                                                    <input
+                                                    <select
+                                                    className="form-control"
+                                                    value={test.TestIncentiveValueType}
+                                                    onChange={(e) =>
+                                                        handleTestFieldChange(index, 'TestIncentiveValueType', e.target.value)
+                                                    }
+                                                    >
+                                                        <option value="">Select Option</option>
+                                                        <option value="amount">Amount</option>
+                                                        <option value="percentage">Percentage</option>
+
+                                                    </select>
+
+
+                                                    
+                                                    {/* <input
                                                         type="text"
                                                         className="form-control"
                                                         placeholder="Incentive Value Type"
@@ -250,7 +265,7 @@ const IncentiveType = () => {
                                                         onChange={(e) =>
                                                             handleTestFieldChange(index, 'TestIncentiveValueType', e.target.value)
                                                         }
-                                                    />
+                                                    /> */}
                                                     <input
                                                         type="number"
                                                         className="form-control"
