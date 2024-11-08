@@ -121,6 +121,9 @@ const PatientReg = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedDoctor, setSelectedDoctor] = useState([]);
     const [findFormData, setfindFormData] = useState({ uhid: '', mobile: '' });
+    const [selectedReffby, setSelectedReffby] = useState([]);
+    const [selectedTestbyUser, setSelectedTestbyUser] = useState([]);
+    const [incentiveTypeData, setIncentiveTypeData] = useState([]);
 
 // Helper function to format the date and time
 const getCurrentDateTime = () => {
@@ -1155,6 +1158,44 @@ const getCurrentDateTime = () => {
             setbtnLoading(false);
         }
     };
+
+    const handleReffbyChange = async (e) => {
+        const selectedReffbyName = e.target.value;
+        console.log(Reffby, selectedReffbyName, "sdfd dsfdsfds");
+    
+        // Find the selected doctor object based on the selected name
+        const selectedReffbyObj = Reffby.find(doctor => doctor.doctorName === selectedReffbyName);
+    
+        console.log(selectedReffbyObj, "selectedReffbyObj");
+    
+        // Update the form data
+        setFormData(prevState => ({
+          ...prevState,
+          reffby: selectedReffbyName
+        }));
+    
+        // Update the selectedReffby state with the selected doctor object
+        setSelectedReffby(selectedReffbyObj || {});
+    
+        // If the selected doctor object exists, fetch the incentive type data
+        if (selectedReffbyObj && selectedReffbyObj._id) {
+          console.log(selectedReffbyObj, "sdsd sd Next");
+    
+          try {
+            const response = await fetch(`https://khmc-xdlm.onrender.com/api/incentiveType/${selectedReffbyObj.incentiveType}`);
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            console.log(data, "data ======");
+    
+            // Store the retrieved data in setIncentiveTypeData
+            setIncentiveTypeData(data);
+          } catch (error) {
+            console.error('Error fetching incentive type data:', error);
+          }
+        }
+      };
     
 
     return (
@@ -1960,7 +2001,8 @@ const getCurrentDateTime = () => {
                                                             <label for="exampleInputName1">Ref By <span className='text-danger'>*</span></label>
                                                             <select
                                                                 value={formData.refBy}
-                                                                onChange={handleChange}
+                                                                // onChange={handleChange}
+                                                                onChange={handleReffbyChange}
                                                                 name='refBy'
                                                                 className='form-control'>
                                                                 <option value=''>Select Reff</option>

@@ -133,7 +133,9 @@ const labentrys = () => {
         setLabs(labData);
         setTest(testData);
         setLabReg(labRegData);
-        setLabentry(labEntryData);
+        const testEntries = labEntryData.filter(entry => entry.testType === "Radiology");
+        setLabentry(testEntries);
+
         setGender(genderData);
         setReffby(reffbyData);
   
@@ -389,7 +391,7 @@ const labentrys = () => {
                       <div className="form-group">
 
 
-                        Lab SNo. {sno || 'Sno no found'}
+                      
 
                       </div>
                       <div className="form-group row">

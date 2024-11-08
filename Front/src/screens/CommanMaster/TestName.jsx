@@ -360,6 +360,7 @@ const TestName = () => {
                                                         <option>Select Department</option>
                                                         <option value="pathology">Pathology</option>
                                                         <option value="radiology">Radiology</option>
+                                                        <option value="both">Both</option>
 
                                                     </select>
 

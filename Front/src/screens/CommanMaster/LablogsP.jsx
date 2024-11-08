@@ -175,12 +175,11 @@ const LablogsP = () => {
         setLabs(labData);
         setTest(testData);
         setLabReg(labRegData);
-        setLabentry(labEntryData);
+
+        const testEntries = labEntryData.filter(entry => entry.testType === "Pathology");
+        setLabentry(testEntries);
         setGender(genderData);
         setReffby(reffbyData);
-
-
-
         console.log(reffbyData, "reffbyData");
 
         // Update form data with labReg while retaining the rest
@@ -815,14 +814,7 @@ const LablogsP = () => {
                             <option value='bank'>Bank</option>
                             <option value='upi'>UPI</option>
                           </select>
-                          {/* <input
-                            type="text"
-                            name="payment"
-                            value={formData.payment}
-                            onChange={handleChange}
-                            className="form-control"
-                            placeholder="Enter Payment"
-                          /> */}
+                         
                         </div>
                         <div className="col-md-3 col-12">
                           <label className="my-2">Discount Type</label>
