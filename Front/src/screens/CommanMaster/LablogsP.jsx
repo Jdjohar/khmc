@@ -9,7 +9,7 @@ const LablogsP = () => {
   const [formData, setFormData] = useState({
 
     labReg: '',
-    uhid:'',
+    uhid: '',
     sno: '',
     labId: '',
     patientName: '',
@@ -80,7 +80,16 @@ const LablogsP = () => {
           // Update the form data with patient details
           setFormData((prevFormData) => ({
             ...prevFormData,  // Retain previous form data
-            ...data,  // Overwrite with fetched patient data
+            // Overwrite with fetched patient data
+            patientName: data.patientName,
+            uhid: data.uhid,
+            address: data.address,
+            city: data.city,
+            mobile: data.mobile,
+            email: data.email,
+            agetype: data.agetype,
+            age: data.age,
+            aadharnumber: data.aadharnumber,
             careofstatus: data.gStatus,
             careofName: data.guardianName,
             category: data.gender,

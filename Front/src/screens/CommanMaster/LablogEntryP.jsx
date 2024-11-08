@@ -169,6 +169,8 @@ const LablogEntryP = () => {
                                                     </tr>
                                                 </thead>
                                                 <tbody id="patient-table-body">
+                                                {console.log(LabEntries, "LabEntries")
+                                                    }
                                                     {LabEntries.map((labtest) => (
                                                         <tr key={labtest._id}>
                                                             <td>

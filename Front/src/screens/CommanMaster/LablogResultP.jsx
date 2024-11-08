@@ -75,7 +75,7 @@ const LablogResultP = () => {
                 setCategories(categoriesData);
                 console.log("Categories received:", categoriesData);
 
-                
+
             } catch (error) {
                 console.error("Error fetching test result data:", error);
                 setError("Failed to fetch test result data.");
@@ -101,6 +101,8 @@ const LablogResultP = () => {
                 // Check if result data exists
                 if (TestEntryData && TestEntryData.length > 0 && TestEntryData[0].result) {
                     console.log(TestEntryData, "Test result data found, setting test details.");
+
+
                     setTestDetail(TestEntryData[0].result);
                     setPrescriptionPdfUrl(TestEntryData[0].documents[0].url);
                     setBillPdfUrl(TestEntryData[0].documents[1].url);
@@ -133,6 +135,8 @@ const LablogResultP = () => {
                 setPatientTestDetail(labEntryData);
 
                 const testIds = labEntryData.tests;
+                console.log(testIds,"testIds");
+                
                 setLabTests(testIds);
 
                 // Fetch test names and details
@@ -163,7 +167,7 @@ const LablogResultP = () => {
                 // Step 2: Set the grouped data in state
                 setGroupedTestDetails(groupedData);
                 console.log("Grouped test details by Catid:", groupedData);
-               
+
 
                 setLoading(false);
             } catch (error) {
@@ -172,7 +176,7 @@ const LablogResultP = () => {
                 setLoading(false);
             }
         };
-        
+
         billnogen();
         fetchCategory();
         fetchResultEntryP(); // Initiate the fetch process
@@ -230,13 +234,13 @@ const LablogResultP = () => {
         const maxY = pageHeight - bottomMargin;
         const textWidth = doc.internal.pageSize.width - 20;
         const lineHeight = 4;
-    
+
         doc.setFontSize(10);
-    
+
         const leftStart = 10;
         const labelWidth = 40;
         let currentY = topMargin;
-    
+
         // Function to check if new page is needed
         const checkPageOverflow = () => {
             if (currentY > maxY) {
@@ -244,97 +248,97 @@ const LablogResultP = () => {
                 currentY = topMargin;
             }
         };
-    
+
         // Left side (Patient Details)
         doc.text('Patient Name:', leftStart, currentY);
         doc.text(`${value.patientName}`, leftStart + labelWidth, currentY);
         currentY += lineHeight;
-    
+
         doc.text('Age/Gender:', leftStart, currentY);
         doc.text(`${value.age}/${value.category}`, leftStart + labelWidth, currentY);
         currentY += lineHeight;
-    
+
         doc.text('Consultant Dr:', leftStart, currentY);
         doc.text(`${value.reffby || 'no'}`, leftStart + labelWidth, currentY);
         currentY += lineHeight;
-    
+
         doc.text('Transaction Id:', leftStart, currentY);
         doc.text(`${value.labReg}`, leftStart + labelWidth, currentY);
         currentY += 10;
-    
+
         // Right side (OPD Details)
         const rightStart = 120;
         currentY = topMargin;
-    
+
         doc.text('Collection Date:', rightStart, currentY);
         doc.text(`${value.sampledate}`, rightStart + labelWidth, currentY);
         currentY += lineHeight;
-    
+
         doc.text('Reporting Date:', rightStart, currentY);
         doc.text(`${value.reportDate || 'No'}`, rightStart + labelWidth, currentY);
         currentY += lineHeight;
-    
+
         doc.text('Contact No:', rightStart, currentY);
         doc.text(`${value.mobile}`, rightStart + labelWidth, currentY);
         currentY += lineHeight;
-    
+
         doc.text('S No:', rightStart, currentY);
         doc.text(`${value.sno}`, rightStart + labelWidth, currentY);
         currentY += 4;
-    
+
         // Generate barcode for UHID
         const barcodeCanvas = document.createElement('canvas');
         JsBarcode(barcodeCanvas, value.labReg, {
             format: 'CODE128',
             displayValue: true,
         });
-    
+
         const barcodeDataUrl = barcodeCanvas.toDataURL('image/png');
         doc.addImage(barcodeDataUrl, 'PNG', rightStart + labelWidth, currentY, 30, 10);
         const finalY = currentY + 10;
         doc.line(leftStart, finalY, 200, finalY);
         currentY += 15;
-    
+
         // Generate a table for the grouped test details
         doc.text('Test Details:', leftStart, currentY);
         currentY += lineHeight;
-    
+
         // Loop through each category and render test details grouped by category
         Object.entries(groupedTestDetails).forEach(([catId, tests]) => {
             const categoryName = categoryMap[catId]?.categoryname || "Category Missing!";
             const description = categoryMap[catId]?.description || "";
-            
+
             // Render Category Name as a heading
             doc.setFontSize(12);
             doc.text(categoryName, leftStart, currentY);
             doc.setFontSize(10);
             currentY += lineHeight;
             doc.text(stripHtml(description).result, leftStart, currentY);
-            
+
             currentY += lineHeight + 2;
-    
+
             // Render table header for test details
             doc.text('Investigation', leftStart, currentY);
             doc.text('Result', leftStart + 80, currentY);
             doc.text('Unit', leftStart + 120, currentY);
             doc.text('Normal Range', leftStart + 160, currentY);
             currentY += lineHeight + 5;
-    
+
             tests.forEach(test => {
                 // Print the TestName as a subheader
                 doc.text(test.TestName || "", leftStart, currentY);
                 currentY += lineHeight + 2;
-    
+
                 // Check for page overflow
                 checkPageOverflow();
-    
+
                 // Check if testDetails exists and is an array
                 if (Array.isArray(test.testDetails) && test.testDetails.length > 0) {
                     test.testDetails.forEach(detail => {
                         const resultValue = updatedResults[test._id]?.[detail._id] || detail.Result || "";
                         const normalRange = detail.NormalRange || { start: null, end: null };
                         const outOfRange = isValueOutOfRange(resultValue, normalRange);
-    
+
                         // Set text color for result based on range
                         doc.text(detail.Investigation || "", leftStart, currentY);
                         if (outOfRange) {
@@ -344,12 +348,12 @@ const LablogResultP = () => {
                         }
                         doc.text(resultValue, leftStart + 80, currentY);
                         doc.setTextColor(0, 0, 0);
-    
+
                         // Print Unit and Normal Range
                         doc.text(detail.Unit || "", leftStart + 120, currentY);
                         doc.text(`${normalRange.start || ""} - ${normalRange.end || ""}`, leftStart + 160, currentY);
                         currentY += lineHeight;
-    
+
                         // Print TestComment below Normal Range
                         if (detail.TestComment) {
                             doc.setFontSize(8); // Adjust font size if needed for the comment
@@ -358,10 +362,10 @@ const LablogResultP = () => {
                             doc.setFontSize(10); // Reset to default font size
                             currentY += lineHeight * wrappedTestComment.length + 2;
                         }
-    
+
                         // Check for page overflow after TestComment
                         checkPageOverflow();
-    
+
                         // Print Comment below the test block, if available
                         if (test.Comment) {
                             doc.setFontSize(8); // Adjust font size if needed for the comment
@@ -370,7 +374,7 @@ const LablogResultP = () => {
                             doc.setFontSize(10); // Reset to default font size
                             currentY += lineHeight * wrappedComment.length + 5; // Adjust spacing after Comment
                         }
-    
+
                         // Check for page overflow after each detail and comment
                         checkPageOverflow();
                     });
@@ -379,21 +383,21 @@ const LablogResultP = () => {
                     currentY += lineHeight;
                 }
                 currentY += 5; // Space after each test block for readability
-    
+
                 // Check for page overflow after each test
                 checkPageOverflow();
             });
-    
+
             // Add space after each category block
             currentY += 10;
             checkPageOverflow();
         });
-    
+
         return doc.output('blob');
     };
-    
-    
-    
+
+
+
     const createLabTestBill = async (patientData, tests) => {
         console.log(patientData, "jsdkjdffd dfklldfn fdf");
         console.log(tests, "jsdksdf");
@@ -440,37 +444,88 @@ const LablogResultP = () => {
             setLoading(false);
         }
     };
-    const generateLabTestBillPdf = (patientData, tests) => {
-        console.log(tests, "tests");
-        console.log(patientData, "patientData");
 
+    function numberToWords(num) {
+        const belowTwenty = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten",
+            "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen",
+            "eighteen", "nineteen"];
+        const tens = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
+        const thousands = ["", "thousand"];
+
+        if (num === 0) return "zero";
+
+        const convert = (n) => {
+            if (n < 20) return belowTwenty[n];
+            else if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 !== 0 ? " " + belowTwenty[n % 10] : "");
+            else if (n < 1000) return belowTwenty[Math.floor(n / 100)] + " hundred" + (n % 100 !== 0 ? " " + convert(n % 100) : "");
+            else return belowTwenty[Math.floor(n / 1000)] + " thousand" + (n % 1000 !== 0 ? " " + convert(n % 1000) : "");
+        };
+
+        return convert(num).trim();
+    }
+
+    const generateLabTestBillPdf = (patientData, tests) => {
         const doc = new jsPDF();
         const pageWidth = doc.internal.pageSize.getWidth();
         const centerX = pageWidth / 2;
 
         // Header
         doc.setFontSize(14).setFont('bold');
-        doc.text('KAISHVI HEALTH & MATERNITY CENTRE', centerX, 20, { align: 'center' });
+        doc.text('KAISHVI PATHOLOGY', centerX, 20, { align: 'center' });
         doc.setFontSize(10).setFont('normal');
         doc.text('Nehru Nagar, Ward No.:1, Pharenda Road, Maharajganj (U.P.)', centerX, 28, { align: 'center' });
+        doc.text('E-mail: info@kaishvihospital.com   www.kaishvihospital.com', centerX, 34, { align: 'center' });
+        doc.text('Mob.No: 8948150069', centerX, 40, { align: 'center' });
 
-        // Patient Info
+        // Barcode placeholder
+        doc.text('100037915', pageWidth - 40, 40, { align: 'right' });
+
+        // Patient Info Section
+        const leftColumnX = 10; // Start of left column
+        const rightColumnX = centerX + 10; // Start of right column
         let currentY = 50;
-        doc.text(`Patient Name: ${patientData.patientName}`, 10, currentY);
-        doc.text(`Bill No: ${BillNumber}`, 150, currentY); // Adjust alignment for right
-        currentY += 10;
-        doc.text(`Age/Gender: ${patientData.age}/${patientData.gender}`, 10, currentY);
-        doc.text(`Date: ${new Date().toLocaleDateString()}`, 150, currentY);
-        currentY += 20;
+        const rowHeight = 6; // Row height
+
+        // Patient Info Data
+        const patientInfo = [
+            { label: "Patient Name:", value: patientData.patientName },
+            { label: "Age/Sex:", value: `${patientData.age || ''}/${patientData.category || ''}` },
+            { label: "Ref. By:", value: patientData.reffby || '' },
+            { label: "UHID:", value: patientData.uhid || '-' },
+            { label: "Registration No.:", value: patientData.labReg || '' },
+            { label: "Transaction Id:", value: patientData.sno || '' },
+            { label: "Collection Date:", value: patientData.sampledate || '' },
+            { label: "Reporting Date:", value: patientData.reportDate || '-' }
+        ];
+
+        // Split data into two columns, with equal parts
+        const midIndex = Math.ceil(patientInfo.length / 2);
+        const leftColumnData = patientInfo.slice(0, midIndex);
+        const rightColumnData = patientInfo.slice(midIndex);
+
+        // Print left column details
+        leftColumnData.forEach((info, index) => {
+            const rowY = currentY + (index * rowHeight);
+            doc.text(info.label, leftColumnX, rowY);
+            doc.text(String(info.value), leftColumnX + 40, rowY);
+        });
+
+        // Print right column details, continuing from the same level as the left column ends
+        rightColumnData.forEach((info, index) => {
+            const rowY = currentY + (index * rowHeight);
+            doc.text(info.label, rightColumnX, rowY);
+            doc.text(String(info.value), rightColumnX + 40, rowY);
+        });
+
+        currentY += leftColumnData.length * rowHeight + 2;
 
         // Table Header
         doc.setFillColor(200, 200, 200);
         doc.rect(10, currentY, pageWidth - 20, 7, 'F');
         doc.setFont('bold');
-        doc.text('S/No', 12, currentY + 5);
-        doc.text('Test Name', 30, currentY + 5);
-        doc.text('Rate', 100, currentY + 5);
-        doc.text('Amount', 150, currentY + 5);
+        doc.text('SL', 12, currentY + 5);
+        doc.text('Investigation', 30, currentY + 5);
+        doc.text('Charges', 160, currentY + 5, { align: 'right' });
         currentY += 10;
 
         // Lab Test Rows
@@ -478,19 +533,37 @@ const LablogResultP = () => {
         let totalAmount = 0;
         tests.forEach((test, index) => {
             const amount = test.Rate;
-            doc.text(`${index + 1}`, 12, currentY);
-            doc.text(test.TestName, 30, currentY);
-            doc.text(`${test.Rate}`, 100, currentY);
-            doc.text(`${amount}`, 150, currentY);
+            doc.text(String(index + 1), 12, currentY);
+            doc.text(String(test.TestName), 30, currentY);
+            doc.text(String(amount.toFixed(2)), 160, currentY, { align: 'right' });
             totalAmount += amount;
-            currentY += 10;
+            currentY += 7;
         });
 
-        // Total
+        // Total Amount Section
+        currentY += 5;
         doc.setFont('bold');
-        doc.text(`Total: ${totalAmount}`, 150, currentY);
-        return doc.output('blob'); // Return as blob for Cloudinary
+        doc.text('Total Amount :', 140, currentY, { align: 'right' });
+        doc.text(String(totalAmount.toFixed(2)), 160, currentY, { align: 'right' });
+
+        // Received Amount Section
+        currentY += 7;
+        doc.text('Received :', 140, currentY, { align: 'right' });
+        doc.text(String(totalAmount.toFixed(2)), 160, currentY, { align: 'right' });
+
+        // Footer with thanks message
+        currentY += 15;
+        doc.setFontSize(10).setFont('normal');
+        doc.text(`Received with thanks a sum of : ${numberToWords(totalAmount.toLocaleString('en-IN'))} Only`, leftColumnX, currentY);
+
+        // Footer Created & Printed By
+        currentY += 10;
+        doc.text('Created By : lab, Printed By : Jashandeep', leftColumnX, currentY);
+        doc.text('Authorised Signatory', pageWidth - 40, currentY, { align: 'right' });
+
+        return doc.output('blob'); // Return as blob for Cloudinary or other usage
     };
+
 
     const handleSubmit = async () => {
         const result = testDetail.map(test => {
@@ -693,73 +766,72 @@ const LablogResultP = () => {
                                                 </tr>
                                             </thead>
                                             <tbody>
-    {console.log(testDetail, "testDetail")}
-    {Object.entries(groupedTestDetails).map(([catId, tests]) => (
-        <React.Fragment key={catId}>
-            {console.log(tests,"tests tests")}
-            <tr>
-                <td colSpan="6">
-                    <p className='py-2'><strong>Category: {categoryMap[catId]?.categoryname || "Unknown Category"}</strong></p>
-                   
-                    
-                    <div className='information-content' dangerouslySetInnerHTML={{ __html: categoryMap[catId]?.description || "" }} />
-                    {/* <div>{categoryMap[catId]?.description || "No description available"}</div> */}
-                </td>
-            </tr>
-            {tests.map((test, index) => (
-                <React.Fragment key={test._id}>
-                    <tr>
-                        <td>{index + 1}</td>
-                        <td>{test.TestName || ""}</td>
-                        <td colSpan="4"></td>
-                    </tr>
-                    {Array.isArray(test.testDetails) && test.testDetails.length > 0 ? (
-                        test.testDetails.map((detail, detailIndex) => {
-                            const resultValue = updatedResults[test._id]?.[detail._id] || detail.Result || "";
-                            const normalRange = detail.NormalRange || { start: null, end: null };
-                            const outOfRange = isValueOutOfRange(resultValue, normalRange);
+                                                {console.log(testDetail, "testDetail")}
+                                                {Object.entries(groupedTestDetails).map(([catId, tests]) => (
+                                                    <React.Fragment key={catId}>
+                                                        {console.log(tests, "tests tests")}
+                                                        <tr>
+                                                            <td colSpan="6">
+                                                                <p className='py-2'><strong>Category: {categoryMap[catId]?.categoryname || "Unknown Category"}</strong></p>
 
-                            return (
-                                <>
-                                <tr key={detail._id}>
-                                    <td></td>
-                                    <td></td>
-                                    <td>{detail.Investigation || ""}</td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            value={resultValue}
-                                            onChange={(e) => handleInputChange(test._id, detail._id, e.target.value)}
-                                            style={{ color: outOfRange ? 'red' : 'black' }}
-                                        />
-                                    </td>
-                                    <td>{detail.Unit || ""}</td>
-                                    <td>
-                                        {normalRange.start || ""} - {normalRange.end || ""}
-                                        <div className='information-content' dangerouslySetInnerHTML={{ __html: detail.TestComment || "" }} />
-                                    </td>
-                                </tr>
-                                <tr>
-                                <div className='information-content w-100' dangerouslySetInnerHTML={{ __html: test.Comment || "" }} />
-                                </tr>
-                                
-                                </>
-                            );
-                        })
-                    ) : (
-                        <tr>
-                            <td colSpan="6">No test details available</td>
-                        </tr>
-                    )}
-                </React.Fragment>
-            ))}
-        </React.Fragment>
-    ))}
-</tbody>
+
+                                                                <div className='information-content' dangerouslySetInnerHTML={{ __html: categoryMap[catId]?.description || "" }} />
+                                                                {/* <div>{categoryMap[catId]?.description || "No description available"}</div> */}
+                                                            </td>
+                                                        </tr>
+                                                        {tests.map((test, index) => (
+                                                            <React.Fragment key={test._id}>
+                                                                <tr>
+                                                                    <td>{index + 1}</td>
+                                                                    <td>{test.TestName || ""}</td>
+                                                                    <td colSpan="4"></td>
+                                                                </tr>
+                                                                {Array.isArray(test.testDetails) && test.testDetails.length > 0 ? (
+                                                                    test.testDetails.map((detail, detailIndex) => {
+                                                                        const resultValue = updatedResults[test._id]?.[detail._id] || detail.Result || "";
+                                                                        const normalRange = detail.NormalRange || { start: null, end: null };
+                                                                        const outOfRange = isValueOutOfRange(resultValue, normalRange);
+
+                                                                        return (
+                                                                            <>
+                                                                                <tr key={detail._id}>
+                                                                                    <td></td>
+                                                                                    <td></td>
+                                                                                    <td>{detail.Investigation || ""}</td>
+                                                                                    <td>
+                                                                                        <input
+                                                                                            type="text"
+                                                                                            value={resultValue}
+                                                                                            onChange={(e) => handleInputChange(test._id, detail._id, e.target.value)}
+                                                                                            style={{ color: outOfRange ? 'red' : 'black' }}
+                                                                                        />
+                                                                                    </td>
+                                                                                    <td>{detail.Unit || ""}</td>
+                                                                                    <td>
+                                                                                        {normalRange.start || ""} - {normalRange.end || ""}
+                                                                                        <div className='information-content' dangerouslySetInnerHTML={{ __html: detail.TestComment || "" }} />
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <div className='information-content w-100' dangerouslySetInnerHTML={{ __html: test.Comment || "" }} />
+                                                                                </tr>
+
+                                                                            </>
+                                                                        );
+                                                                    })
+                                                                ) : (
+                                                                    <tr>
+                                                                        <td colSpan="6">No test details available</td>
+                                                                    </tr>
+                                                                )}
+                                                            </React.Fragment>
+                                                        ))}
+                                                    </React.Fragment>
+                                                ))}
+                                            </tbody>
 
                                         </table>
                                     )}
-                                    <button onClick={handleSubmit} className="btn btn-primary mt-4"> Update Results </button>
                                     {prescriptionPdfUrl ? '' : <button onClick={handleSubmit} className="btn btn-primary mt-4"> Update Results </button>
                                     }
                                     {billPdfUrl && <a className="btn btn-primary mt-4" href={billPdfUrl} target="_blank" rel="noopener noreferrer">Print Bill Result</a>}
