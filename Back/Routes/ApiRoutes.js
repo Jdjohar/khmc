@@ -2042,6 +2042,28 @@ router.get('/incentiveReport', async (req, res) => {
     }
 });
 
+router.get('/incentiveReportLabID', async (req, res) => {
+    try {
+        const { labEntryId } = req.query; // Get labEntryId from query parameters
+        
+        if (!labEntryId) {
+            return res.status(400).json({ message: 'labEntryId is required' }); // If labEntryId is not provided, return error
+        }
+
+        // Find the incentive report by labEntryId
+        const incentiveReport = await IncentiveReport.findOne({ labEntryId });
+        
+        if (!incentiveReport) {
+            return res.status(404).json({ message: 'No report found for this labEntryId' }); // If no report found, return 404
+        }
+
+        // Return the incentive report
+        res.status(200).json(incentiveReport);
+    } catch (error) {
+        res.status(500).json({ error: error.message }); // Handle server errors
+    }
+});
+
 // Get a single incentiveReport by ID
 router.get('/incentiveReport/:id', async (req, res) => {
     try {
@@ -2075,33 +2097,47 @@ router.delete('/incentiveReport/:id', async (req, res) => {
         if (!deletedincentiveReport) {
             return res.status(404).json({ error: 'incentiveReport not found' });
         }
-        res.status(200).json({ message: 'incentiveReport deleted successfully' });
+        res.status(200).json({success:true, message: 'incentiveReport deleted successfully' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-router.get('/incentiveReportFilter', async (req, res) => {
+  router.get('/incentiveReportDateFilter', async (req, res) => {
     try {
-      const { startDate, endDate } = req.query;
-  
-      // Build a query object for filtering by date if startDate and endDate are provided
-      const query = {};
-      if (startDate && endDate) {
-        query.date = {
-          $gte: new Date(startDate),
-          $lte: new Date(endDate)
+        const { startDate, endDate, reffById } = req.query;
+    
+        // Validate date inputs
+        if (!startDate || !endDate) {
+          return res.status(400).json({ error: 'startDate and endDate query parameters are required.' });
+        }
+    
+        // Parse start and end dates to include the full range of the selected day
+        const start = new Date(startDate);
+        start.setHours(0, 0, 0, 0);
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+    
+        // Create the filter query
+        const filter = {
+          createdAt: {
+            $gte: start,
+            $lte: end,
+          },
         };
+    
+        // Add Reffby filter if reffById is provided and not empty
+        if (reffById) {
+          filter.Reffby = reffById;
+        }
+    
+        // Fetch data based on filter criteria
+        const data = await IncentiveReport.find(filter);
+        res.json(data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).json({ error: 'An error occurred while fetching data.' });
       }
-  
-      // Query the database for matching reports
-      const reports = await IncentiveReport.find(query);
-  
-      res.status(200).json(reports);
-    } catch (error) {
-      console.error('Error fetching incentive report:', error);
-      res.status(500).json({ message: 'Error fetching incentive report' });
-    }
   });
 
 //   router.put('/incentiveReportFilter/:id', async (req, res) => {

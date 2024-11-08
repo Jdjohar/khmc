@@ -12,19 +12,14 @@ const RefIncSummary = () => {
     const [reports, setReports] = useState([]);
     const [testNames, setTestNames] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [editedPaidAmount, setEditedPaidAmount] = useState({});
 
     // Fetch Reffby data for the dropdown
     useEffect(() => {
-
         const fetchData = async () => {
             try {
-              
-
                 const testNamesResponse = await fetch("https://khmc-xdlm.onrender.com/api/testName");
                 const testNamesData = await testNamesResponse.json();
-
-                // Set the data in states
-             
                 setTestNames(testNamesData);
                 setLoading(false);
             } catch (error) {
@@ -32,6 +27,7 @@ const RefIncSummary = () => {
                 setLoading(false);
             }
         };
+
         const fetchReffByData = async () => {
             try {
                 const response = await fetch("https://khmc-xdlm.onrender.com/api/reffby");
@@ -50,7 +46,7 @@ const RefIncSummary = () => {
         };
 
         fetchReffByData();
-        fetchData()
+        fetchData();
     }, []);
 
     // Fetch report data
@@ -58,11 +54,9 @@ const RefIncSummary = () => {
         setLoading(true);
         try {
             const reffById = selectedReffBy?.value === 'all' ? '' : selectedReffBy?.value;
-            const response = await fetch(`https://khmc-xdlm.onrender.com/api/incentiveReport?startDate=${startDate}&endDate=${endDate}&reffById=${reffById}`);
+            const response = await fetch(`https://khmc-xdlm.onrender.com/api/incentiveReportDateFilter?startDate=${startDate}&endDate=${endDate}&reffById=${reffById}`);
             const data = await response.json();
-            console.log(data);
-            
-            setReports(data); // Directly set data since you confirmed it has reports
+            setReports(data);
         } catch (error) {
             console.error("Error fetching reports:", error);
         } finally {
@@ -80,23 +74,21 @@ const RefIncSummary = () => {
         }
     };
 
-    
     const getTestName = (id) => {
         const test = testNames.find((test) => test._id === id);
         return test ? test.TestName : "Unknown Test";
     };
 
     const getReffByName = (id) => {
-        console.log(reffByOptions,id,"ds");
-        
         const ref = reffByOptions.find((ref) => ref.value === id);
-        return ref ? ref.label: "Unknown Referrer";
+        return ref ? ref.label : "Unknown Referrer";
     };
-    // Handle updating the incentive amount and status
-    const handleUpdateIncentive = async (reportId, newIncAmount, newIncStatus) => {
+
+    // Handle updating the paid amount and status
+    const handleUpdatePaidAmount = async (reportId, newPaidAmount, newIncStatus) => {
         const updatedReports = reports.map(report => {
             if (report._id === reportId) {
-                return { ...report, incAmount: newIncAmount, incStatus: newIncStatus };
+                return { ...report, paidAmount: newPaidAmount, incStatus: newIncStatus };
             }
             return report;
         });
@@ -108,58 +100,91 @@ const RefIncSummary = () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ incStatus: newIncStatus, incAmount: newIncAmount })
+                body: JSON.stringify({ paidAmount: newPaidAmount, incStatus: newIncStatus })
             });
         } catch (error) {
             console.error("Error updating report:", error);
         }
     };
 
-    // Calculate totals dynamically
-    const calculateTotals = () => {
-        const totalAmount = reports.reduce((acc, report) => acc + parseFloat(report.amount || 0), 0);
-        const totalIncentiveAmount = reports.reduce((acc, report) => acc + parseFloat(report.incAmount || 0), 0);
-        return { totalAmount, totalIncentiveAmount };
+    const handleStatusChange = (reportId, selectedStatus) => {
+        const updatedReports = reports.map(report => {
+            if (report._id === reportId) {
+                return { ...report, incStatus: selectedStatus === 'Paid' };
+            }
+            return report;
+        });
+        setReports(updatedReports);
     };
 
-    const { totalAmount: calculatedTotalAmount, totalIncentiveAmount: calculatedTotalIncentiveAmount } = calculateTotals();
- // PDF Generation function
- const generatePDF = () => {
-    const doc = new jsPDF();
-    doc.text("Referral Incentive Summary Report", 14, 10);
-    doc.setFontSize(12);
-    doc.text(`Date Range: ${startDate} - ${endDate}`, 14, 18);
+    const handleUpdateButtonClick = (report) => {
+        const newPaidAmount = editedPaidAmount[report._id] || report.paidAmount;
+        const newIncStatus = report.incStatus;
+        if (newIncStatus) {
+            handleUpdatePaidAmount(report._id, newPaidAmount, newIncStatus);
+        } else {
+            alert("Please select 'Paid' status before updating the incentive amount.");
+        }
+    };
 
-    const tableRows = [];
-    reports.forEach(report => {
-        const rowData = [
-            report.date,
-            report.regno,
-            report.patientName,
-            report.amount,
-            report.discount,
-            report.receiveAmount || '0',
-            report.incAmount || 'No Data',
-            report.due || '0',
-            getReffByName(report.Reffby || 'No Data'),
-            getTestName(report.testid || 'No Data')
-        ];
-        tableRows.push(rowData);
-    });
+    const handleUpdatePaidAmountChange = (reportId, value) => {
+        setEditedPaidAmount({
+            ...editedPaidAmount,
+            [reportId]: value,
+        });
+    };
 
-    doc.autoTable({
-        head: [['Date', 'Reg.No', 'Patient Name', 'Amount', 'Discount', 'Receive Amount', 'Incentive', 'Due', 'Ref.By', 'Test Name']],
-        body: tableRows,
-        startY: 25,
-    });
+    // Calculate totals dynamically
+    const calculateTotals = () => {
+        // Ensure reports is an array before using reduce
+        const reportArray = Array.isArray(reports) ? reports : [];
+        
+        const totalAmount = reportArray.reduce((acc, report) => acc + parseFloat(report.amount || 0), 0);
+        const totalPaidAmount = reportArray.reduce((acc, report) => acc + parseFloat(report.paidAmount || 0), 0);
+        
+        return { totalAmount, totalPaidAmount };
+    };
 
-    doc.autoTable({
-        head: [['', '', 'Total Amount', calculatedTotalAmount, '', 'Total Incentive', calculatedTotalIncentiveAmount, '', '', '']],
-        startY: doc.autoTable.previous.finalY + 10,
-    });
+    const { totalAmount: calculatedTotalAmount, totalPaidAmount: calculatedTotalPaidAmount } = calculateTotals();
 
-    doc.save("Referral_Incentive_Summary_Report.pdf");
-};
+    // PDF Generation function
+    const generatePDF = () => {
+        const doc = new jsPDF();
+        doc.text("Referral Incentive Summary Report", 14, 10);
+        doc.setFontSize(12);
+        doc.text(`Date Range: ${startDate} - ${endDate}`, 14, 18);
+
+        const tableRows = [];
+        reports.forEach(report => {
+            const rowData = [
+                report.date,
+                report.regno,
+                report.patientName,
+                report.amount,
+                report.discount,
+                report.receiveAmount || '0',
+                report.paidAmount || 'No Data', // Changed to paidAmount
+                report.due || '0',
+                getReffByName(report.Reffby || 'No Data'),
+                getTestName(report.testid || 'No Data')
+            ];
+            tableRows.push(rowData);
+        });
+
+        doc.autoTable({
+            head: [['Date', 'Reg.No', 'Patient Name', 'Amount', 'Discount', 'Receive Amount', 'Paid Amount', 'Due', 'Ref.By', 'Test Name']],
+            body: tableRows,
+            startY: 25,
+        });
+
+        doc.autoTable({
+            head: [['', '', 'Total Amount', calculatedTotalAmount, '', 'Total Paid Amount', calculatedTotalPaidAmount, '', '', '']],
+            startY: doc.autoTable.previous.finalY + 10,
+        });
+
+        doc.save("Referral_Incentive_Summary_Report.pdf");
+    };
+
     return (
         <>
             <Topbar />
@@ -219,111 +244,106 @@ const RefIncSummary = () => {
                                             </div>
 
                                             <div className="d-flex justify-content-start">
-                                                <button type="submit" className="btn btn-gradient-primary me-2">Submit</button>
+                                                <button type="submit" className="btn btn-gradient-primary me-2">Search</button>
                                                 <button
-                                                    type="button"
-                                                    className="btn btn-light"
-                                                    onClick={() => {
-                                                        setSelectedReffBy(null);
-                                                        setStartDate('');
-                                                        setEndDate('');
-                                                        setReports([]); // Clear reports when canceled
-                                                    }}
+                                                    className="btn btn-gradient-info"
+                                                    onClick={generatePDF}
                                                 >
-                                                    Cancel
+                                                    Export to PDF
                                                 </button>
                                             </div>
                                         </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                                        <div className="mt-4">
-                                            <button
-                                                className="btn btn-gradient-primary"
-                                                onClick={generatePDF}
-                                            >
-                                                Generate PDF
-                                            </button>
+                        <div className="row">
+                            <div className="col-12 grid-margin stretch-card">
+                                <div className="card">
+                                    <div className="card-body">
+                                        <h4 className="card-title">Incentive Summary</h4>
+                                        <div className="table-responsive">
+                                            <table className="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Date</th>
+                                                        <th>Reg.No</th>
+                                                        <th>Patient Name</th>
+                                                        <th>Amount</th>
+                                                        <th>Discount</th>
+                                                        <th>Receive Amount</th>
+                                                        <th>Inc</th> {/* Changed to Paid Amount */}
+                                                        {/* <th>Paid Amount</th> Changed to Paid Amount */}
+                                                        <th>Due</th>
+                                                        <th>Ref. By</th>
+                                                        <th>Test Name</th>
+                                                        <th>Inc Amount</th>
+                                                        <th>Incentive Status</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {console.log(reports,"reports")}
+                                                    
+                                                    {reports.map(report => (
+                                                        <tr key={report._id}>
+                                                            <td>{report.date}</td>
+                                                            <td>{report.regno}</td>
+                                                            <td>{report.patientName}</td>
+                                                            <td>{report.amount}</td>
+                                                            <td>{report.discount}</td>
+                                                            <td>{report.amount || '0'}</td>
+                                                            <td>{report.incAmount || 'No Data'}
+                                                                {
+                                                                    (report.paidAmount === 0 || report.paidAmount === "" || !report.paidAmount) ? (
+                                                                        '' // Show nothing if paidAmount is 0 or empty
+                                                                    ) : (
+                                                                        <span style={{ color: 'red' }}>
+                                                                            -{report.paidAmount}
+                                                                        </span>
+                                                                    )
+                                                                }
+
+                                                            </td>
+
+                                                            <td>{report.due || '0'}</td>
+                                                            <td>{getReffByName(report.Reffby || 'No Data')}</td>
+                                                            <td>{getTestName(report.testid || 'No Data')}</td>
+
+                                                            {/* Paid Amount Input */}
+                                                            <td>
+                                                                <input
+                                                                    type="number"
+                                                                    value={editedPaidAmount[report._id] || report.paidAmount || ''}
+                                                                    onChange={(e) => handleUpdatePaidAmountChange(report._id, e.target.value)}
+                                                                />
+                                                            </td>
+
+                                                            {/* Select for Incentive Status */}
+                                                            <td>
+                                                                <select
+                                                                    value={report.incStatus ? 'Paid' : 'Unpaid'}
+                                                                    onChange={(e) => handleStatusChange(report._id, e.target.value)}
+                                                                >
+                                                                    <option value="Unpaid">Unpaid</option>
+                                                                    <option value="Paid">Paid</option>
+                                                                </select>
+                                                            </td>
+
+                                                            <td>
+                                                                <button
+                                                                    className="btn btn-gradient-primary"
+                                                                    onClick={() => handleUpdateButtonClick(report)}
+                                                                >
+                                                                    Update
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
                                         </div>
-
-                                        {loading ? (
-                                            <p>Loading reports...</p>
-                                        ) : (
-                                            <>
-                                                <h4 className="mt-4">Report Summary</h4>
-                                                <table className="table mt-3">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Date</th>
-                                                            <th>Reg.No</th>
-                                                            <th>Patient Name</th>
-                                                            <th>Amount</th>
-                                                            <th>Discount</th>
-                                                            <th>Receive Amount</th>
-                                                            <th>Inc</th>
-                                                            <th>Due</th>
-                                                            <th>Ref.By</th>
-                                                            <th>Inc.Amt</th>
-                                                            <th>Doctor</th>
-                                                            <th>Service/Test</th>
-                                                            <th>Action</th>
-                                                            <th>Update</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {reports.map(report => (
-                                                            <tr key={report._id}>
-                                                                <td>{report.date}</td>
-                                                                <td>{report.regno}</td>
-                                                                <td>{report.patientName}</td>
-                                                                <td>{report.amount}</td>
-                                                                <td>{report.discount}</td>
-                                                                <td>{report.receiveAmount || '0'}</td>
-                                                                <td>{report.incAmount || 'No Data'}</td>
-                                                                <td>{report.due || '0'}</td>
-                                                                <td>{getReffByName(report.Reffby || 'No Data')}</td>
-                                                               
-                                                                <td>
-                                                                    <input
-                                                                        type="number"
-                                                                        value={report.incAmount}
-                                                                        onChange={(e) => handleUpdateIncentive(report._id, e.target.value, report.incStatus)}
-                                                                    />
-                                                                </td>
-                                                                <td>{report.Reffto || 'No Data'}</td>
-                                                                <td>{getTestName(report.testid || 'No Data')}</td>
-                                                                <td>
-                                                                    <select
-                                                                        value={report.incStatus ? 'Paid' : 'Unpaid'}
-                                                                        onChange={(e) => handleUpdateIncentive(report._id, report.incAmount, e.target.value === 'Paid')}
-                                                                    >
-                                                                        <option value="Unpaid">Unpaid</option>
-                                                                        <option value="Paid">Paid</option>
-                                                                    </select>
-                                                                </td>
-                                                                <td>
-                                                                    <button
-                                                                        className="btn btn-gradient-primary"
-                                                                        onClick={() => handleUpdateIncentive(report._id, report.incAmount, report.incStatus)}
-                                                                    >
-                                                                        Update
-                                                                    </button>
-                                                                </td>
-                                                            </tr>
-                                                        ))}
-                                                    </tbody>
-                                                    <tfoot>
-                                                        <tr>
-                                                            <th></th>
-                                                            <th></th>
-                                                            <th>Total</th>
-                                                            <th>{calculatedTotalAmount}</th>
-                                                            <th></th>
-                                                            <th>{calculatedTotalIncentiveAmount}</th>
-                                                            <th colSpan="2"></th>
-                                                        </tr>
-                                                    </tfoot>
-                                                </table>
-                                            </>
-                                        )}
                                     </div>
                                 </div>
                             </div>

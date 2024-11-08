@@ -1162,17 +1162,29 @@ const getCurrentDateTime = () => {
     const handleReffbyChange = async (e) => {
         const selectedReffbyName = e.target.value;
         console.log(Reffby, selectedReffbyName, "sdfd dsfdsfds");
+
+        const selectedFormData = patientType === 'new' ? formData : OldformData;
     
         // Find the selected doctor object based on the selected name
         const selectedReffbyObj = Reffby.find(doctor => doctor.doctorName === selectedReffbyName);
     
         console.log(selectedReffbyObj, "selectedReffbyObj");
     
-        // Update the form data
+        patientType === 'new'
+        ?
         setFormData(prevState => ({
-          ...prevState,
-          reffby: selectedReffbyName
-        }));
+            ...prevState,
+            refBy: selectedReffbyObj.doctorName
+  
+          }))
+        :
+        setoldFormData(prevState => ({
+            ...prevState,
+            refBy: selectedReffbyObj.doctorName
+        }))
+        
+        // Update the form data
+        
     
         // Update the selectedReffby state with the selected doctor object
         setSelectedReffby(selectedReffbyObj || {});

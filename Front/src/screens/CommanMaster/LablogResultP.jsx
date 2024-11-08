@@ -322,7 +322,7 @@ const LablogResultP = () => {
     
             tests.forEach(test => {
                 // Print the TestName as a subheader
-                doc.text(test.TestName || "N/A", leftStart, currentY);
+                doc.text(test.TestName || "", leftStart, currentY);
                 currentY += lineHeight + 2;
     
                 // Check for page overflow
@@ -336,7 +336,7 @@ const LablogResultP = () => {
                         const outOfRange = isValueOutOfRange(resultValue, normalRange);
     
                         // Set text color for result based on range
-                        doc.text(detail.Investigation || "N/A", leftStart, currentY);
+                        doc.text(detail.Investigation || "", leftStart, currentY);
                         if (outOfRange) {
                             doc.setTextColor(255, 0, 0);
                         } else {
@@ -346,8 +346,8 @@ const LablogResultP = () => {
                         doc.setTextColor(0, 0, 0);
     
                         // Print Unit and Normal Range
-                        doc.text(detail.Unit || "N/A", leftStart + 120, currentY);
-                        doc.text(`${normalRange.start || "N/A"} - ${normalRange.end || "N/A"}`, leftStart + 160, currentY);
+                        doc.text(detail.Unit || "", leftStart + 120, currentY);
+                        doc.text(`${normalRange.start || ""} - ${normalRange.end || ""}`, leftStart + 160, currentY);
                         currentY += lineHeight;
     
                         // Print TestComment below Normal Range
@@ -495,12 +495,12 @@ const LablogResultP = () => {
     const handleSubmit = async () => {
         const result = testDetail.map(test => {
             return {
-                TestName: test.TestName || "N/A",
+                TestName: test.TestName || "",
                 testDetails: Array.isArray(test.testDetails) ? test.testDetails.map(detail => ({
-                    Investigation: detail.Investigation || "N/A",
+                    Investigation: detail.Investigation || "",
                     Result: updatedResults[test._id]?.[detail._id] || detail.Result || "",
-                    Unit: detail.Unit || "N/A",
-                    NormalRange: { start: detail.NormalRange.start, end: detail.NormalRange.end } || "N/A",
+                    Unit: detail.Unit || "",
+                    NormalRange: { start: detail.NormalRange.start, end: detail.NormalRange.end } || "",
                 })) : [],
                 id: test._id,
             };
@@ -586,12 +586,12 @@ const LablogResultP = () => {
     // const handleSubmit = async () => {
     //     const result = testDetail.map(test => {
     //         return {
-    //             TestName: test.TestName || "N/A",
+    //             TestName: test.TestName || "",
     //             testDetails: Array.isArray(test.testDetails) ? test.testDetails.map(detail => ({
-    //                 Investigation: detail.Investigation || "N/A",
+    //                 Investigation: detail.Investigation || "",
     //                 Result: updatedResults[test._id]?.[detail._id] || detail.Result || "",
-    //                 Unit: detail.Unit || "N/A",
-    //                 NormalRange: { start: detail.NormalRange.start, end: detail.NormalRange.end } || "N/A",
+    //                 Unit: detail.Unit || "",
+    //                 NormalRange: { start: detail.NormalRange.start, end: detail.NormalRange.end } || "",
     //             })) : [],
     //             id: test._id,
     //         };
@@ -710,7 +710,7 @@ const LablogResultP = () => {
                 <React.Fragment key={test._id}>
                     <tr>
                         <td>{index + 1}</td>
-                        <td>{test.TestName || "N/A"}</td>
+                        <td>{test.TestName || ""}</td>
                         <td colSpan="4"></td>
                     </tr>
                     {Array.isArray(test.testDetails) && test.testDetails.length > 0 ? (
@@ -724,7 +724,7 @@ const LablogResultP = () => {
                                 <tr key={detail._id}>
                                     <td></td>
                                     <td></td>
-                                    <td>{detail.Investigation || "N/A"}</td>
+                                    <td>{detail.Investigation || ""}</td>
                                     <td>
                                         <input
                                             type="text"
@@ -733,9 +733,9 @@ const LablogResultP = () => {
                                             style={{ color: outOfRange ? 'red' : 'black' }}
                                         />
                                     </td>
-                                    <td>{detail.Unit || "N/A"}</td>
+                                    <td>{detail.Unit || ""}</td>
                                     <td>
-                                        {normalRange.start || "N/A"} - {normalRange.end || "N/A"}
+                                        {normalRange.start || ""} - {normalRange.end || ""}
                                         <div className='information-content' dangerouslySetInnerHTML={{ __html: detail.TestComment || "" }} />
                                     </td>
                                 </tr>

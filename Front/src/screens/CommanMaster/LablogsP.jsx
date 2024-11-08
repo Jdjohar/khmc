@@ -9,6 +9,7 @@ const LablogsP = () => {
   const [formData, setFormData] = useState({
 
     labReg: '',
+    uhid:'',
     sno: '',
     labId: '',
     patientName: '',
@@ -99,7 +100,7 @@ const LablogsP = () => {
           if (selectedReffbyObj && selectedReffbyObj._id) {
             console.log(selectedReffbyObj, "sdsd sd Next");
             // Update the selectedReffby state with the selected doctor object
-          setSelectedReffby(selectedReffbyObj || {});
+            setSelectedReffby(selectedReffbyObj || {});
 
             try {
               const response = await fetch(`https://khmc-xdlm.onrender.com/api/incentiveType/${selectedReffbyObj.incentiveType}`);
@@ -116,7 +117,7 @@ const LablogsP = () => {
             }
           }
 
-          
+
 
           // If the selected doctor object exists, fetch the incentive type data
 
@@ -358,8 +359,6 @@ const LablogsP = () => {
     }
   };
 
-
-
   // Handle form submission (add or update lab)
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -402,8 +401,10 @@ const LablogsP = () => {
         });
 
         if (response.ok) {
+          const newLabEntry = await response.json(); // Get the new lab entry object containing _id
           alert('Lab log submitted successfully!');
-          // Check each variable individually and log the missing ones
+
+          // Validate necessary data
           if (!selectedTestbyUser) {
             console.error("Missing required data: selectedTestbyUser");
           }
@@ -417,14 +418,12 @@ const LablogsP = () => {
             console.error("Missing required data: selectedReffby._id");
           }
 
-          // If any of the conditions are missing, return to prevent further execution
           if (!selectedTestbyUser || !formData || !incentiveTypeData || !selectedReffby || !selectedReffby._id) {
             return;
           }
+
           // Run createFilteredOutput after successful lab log submission
           const filteredResults = createFilteredOutput(selectedTestbyUser, formData, incentiveTypeData, selectedReffby._id);
-
-          console.log(incentiveTypeData, "incentiveTypeData sddsds sdfs");
 
           if (filteredResults && filteredResults.length) {
             filteredResults.forEach(entry => {
@@ -433,7 +432,9 @@ const LablogsP = () => {
           } else {
             console.log("No valid entries generated.");
           }
-          // Submit each filtered entry to the incentiveReport API
+          console.log(newLabEntry, "newLabEntry 2");
+
+          // Submit each filtered entry to the incentiveReport API with the new lab entry's _id
           for (const entry of filteredResults) {
             try {
               const incentiveResponse = await fetch('https://khmc-xdlm.onrender.com/api/incentiveReport', {
@@ -441,7 +442,10 @@ const LablogsP = () => {
                 headers: {
                   'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(entry),
+                body: JSON.stringify({
+                  ...entry,
+                  labEntryId: newLabEntry.data._id || '-',  // Correctly attach the new lab entry's _id
+                }),
               });
 
               if (!incentiveResponse.ok) {
@@ -489,6 +493,8 @@ const LablogsP = () => {
       }
     }
   };
+
+
   // Handle deleting a lab log
   const handleDelete = async () => {
     if (selectedLabId) {
@@ -577,6 +583,7 @@ const LablogsP = () => {
                           <tr key={lab._id} onClick={() => handleRowClick(lab)} style={{ cursor: 'pointer' }}>
                             <td>{lab.labReg}</td>
                             <td>{lab.patientName}</td>
+                            <td>{lab._id}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -589,12 +596,9 @@ const LablogsP = () => {
                   <div className="card-body">
                     <h2 className='pb-2'> Patient Entry Pathology </h2>
 
-                    <button onClick={handleButtonClick}>Click Me</button>
+                    {/*<button onClick={handleButtonClick}>Click Me</button>*/}
                     <form onSubmit={handleSubmit}>
-                      <div className="form-group">
-
-
-                        Lab SNo. {sno || 'Sno no found'}
+                      <div className="form-group">Lab SNo. {sno || 'Sno no found'}
 
                       </div>
                       <div className="form-group row">
@@ -780,6 +784,7 @@ const LablogsP = () => {
                             value={formData.reffby}
                             onChange={handleReffbyChange}
                             name='reffby'
+                            required
                             className='form-control'>
                             <option value=''>Select Reff</option>
                             {Reffby.map((item) => (
@@ -814,7 +819,7 @@ const LablogsP = () => {
                             <option value='bank'>Bank</option>
                             <option value='upi'>UPI</option>
                           </select>
-                         
+
                         </div>
                         <div className="col-md-3 col-12">
                           <label className="my-2">Discount Type</label>

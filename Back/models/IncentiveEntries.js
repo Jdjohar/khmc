@@ -44,6 +44,16 @@ const IncentiveEntriesSchema = new Schema({
     incAmount: {
         type: String
     },
+    paidAmount: {
+        type: String
+    },
+    labEntryId: {
+        type: String
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
 })
 
 module.exports = mongoose.model('IncentiveEntrie', IncentiveEntriesSchema);

@@ -71,29 +71,53 @@ const LablogEntryP = () => {
 
     const handleDelete = async (id) => {
         console.log(id, "Delete operation triggered");
-
+    
         try {
-            // Make a DELETE request to the API
+            // First, fetch incentive reports to check if any entry has the same labEntryId
+            const incentiveResponse = await fetch('https://khmc-xdlm.onrender.com/api/incentiveReport');
+            const incentiveData = await incentiveResponse.json();
+    
+            // Find any incentive report that matches the labEntryId with the provided id
+            const matchedIncentiveEntries = incentiveData.filter((entry) => entry.labEntryId === id);
+    
+            // If matched entries are found, delete them
+            if (matchedIncentiveEntries.length > 0) {
+                for (const entry of matchedIncentiveEntries) {
+                    const incentiveDeleteResponse = await fetch(`https://khmc-xdlm.onrender.com/api/incentiveReport/${entry._id}`, {
+                        method: 'DELETE',
+                    });
+                    const incentiveDeleteData = await incentiveDeleteResponse.json();
+    
+                    console.log(incentiveDeleteData, "Response from deleting incentive report");
+    
+                    if (!incentiveDeleteData.success) {
+                        alert(`Failed to delete incentive report with ID ${entry._id}.`);
+                    }
+                }
+            }
+    
+            // Now, proceed with deleting the lab entry
             const response = await fetch(`https://khmc-xdlm.onrender.com/api/labentry/${id}`, {
                 method: 'DELETE',
             });
-
+    
             const data = await response.json();
             console.log(data, "Response from delete operation");
-
+    
             if (data.success) {
                 // Update the state to remove the deleted patient
                 setLabentries((prevEntries) => prevEntries.filter((entry) => entry._id !== id));
-                alert("Test successfully deleted!");
+                alert("Test and related incentive reports successfully deleted!");
             } else {
                 alert("Failed to delete the patient. Please try again.");
             }
-
+    
         } catch (error) {
-            console.error("Error deleting patient:", error);
-            alert("An error occurred while deleting the patient.");
+            console.error("Error deleting patient and related incentive reports:", error);
+            alert("An error occurred while deleting the patient and related incentive reports.");
         }
     };
+    
 
     // If still loading, show a loading message
     if (loading) {
@@ -195,7 +219,7 @@ const LablogEntryP = () => {
                                                                 </div>
                                                             </td>
                                                             
-                                                            <td>{labtest.sno}</td>
+                                                            <td>{labtest.sno} {labtest._id}</td>
                                                             <td>{labtest.date}</td>
                                                             <td>{labtest.labReg}</td>
                                                             <td>{labtest.patientName}</td>
