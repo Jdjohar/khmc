@@ -12,13 +12,17 @@ const IncentiveTypeSchema = new Schema({
             ref: 'TestName',  // Referencing TestName model
             required: true
         },
-        TestIncentiveValueType: {
+        TestIncentiveValueType: { //amount or percetage
             type: String,
             required: true
         },
-        TestIncentiveValue: {
+        TestIncentiveValue: { //some value enter by admin on
             type: Number,
             required: true
+        },
+        IncentivePercentageValue: { //percentage value
+            type: Number,
+            required: false
         },
         TestPrice: {
             type: Number,

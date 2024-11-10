@@ -7,7 +7,7 @@ const LablogEntry = () => {
 
     const [LabEntries, setLabentries] = useState([]);
     const [loading, setLoading] = useState(true); // For loading state
-    const [testNames, setTestNames] = useState({}); 
+    const [testNames, setTestNames] = useState({});
 
     const fetchTestNames = async () => {
         try {
@@ -25,7 +25,7 @@ const LablogEntry = () => {
             console.error("Error fetching test names:", error);
         }
     };
-    
+
     // Fetch data from the API when the component is mounted
     useEffect(() => {
         const fetchLabEntries = async () => {
@@ -130,31 +130,31 @@ const LablogEntry = () => {
                                                             <td>
                                                                 {/* Dropdown menu */}
                                                                 <div className="dropdown">
-                                                                {labtest.result == false
-                                                                ?
-                                                                <i
-                                                                className="mdi mdi-menu bg-warning"
-                                                                type="button"
-                                                                id={`dropdownMenuButton${labtest._id}`}
-                                                                data-bs-toggle="dropdown"
-                                                                aria-expanded="false"
-                                                                style={{ cursor: "pointer" }}
-                                                            >
-                                                                {/* Menu Icon */}
-                                                            </i>
-                                                                :
-                                                                <i
-                                                                className="mdi mdi-menu"
-                                                                type="button"
-                                                                id={`dropdownMenuButton${labtest._id}`}
-                                                                data-bs-toggle="dropdown"
-                                                                aria-expanded="false"
-                                                                style={{ cursor: "pointer" }}
-                                                            >
-                                                                {/* Menu Icon */}
-                                                            </i>
-                                                                }
-                                                                   
+                                                                    {labtest.result == false
+                                                                        ?
+                                                                        <i
+                                                                            className="mdi mdi-menu bg-warning"
+                                                                            type="button"
+                                                                            id={`dropdownMenuButton${labtest._id}`}
+                                                                            data-bs-toggle="dropdown"
+                                                                            aria-expanded="false"
+                                                                            style={{ cursor: "pointer" }}
+                                                                        >
+                                                                            {/* Menu Icon */}
+                                                                        </i>
+                                                                        :
+                                                                        <i
+                                                                            className="mdi mdi-menu"
+                                                                            type="button"
+                                                                            id={`dropdownMenuButton${labtest._id}`}
+                                                                            data-bs-toggle="dropdown"
+                                                                            aria-expanded="false"
+                                                                            style={{ cursor: "pointer" }}
+                                                                        >
+                                                                            {/* Menu Icon */}
+                                                                        </i>
+                                                                    }
+
                                                                     <ul
                                                                         className="dropdown-menu mega-menu1"
                                                                         aria-labelledby={`dropdownMenuButton${labtest._id}`}
@@ -162,30 +162,48 @@ const LablogEntry = () => {
                                                                         <div className="row">
                                                                             <div className="col-12">
 
-                                                                            <li className="dropdown-item" onClick={() => handleDelete(labtest._id)}>
+                                                                                <li className="dropdown-item" onClick={() => handleDelete(labtest._id)}>
                                                                                     Delete
                                                                                 </li>
                                                                                 {/* <li className="dropdown-item">
                                                                                     <Link to={`/master/testEdit/${labtest._id}`}
                                                                                         className="text-dark text-decoration-none" > Edit </Link>
                                                                                 </li> */}
-                                                                              
+
                                                                                 <li className="dropdown-item">
                                                                                     <Link to={`/master/LablogResult/${labtest._id}`}
                                                                                         className="text-dark text-decoration-none" >  Result Entry </Link>
 
                                                                                 </li>
                                                                                 <li className="dropdown-item">
-                                                                                    <Link to={labtest?.documents[0]?.url || '#'}
-                                                                                        className="text-dark text-decoration-none" > Report Print </Link>
+                                                                                    <Link
+                                                                                        to={
+                                                                                            labtest?.documents?.find(doc => doc.documentType === 'testreport')?.url || '#'
+                                                                                        }
+                                                                                        className="text-dark text-decoration-none"
+                                                                                    >
+                                                                                        Report Print
+                                                                                    </Link>
+
+                                                                                    {/* <Link to={labtest?.documents[0]?.url || '#'}
+                                                                                        className="text-dark text-decoration-none" > Report Print </Link> */}
                                                                                 </li>
                                                                                 <li className="dropdown-item">
                                                                                     <Link to={`/master/LablogResult/${labtest._id}`}
                                                                                         className="text-dark text-decoration-none" > Show Result </Link>
                                                                                 </li>
                                                                                 <li className="dropdown-item">
-                                                                                    <Link to={labtest?.documents[1]?.url || '#'}
-                                                                                        className="text-dark text-decoration-none" >Receipt </Link>
+                                                                                <Link
+                                                                                        to={
+                                                                                            labtest?.documents?.find(doc => doc.documentType === 'testbill')?.url || '#'
+                                                                                        }
+                                                                                        className="text-dark text-decoration-none"
+                                                                                    >
+                                                                                        Receipt
+                                                                                    </Link>
+
+                                                                                    {/* <Link to={labtest?.documents[1]?.url || '#'}
+                                                                                        className="text-dark text-decoration-none" >Receipt </Link> */}
                                                                                 </li>
 
                                                                             </div>

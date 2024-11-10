@@ -4,6 +4,9 @@ const mongoose = require('mongoose');
     const TestResultPSchema = new Schema({
         TestlablogId: { type: mongoose.Schema.Types.ObjectId, ref: 'lablog', required: true },
         result: [],
+        Catid:{
+            type:String,
+        },
         documents: [{
             url: {
                 type: String,

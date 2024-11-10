@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import Topbar from '../component/TopNavBar';
 import SideNavbar from '../component/SideNavbar';
-import { useNavigate, useParams  } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const labentrys = () => {
   const [loading, setLoading] = useState(true);
@@ -11,7 +11,7 @@ const labentrys = () => {
     sno: '',
     labId: '',
     patientName: '',
-    testType:'Radiology',
+    testType: 'Radiology',
     careofstatus: '',
     careofName: '',
     address: '',
@@ -44,7 +44,7 @@ const labentrys = () => {
   const [selectedLabId, setSelectedLabId] = useState(null);
 
   const navigate = useNavigate();
-  
+
   // Create `testOptions` by mapping over `test` state
   const testOptions = tests
     .filter(t => t.Department === "radiology") // Filter tests by department
@@ -66,18 +66,18 @@ const labentrys = () => {
           const response = await fetch(`https://khmc-xdlm.onrender.com/api/patients/${patientid}`);
           const data = await response.json();
           console.log(data, "Patient Data");
-  
+
           // Update the form data with patient details
           setFormData((prevFormData) => ({
             ...prevFormData,  // Retain previous form data
             ...data,  // Overwrite with fetched patient data
-    careofstatus: data.gStatus,
-    careofName: data.guardianName,
-    category: data.gender,
-    reffby: data.refTo,
+            careofstatus: data.gStatus,
+            careofName: data.guardianName,
+            category: data.gender,
+            reffby: data.refTo,
             tests: [], // Ensure 'tests' is set to an empty array (or based on your need)
           }));
-          
+
           setLoading(false); // Stop the loading state
         } catch (error) {
           console.error("Error fetching patient data:", error);
@@ -87,7 +87,7 @@ const labentrys = () => {
         console.log('No Patient ID provided');
       }
     };
-  
+
     const fetchData = async () => {
       try {
         // Fire all API requests simultaneously
@@ -108,7 +108,7 @@ const labentrys = () => {
           fetch("https://khmc-xdlm.onrender.com/api/category"),
           fetch("https://khmc-xdlm.onrender.com/api/reffby"),
         ]);
-  
+
         // Convert all responses to JSON
         const [
           snoData,
@@ -127,7 +127,7 @@ const labentrys = () => {
           genderResponse.json(),
           reffbyResponse.json(),
         ]);
-  
+
         // Update the form state and other states
         setSno(snoData.sno);
         setLabs(labData);
@@ -138,26 +138,26 @@ const labentrys = () => {
 
         setGender(genderData);
         setReffby(reffbyData);
-  
+
         // Update form data with labReg while retaining the rest
         setFormData((prevFormData) => ({
           ...prevFormData,
           labReg: labRegData.nextLabReg,  // Update lab registration field
         }));
-  
+
         console.log(labRegData, "Lab Registration Data");
       } catch (error) {
         console.error("Error fetching data:", error);
         setLoading(false); // Stop loading if there is an error
       }
     };
-  
+
     // Call the async functions
     fetchPatientDetails(); // Fetch patient details if patientid is available
     fetchData(); // Fetch other lab-related data
-  
+
   }, [patientid]); // Add patientid as a dependency to re-fetch if it changes
-  
+
 
 
   // Handle input changes for form fields
@@ -189,12 +189,12 @@ const labentrys = () => {
     // Map selected options to only include their `value` (which is _id)
     const selectedTests = selectedOptions ? selectedOptions.map(option => option.value) : [];
 
-    
+
     // Calculate the total amount based on the selected test rates
     const totalAmount = selectedTests.reduce((sum, selectedTestId) => {
       const selectedTest = tests.find(t => t._id === selectedTestId);
 
-      
+
       return sum + (selectedTest ? selectedTest.Rate : 0); // Add the test rate to the total
     }, 0);
 
@@ -206,9 +206,9 @@ const labentrys = () => {
     }));
 
 
-    
+
   };
-  
+
 
   // Handle form submission (add or update lab)
   const handleSubmit = async (e) => {
@@ -345,7 +345,7 @@ const labentrys = () => {
     <>
       <Topbar />
       <div className="container-fluid p-0 page-body-wrapper">
-      {/* <SideNavbar /> */}
+        {/* <SideNavbar /> */}
         <div className="main-panel">
           <div className="content-wrapper">
             <div className="page-header">
@@ -391,12 +391,12 @@ const labentrys = () => {
                       <div className="form-group">
 
 
-                      
+
 
                       </div>
                       <div className="form-group row">
 
-{console.log(formData, "formData Print Check")}
+                        {console.log(formData, "formData Print Check")}
                         <div className="col-md-3 col-12">
                           <label className="my-2">Lab Reg No.</label>
                           <div className="input-group">

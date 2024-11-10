@@ -6,7 +6,7 @@ import JsBarcode from 'jsbarcode';
 // import { strict as assert } from "assert";
 import { stripHtml } from "string-strip-html";
 
-const LablogResultP = () => {
+const LablogResultPEdit = () => {
     const navigate = useNavigate();
     const { id } = useParams(); // Get the ID from the URL
 
@@ -21,9 +21,9 @@ const LablogResultP = () => {
     const [BillNumber, setBillNumber] = useState('')
     const [fetchDatavalue, setfetchDatavalue] = useState(false)
     const [groupedTestDetails, setGroupedTestDetails] = useState({});
+    const [TestEntries, setTestEntries] = useState([]);
     const [categories, setCategories] = useState([]);
-
-
+    const [allTest, setAllTest] = useState([]);
     // Fetch lab entry and then fetch the test details
     useEffect(() => {
         const billnogen = async () => {
@@ -100,11 +100,11 @@ const LablogResultP = () => {
 
                 const TestEntryData = await testEntryResponse.json();
                 console.log("TestEntryData received:", TestEntryData);
+                setTestEntries(TestEntryData)
 
                 // If no test result data is found, automatically fetch lab entries and test details
                 if (!TestEntryData || TestEntryData.length === 0) {
                     console.log("No test result data found, fetching lab entry details.");
-                    fetchLabEntriesAndTestDetails();  // Automatically call the fallback function
                     setLoading(false);  // Stop loading state
                     return;  // Exit early, no further processing needed
                 }
@@ -117,7 +117,29 @@ const LablogResultP = () => {
                     return acc;
                 }, {});
 
-                setGroupedTestDetails(groupedData);
+
+                // Fetch the test names and rates from the API
+                const testNames = await fetchTestNameRates();
+
+                // Process the groupedData and enrich it with Rate information
+                const enrichedGroupedData = { ...groupedData };
+
+                // Iterate over groupedData and add Rate to each test
+                Object.keys(enrichedGroupedData).forEach((catId) => {
+                    enrichedGroupedData[catId].forEach((test) => {
+                        // Find the matching test name from the fetched data
+                        const matchingTest = testNames.find((t) => t.TestName === test.TestName);
+                        if (matchingTest) {
+                            // Add the Rate field to the test
+                            test.Rate = matchingTest.Rate || null;
+                        }
+                    });
+                });
+
+                // Set the updated grouped data with the Rate added
+                setGroupedTestDetails(enrichedGroupedData);
+
+                // setGroupedTestDetails(groupedData);
                 setfetchDatavalue(true)
                 console.log("Grouped test details by Catid:", groupedData);
 
@@ -129,7 +151,6 @@ const LablogResultP = () => {
                 if (documents?.length > 0) {
                     const prescriptionUrl = documents.find(doc => doc.documentType === "pathologyTestReport")?.url;
                     const billUrl = documents.find(doc => doc.documentType === "billReceipt")?.url;
-
                     setPrescriptionPdfUrl(prescriptionUrl || "");
                     setBillPdfUrl(billUrl || "");
                 }
@@ -142,7 +163,6 @@ const LablogResultP = () => {
                 setLoading(false);  // Stop loading state in case of error
             }
         };
-
         const fetchLabEntriesAndTestDetails = async () => {
             try {
                 console.log("Fetching lab entry details...");
@@ -157,17 +177,8 @@ const LablogResultP = () => {
 
                 const labEntryData = await labEntryResponse.json();
                 console.log("Lab entry data received:", labEntryData);
-                setPatientTestDetail(labEntryData);
 
-                const testIds = labEntryData.tests;
-                console.log(testIds, "testIds");
-
-                setLabTests(testIds);
-
-                // Fetch test names and details
-                console.log("Fetching test names and details...");
                 const testDetailsResponse = await fetch(`https://khmc-xdlm.onrender.com/api/testName`);
-
                 if (!testDetailsResponse.ok) {
                     console.error("Failed to fetch test names, status:", testDetailsResponse.status);
                     setError("Error fetching test names.");
@@ -176,24 +187,11 @@ const LablogResultP = () => {
                 }
 
                 const testDetailsData = await testDetailsResponse.json();
-                console.log("Test names and details received:", testDetailsData);
+                console.log(testDetailsData);
 
-                const filteredTestDetails = testDetailsData.filter(test => testIds.includes(test._id));
-                setTestDetail(filteredTestDetails);
-                console.log(filteredTestDetails, "filteredTestDetails");
-                // Step 1: Group filtered test details by Catid
-                const groupedData = filteredTestDetails.reduce((acc, test) => {
-                    const { Catid } = test;
-                    if (!acc[Catid]) acc[Catid] = []; // Initialize array if Catid group doesn't exist
-                    acc[Catid].push(test);
-                    return acc;
-                }, {});
+                setAllTest(testDetailsData)
 
-                // Step 2: Set the grouped data in state
-                setGroupedTestDetails(groupedData);
-                console.log("Grouped test details by Catid:", groupedData);
-
-
+                setPatientTestDetail(labEntryData);
                 setLoading(false);
             } catch (error) {
                 console.error("Error fetching lab entry or test details:", error);
@@ -204,6 +202,7 @@ const LablogResultP = () => {
 
         billnogen();
         fetchCategory();
+        fetchLabEntriesAndTestDetails();
         fetchResultEntryP(); // Initiate the fetch process
     }, [id]);
 
@@ -241,152 +240,6 @@ const LablogResultP = () => {
 
             return newState;
         });
-    };
-
-    const handleSubmit = async () => {
-
-        if (!fetchDatavalue) {
-            const resultData = testDetail.map(test => ({
-                TestName: test.TestName || "",
-                Catid: test.Catid,
-                testDetails: Array.isArray(test.testDetails) ? test.testDetails.map(detail => ({
-                    Investigation: detail.Investigation || "",
-                    Result: updatedResults[test._id]?.[detail._id] || detail.Result || "",
-                    Unit: detail.Unit || "",
-                    NormalRange: {
-                        start: detail.NormalRange.start,
-                        end: detail.NormalRange.end
-                    },
-                    _id: detail._id,
-                })) : [],
-                _id: test._id,
-            }));
-
-            const jsonOutput = {
-                TestlablogId: id,
-                result: resultData,
-                documents: [],
-            };
-
-            console.log("JSON output for test result:", JSON.stringify(jsonOutput, null, 2));
-
-            // Generate the Test Report PDF
-            // const prescriptionPdfBlob = generatePrescriptionPdf(PatienttestDetail);
-            // const billPdfBlob = generateLabTestBillPdf(PatienttestDetail, testDetail);
-
-            try {
-                // Upload Test Report PDF to Cloudinary
-                // const prescriptionPdfUrl = await uploadPdfToCloudinary(prescriptionPdfBlob, `prescription_${id}.pdf`);
-                // setPrescriptionPdfUrl(prescriptionPdfUrl);
-
-                // jsonOutput.documents.push({
-                //     url: prescriptionPdfUrl,
-                //     documentType: 'pathologyTestReport',
-                //     uploadedAt: new Date(),
-                // });
-
-                // console.log("Prescription PDF uploaded:", prescriptionPdfUrl);
-
-                // // Upload Bill PDF to Cloudinary
-                // const billPdfUrl = await uploadPdfToCloudinary(billPdfBlob, `bill_${id}.pdf`);
-                // setBillPdfUrl(billPdfUrl);
-
-                // jsonOutput.documents.push({
-                //     url: billPdfUrl,
-                //     documentType: 'billReceipt',
-                //     uploadedAt: new Date(),
-                // });
-
-                console.log("Bill PDF uploaded:", billPdfUrl);
-
-                // Submit the test result data with a POST request
-                const response = await fetch('https://khmc-xdlm.onrender.com/api/testResultP', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(jsonOutput, null, 2)
-                });
-
-                if (response.ok) {
-                    const newTest = await response.json();
-                    alert('Result submitted successfully!');
-                    console.log("After submission:", newTest);
-
-                    // // Now, send the PUT request to update the result field after successful POST
-                    // const updateResult = await fetch(`https://khmc-xdlm.onrender.com/api/UpdateResultlabEntry/${id}`, {
-                    //     method: 'PUT',
-                    //     headers: {
-                    //         'Content-Type': 'application/json',
-                    //     },
-                    //     body: JSON.stringify({ result: true, documents: jsonOutput.documents })
-                    // });
-
-                    // if (updateResult.ok) {
-                    //     alert('Result Value updated successfully!');
-                    //     // createLabTestBill(PatienttestDetail, testDetail)
-                    //     console.log('Result updated successfully.');
-                    // } else {
-                    //     alert('Failed to update lab entry result.');
-                    //     console.error('Error updating result:', await updateResult.text());
-                    // }
-                } else {
-                    alert('Failed to submit test result data');
-                    console.error('Error submitting form data:', await response.text());
-                }
-            } catch (error) {
-                console.error("Error during PDF upload:", error);
-            }
-
-
-        } else {
-
-            console.log("Update Data: ", updatedResults);
-            try {
-                // Loop through each updated test entry in updatedResults
-                for (const [testId, details] of Object.entries(updatedResults)) {
-                    for (const [detailId, updateFields] of Object.entries(details)) {
-                        
-                        // Create the payload for updating just the Result field
-                        const updatePayload = {
-                            "result.$[elem].testDetails.$[detailElem].Result": updateFields.Result
-                        };
-                        console.log(updatePayload,"updatePayload");
-                        // Send PATCH request to update specific test detail entry
-                        const response = await fetch(`https://khmc-xdlm.onrender.com/api/testResultP/${id}`, {
-                            method: 'PATCH',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(updatePayload),
-                            params: JSON.stringify({
-                                "arrayFilters": [
-                                    { "elem._id": testId },
-                                    { "detailElem._id": detailId }
-                                ]
-                            })
-                        });
-    
-                      
-                        
-                        if (response.ok) {
-                            console.log(`Successfully updated Result for testDetail with id: ${detailId}`);
-                        } else {
-                            console.error(`Failed to update Result for testDetail with id: ${detailId}`, await response.text());
-                        }
-                    }
-                }
-    
-                alert('Result data updated successfully!');
-            } catch (error) {
-                console.error("Error updating test details:", error);
-                alert('Failed to update test details.');
-            }
-        }
-
-
-
-
     };
 
 
@@ -638,6 +491,8 @@ const LablogResultP = () => {
     }
 
     const generateLabTestBillPdf = (patientData, tests) => {
+        console.log(tests, "tests generateLabPDF");
+
         const doc = new jsPDF();
         const pageWidth = doc.internal.pageSize.getWidth();
         const centerX = pageWidth / 2;
@@ -737,6 +592,169 @@ const LablogResultP = () => {
         return doc.output('blob'); // Return as blob for Cloudinary or other usage
     };
 
+    const fetchTestNameRates = async () => {
+        try {
+            const response = await fetch("https://khmc-xdlm.onrender.com/api/testName");
+            if (!response.ok) {
+                console.error("Failed to fetch test names and rates:", response.status);
+                return [];
+            }
+            const testNames = await response.json();
+            return testNames;
+        } catch (error) {
+            console.error("Error fetching test names:", error);
+            return [];
+        }
+    };
+
+
+    const handleSubmit = async () => {
+        // Generate update JSON structure
+        const updatePayload = handleUpdateResults();
+
+        try {
+            // Send PUT request to update test results on the server
+            const response = await fetch(`https://khmc-xdlm.onrender.com/api/testResultP/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatePayload)
+            });
+
+            if (response.ok) {
+                const updatedTestResult = await response.json();
+                alert('Results updated successfully!');
+                console.log('Updated Test Result:', updatedTestResult);
+            } else {
+                alert('Failed to update results.');
+            }
+        } catch (error) {
+            console.error("Error submitting updated results:", error);
+            alert('Error while submitting update.');
+        }
+    };
+    const handlePublishReport = async () => {
+        console.log(PatienttestDetail, "PatienttestDetail");
+
+        // Generate update JSON structure
+        const updatePayload = handleUpdateResults();
+        // Generate the Test Report PDF
+        const prescriptionPdfBlob = generatePrescriptionPdf(PatienttestDetail);
+        const billPdfBlob = generateLabTestBillPdf(PatienttestDetail, testDetail);
+        const doc = []
+
+
+        try {
+
+            const prescriptionPdfUrl = await uploadPdfToCloudinary(prescriptionPdfBlob, `prescription_${id}.pdf`);
+            // setPrescriptionPdfUrl(prescriptionPdfUrl);
+
+            doc.push({
+                url: prescriptionPdfUrl,
+                documentType: 'pathologyTestReport',
+                uploadedAt: new Date(),
+            });
+
+            console.log("Prescription PDF uploaded:", prescriptionPdfUrl);
+
+            // Upload Bill PDF to Cloudinary
+            const billPdfUrl = await uploadPdfToCloudinary(billPdfBlob, `bill_${id}.pdf`);
+            setBillPdfUrl(billPdfUrl);
+
+            doc.push({
+                url: billPdfUrl,
+                documentType: 'billReceipt',
+                uploadedAt: new Date(),
+            });
+            console.log("billPdfUrl PDF uploaded:", billPdfUrl);
+
+            // console.log(updatePayload, "New updatePayload");
+
+
+            // Send PUT request to update test results on the server
+            const response = await fetch(`https://khmc-xdlm.onrender.com/api/testResultP/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatePayload)
+            });
+
+            if (response.ok) {
+                const updatedTestResult = await response.json();
+                alert('Results updated successfully!');
+                
+                createLabTestBill(PatienttestDetail, testDetail)
+                console.log('Updated Test Result:', updatedTestResult);
+                console.log('doc Result:', doc);
+
+                // Now, send the PUT request to update the result field after successful POST
+                const updateResult = await fetch(`https://khmc-xdlm.onrender.com/api/UpdateResultlabEntry/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ result: true, documents: doc })
+                });
+
+                if (updateResult.ok) {
+                    alert('Result Value updated successfully!');
+                    createLabTestBill(PatienttestDetail, testDetail)
+                    console.log('Result updated successfully.');
+                } else {
+                    alert('Failed to update lab entry result.');
+                    console.error('Error updating result:', await updateResult.text());
+                }
+            } else {
+                alert('Failed to update results.');
+            }
+        } catch (error) {
+            console.error("Error submitting updated results:", error);
+            alert('Error while submitting update.');
+        }
+    };
+
+
+    // Function to generate the required JSON format for updates
+    const handleUpdateResults = () => {
+        // Extract updated test details
+        const resultUpdates = Object.values(groupedTestDetails).flatMap(categoryTests =>
+            categoryTests.map(test => ({
+                _id: test._id,
+                TestName: test.TestName,
+                Rate: test.Rate,
+                Catid: test.Catid,
+                testDetails: test.testDetails.map(detail => ({
+                    _id: detail._id,
+                    Investigation: detail.Investigation,
+                    Result: { Result: updatedResults[test._id]?.[detail._id]?.Result || detail.Result.Result },
+                    Unit: detail.Unit,
+                    NormalRange: {
+                        start: detail.NormalRange.start,
+                        end: detail.NormalRange.end
+                    }
+                }))
+            }))
+        );
+
+        // Extract updated document details
+        // const documents = TestEntries[0].documents.map(document => ({
+        //     _id: document._id,
+        //     url: document.url,
+        //     documentType: document.documentType
+        // }));
+
+        // console.log(documents,"documents 12");
+        
+
+        // Create final JSON structure
+        const updatePayload = {
+            resultUpdates,
+            
+        };
+
+        console.log("Update Payload:", JSON.stringify(updatePayload, null, 2));
+
+        return updatePayload;
+    };
+
     return (
         <>
             <Topbar />
@@ -747,8 +765,9 @@ const LablogResultP = () => {
                             <h3 className="page-title">
                                 <span className="page-title-icon bg-gradient-primary text-white me-2">
                                     <i className="mdi mdi-home"></i>
-                                </span>
-                                Pathology Result Report {console.log(updatedResults, "sd updatedResults")
+                                </span> {console.log(allTest, "allTest")
+                                }
+                                Edit Pathology Result Report {console.log(updatedResults, "sd updatedResults")
                                 }
                             </h3>
                         </div>
@@ -789,7 +808,7 @@ const LablogResultP = () => {
                                                             <React.Fragment key={test._id}>
                                                                 <tr>
                                                                     <td>{index + 1}</td>
-                                                                    <td>{test.TestName || ""}</td>
+                                                                    <td>{test.TestName || ""}{test.Rate}</td>
                                                                     <td colSpan="4"></td>
                                                                 </tr>
                                                                 {Array.isArray(test.testDetails) && test.testDetails.length > 0 ? (
@@ -805,11 +824,11 @@ const LablogResultP = () => {
                                                                                 <tr key={detail._id}>
                                                                                     <td></td>
                                                                                     <td></td>
-                                                                                    <td>{detail.Investigation || ""}</td>
+                                                                                    <td>{detail.Investigation || ""}{detail._id}</td>
                                                                                     <td> {console.log(resultValue, "sdfddf dfdf")}
                                                                                         <input
                                                                                             type="text"
-                                                                                            value={resultValue || resultValue.Result}
+                                                                                            value={resultValue.Result}
                                                                                             onChange={(e) => handleInputChange(test._id, detail._id, e.target.value)}
                                                                                             style={{ color: outOfRange ? 'red' : 'black' }}
                                                                                         />
@@ -840,11 +859,12 @@ const LablogResultP = () => {
 
                                         </table>
                                     )}
-                                    <button onClick={handleSubmit} className="btn btn-primary mt-4"> Save Results </button>
+                                    <button onClick={handleSubmit} className="btn btn-primary mt-4"> Update Results </button>
+                                    <button onClick={handlePublishReport} className="btn btn-primary mt-4">Publish Report </button>
                                     {/* {prescriptionPdfUrl ? '' : 
                                     } */}
-                                    {billPdfUrl && <a className="btn btn-primary mt-4" href={billPdfUrl} target="_blank" rel="noopener noreferrer">Print Bill Result</a>}
-                                    {prescriptionPdfUrl && <a className="btn btn-primary mt-4" href={prescriptionPdfUrl} target="_blank" rel="noopener noreferrer">Print Result</a>}
+                                    {/* {billPdfUrl && <a className="btn btn-primary mt-4" href={billPdfUrl} target="_blank" rel="noopener noreferrer">Print Bill Result</a>}
+                                    {prescriptionPdfUrl && <a className="btn btn-primary mt-4" href={prescriptionPdfUrl} target="_blank" rel="noopener noreferrer">Print Result</a>} */}
                                 </div>
                             </div>
                         </div>
@@ -854,4 +874,4 @@ const LablogResultP = () => {
         </>
     );
 };
-export default LablogResultP;
+export default LablogResultPEdit;

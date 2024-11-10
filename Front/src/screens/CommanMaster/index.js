@@ -25,6 +25,7 @@ import LablogEntry from "./LablogEntry";
 import LablogEntryP from "./LablogEntryP";
 import LablogResult from "./LablogResult";
 import LablogResultP from "./LablogResultP";
+import LablogResultPEdit from "./LablogResultPEdit";
 
 export {
     State,
@@ -53,5 +54,6 @@ export {
     LablogEntry,
     LablogEntryP,
     LablogResult,
-    LablogResultP
+    LablogResultP,
+    LablogResultPEdit
 }

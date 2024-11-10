@@ -11,9 +11,8 @@ const IncentiveType = () => {
     const [tests, setTests] = useState([]);
     const [selectedIncentiveTypeId, setSelectedIncentiveTypeId] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [selectAll, setSelectAll] = useState(false); // State for "Select All" checkbox
+    const [selectAll, setSelectAll] = useState(false);
 
-    // Fetch Incentive Types and Tests when the component is mounted
     useEffect(() => {
         const fetchIncentiveTypes = async () => {
             try {
@@ -53,6 +52,7 @@ const IncentiveType = () => {
         const updatedTypeTests = selectedTests.map((test) => ({
             TestId: test.value,
             TestIncentiveValueType: '',
+            IncentivePercentageValue: '',
             TestIncentiveValue: '',
             TestPrice: test.rate || 0,
         }));
@@ -63,24 +63,47 @@ const IncentiveType = () => {
     };
 
     const handleTestFieldChange = (index, field, value) => {
-        const updatedTests = formData.typeTests.map((test, i) =>
-            i === index ? { ...test, [field]: value } : test
-        );
+        const updatedTests = formData.typeTests.map((test, i) => {
+            if (i === index) {
+                let updatedTest = { ...test, [field]: value };
+    
+                if (field === 'TestIncentiveValueType') {
+                    // Reset fields based on the selected type
+                    if (value === 'percentage') {
+                        updatedTest.IncentivePercentageValue = ''; // clear percentage value initially
+                        updatedTest.TestIncentiveValue = ''; // clear incentive value initially
+                    } else if (value === 'amount') {
+                        updatedTest.TestIncentiveValue = ''; // allow manual entry
+                        delete updatedTest.IncentivePercentageValue; // remove percentage field if switching to amount
+                    }
+                }
+    
+                // If IncentivePercentageValue is updated and type is percentage, recalculate TestIncentiveValue
+                if (field === 'IncentivePercentageValue' && test.TestIncentiveValueType === 'percentage') {
+                    const percentageValue = parseFloat(value) || 0;
+                    updatedTest.TestIncentiveValue = (updatedTest.TestPrice / 100) * percentageValue;
+                }
+    
+                return updatedTest;
+            }
+            return test;
+        });
+    
         setFormData((prevData) => ({
             ...prevData,
             typeTests: updatedTests,
         }));
     };
+    
 
     const handleSelectAllTests = () => {
         if (selectAll) {
-            // If selectAll is true, deselect all tests
             setFormData({ ...formData, typeTests: [] });
         } else {
-            // If selectAll is false, select all tests
             const updatedTypeTests = tests.map((test) => ({
                 TestId: test._id,
                 TestIncentiveValueType: '',
+                IncentivePercentageValue: '',
                 TestIncentiveValue: '',
                 TestPrice: test.Rate || 0,
             }));
@@ -91,7 +114,6 @@ const IncentiveType = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         try {
             const response = await fetch(
                 `https://khmc-xdlm.onrender.com/api/incentiveType/${selectedIncentiveTypeId || ''}`,
@@ -105,13 +127,11 @@ const IncentiveType = () => {
             if (response.ok) {
                 const result = await response.json();
                 alert(`Incentive type ${selectedIncentiveTypeId ? 'updated' : 'created'} successfully!`);
-
                 setIncentiveTypes((prevIncentiveTypes) =>
                     selectedIncentiveTypeId
                         ? prevIncentiveTypes.map((type) => (type._id === selectedIncentiveTypeId ? result : type))
                         : [...prevIncentiveTypes, result]
                 );
-
                 resetForm();
             } else {
                 alert('Failed to save incentive type');
@@ -124,13 +144,11 @@ const IncentiveType = () => {
     const resetForm = () => {
         setFormData({ typeName: '', typeTests: [] });
         setSelectedIncentiveTypeId(null);
-        setSelectAll(false); // Reset selectAll state
+        setSelectAll(false);
     };
 
     const handleCancel = () => {
-        // Reset the form and clear selected tests
-        window.location.reload()
-        // resetForm(); // Call the reset function
+        window.location.reload();
     };
 
     const handleDelete = async () => {
@@ -156,12 +174,20 @@ const IncentiveType = () => {
     };
 
     const handleRowClick = (incentiveType) => {
+        const selectedTests = incentiveType.typeTests.map((test) => ({
+            TestId: test.TestId,
+            TestIncentiveValueType: test.TestIncentiveValueType,
+            IncentivePercentageValue: test.IncentivePercentageValue || '',
+            TestIncentiveValue: test.TestIncentiveValue,
+            TestPrice: test.TestPrice,
+        }));
+
         setFormData({
             typeName: incentiveType.typeName,
-            typeTests: incentiveType.typeTests,
+            typeTests: selectedTests,
         });
         setSelectedIncentiveTypeId(incentiveType._id);
-        setSelectAll(false); // Reset selectAll state when loading existing type
+        setSelectAll(false);
     };
 
     return (
@@ -193,7 +219,7 @@ const IncentiveType = () => {
                                                         style={{ cursor: 'pointer' }}
                                                     >
                                                         <td>{type.typeName}</td>
-                                                        <td>{type.typeTests.length}</td> {/* Display number of tests */}
+                                                        <td>{type.typeTests.length}</td>
                                                     </tr>
                                                 ))}
                                             </tbody>
@@ -235,57 +261,68 @@ const IncentiveType = () => {
                                                     }))}
                                                     isMulti
                                                     onChange={handleSelectTests}
-                                                    placeholder="Select Multiple Tests"
+                                                    placeholder="Select Tests"
+                                                    value={formData.typeTests.map((test) => ({
+                                                        value: test.TestId,
+                                                        label: tests.find((t) => t._id === test.TestId)?.TestName,
+                                                    }))}
                                                 />
                                             </div>
 
-                                            {formData.typeTests.map((test, index) => (
-                                                <div key={index} className="form-group">
-                                                    <label>Test Incentive Details for {tests.find(t => t._id === test.TestId)?.TestName}</label>
-                                                    <select
-                                                    className="form-control"
-                                                    value={test.TestIncentiveValueType}
-                                                    onChange={(e) =>
-                                                        handleTestFieldChange(index, 'TestIncentiveValueType', e.target.value)
-                                                    }
-                                                    >
-                                                        <option value="">Select Option</option>
-                                                        <option value="amount">Amount</option>
-                                                        <option value="percentage">Percentage</option>
+                                            {formData.typeTests.map((test, index) => {
+                                                const testName = tests.find((t) => t._id === test.TestId)?.TestName || `Test ${index + 1}`;
 
-                                                    </select>
+                                                return (
+                                                    <div key={index} className="form-group">
+                                                        <label>{testName}</label>
+
+                                                        {/* Select for TestIncentiveValueType */}
+                                                        <select
+                                                            className="form-control"
+                                                            value={test.TestIncentiveValueType}
+                                                            onChange={(e) => handleTestFieldChange(index, 'TestIncentiveValueType', e.target.value)}
+                                                        >
+                                                            <option value="">Select Option</option>
+                                                            <option value="amount">Amount</option>
+                                                            <option value="percentage">Percentage</option>
+                                                        </select>
+
+                                                        {/* Display IncentivePercentageValue input if TestIncentiveValueType is "percentage" */}
+                                                        {test.TestIncentiveValueType === 'percentage' && (
+                                                            <input
+                                                                type="number"
+                                                                className="form-control"
+                                                                placeholder="Incentive Percentage Value"
+                                                                value={test.IncentivePercentageValue || ''}
+                                                                onChange={(e) => handleTestFieldChange(index, 'IncentivePercentageValue', e.target.value)}
+                                                            />
+                                                        )}
+
+                                                        {/* TestIncentiveValue input */}
+                                                        <input
+                                                            type="number"
+                                                            className="form-control"
+                                                            placeholder={test.TestIncentiveValueType === 'percentage' ? "Calculated Incentive Value" : "Incentive Amount Value"}
+                                                            value={test.TestIncentiveValue || ''}
+                                                            onChange={(e) =>
+                                                                test.TestIncentiveValueType === 'amount' && handleTestFieldChange(index, 'TestIncentiveValue', e.target.value)
+                                                            }
+                                                            readOnly={test.TestIncentiveValueType === 'percentage'} // readOnly if type is percentage
+                                                        />
+
+                                                        {/* TestPrice input */}
+                                                        <input
+                                                            type="number"
+                                                            className="form-control"
+                                                            placeholder="Test Price"
+                                                            value={test.TestPrice || ''}
+                                                            onChange={(e) => handleTestFieldChange(index, 'TestPrice', e.target.value)}
+                                                        />
+                                                    </div>
+                                                );
+                                            })}
 
 
-                                                    
-                                                    {/* <input
-                                                        type="text"
-                                                        className="form-control"
-                                                        placeholder="Incentive Value Type"
-                                                        value={test.TestIncentiveValueType}
-                                                        onChange={(e) =>
-                                                            handleTestFieldChange(index, 'TestIncentiveValueType', e.target.value)
-                                                        }
-                                                    /> */}
-                                                    <input
-                                                        type="number"
-                                                        className="form-control"
-                                                        placeholder="Incentive Value"
-                                                        value={test.TestIncentiveValue}
-                                                        onChange={(e) =>
-                                                            handleTestFieldChange(index, 'TestIncentiveValue', e.target.value)
-                                                        }
-                                                    />
-                                                    <input
-                                                        type="number"
-                                                        className="form-control"
-                                                        placeholder="Test Price"
-                                                        value={test.TestPrice}
-                                                        onChange={(e) =>
-                                                            handleTestFieldChange(index, 'TestPrice', e.target.value)
-                                                        }
-                                                    />
-                                                </div>
-                                            ))}
 
                                             <button type="submit" className="btn btn-gradient-primary me-2">
                                                 {selectedIncentiveTypeId ? 'Update' : 'Submit'}

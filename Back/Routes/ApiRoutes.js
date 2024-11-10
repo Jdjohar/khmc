@@ -1171,22 +1171,51 @@ router.get('/testResultP/:id', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
-
-// UPDATE a state by ID (PUT)
+// UPDATE a test result by TestlablogId (PUT)
+// Update a specific result within TestResultP
 router.put('/testResultP/:id', async (req, res) => {
+    const { resultUpdates, documents } = req.body;
+
     try {
-        const updatedtestResult = await TestResultP.findByIdAndUpdate(req.params.id, req.body, {
-            new: true, // Return the updated document
-            runValidators: true // Ensure the data is valid
-        });
-        if (!updatedtestResult) {
-            return res.status(404).json({ message: 'testResult not found' });
+        // Find the document by TestlablogId
+        const testResult = await TestResultP.findOne({ TestlablogId: req.params.id });
+        
+        if (!testResult) {
+            return res.status(404).json({ message: 'Test Result not found' });
         }
-        res.status(200).json(updatedtestResult);
+
+        // Update each result item in the `result` array
+        if (resultUpdates && Array.isArray(resultUpdates)) {
+            resultUpdates.forEach(update => {
+                const index = testResult.result.findIndex(item => item._id.toString() === update._id);
+                if (index !== -1) {
+                    testResult.result[index] = update; // Replace with the new data
+                }
+            });
+        }
+
+        // Update each document item in the `documents` array
+        if (documents && Array.isArray(documents)) {
+            console.log(documents,"documents");
+            
+            documents.forEach(update => {
+                const index = testResult.documents.findIndex(doc => doc._id.toString() === update._id);
+                if (index !== -1) {
+                    testResult.documents[index] = update; // Replace with the new data
+                }
+            });
+        }
+
+        // Save the updated document
+        const updatedTestResult = await testResult.save();
+
+        res.status(200).json(updatedTestResult);
     } catch (err) {
-        res.status(400).json({ error: err.message });
+        res.status(500).json({ error: err.message });
     }
 });
+
+// UPDATE a state by ID (PUT)
 
 // DELETE a religion by ID (DELETE)
 router.delete('/testResultP/:id', async (req, res) => {

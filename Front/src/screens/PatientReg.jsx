@@ -163,9 +163,7 @@ const getCurrentDateTime = () => {
         refTo: '',
         identStatus: '',
         identity: '',
-        items: [
-            { particular: 'Consultaion Fee on : 26/08/2024', quantity: 1, rate: 150, amount: 150 }
-        ],
+   
         visitType: '',
         paymentType: '',
         discountType: '',
@@ -476,22 +474,24 @@ const getCurrentDateTime = () => {
 
 
     // Utility function to convert numbers into words (for the total amount)
-    const numberToWords = (num) => {
-        const a = [
-            '', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve',
-            'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'
-        ];
-        const b = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
-
-        const inWords = (num) => {
-            if (num < 20) return a[num];
-            if (num < 100) return b[Math.floor(num / 10)] + (num % 10 ? ' ' + a[num % 10] : '');
-            if (num < 1000) return a[Math.floor(num / 100)] + ' hundred' + (num % 100 ? ' ' + inWords(num % 100) : '');
-            if (num < 1000000) return inWords(Math.floor(num / 1000)) + ' thousand' + (num % 1000 ? ' ' + inWords(num % 1000) : '');
-            return 'Amount too large';
+    function numberToWords(num) {
+        const belowTwenty = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten",
+            "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen",
+            "eighteen", "nineteen"];
+        const tens = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
+        const thousands = ["", "thousand"];
+      
+        if (num === 0) return "zero";
+      
+        const convert = (n) => {
+            if (n < 20) return belowTwenty[n];
+            else if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 !== 0 ? " " + belowTwenty[n % 10] : "");
+            else if (n < 1000) return belowTwenty[Math.floor(n / 100)] + " hundred" + (n % 100 !== 0 ? " " + convert(n % 100) : "");
+            else return belowTwenty[Math.floor(n / 1000)] + " thousand" + (n % 1000 !== 0 ? " " + convert(n % 1000) : "");
         };
-        return inWords(num) + ' only';
-    };
+      
+        return convert(num).trim();
+      }
 
     const generateReceiptPdf = () => {
         console.log(patientType, "patientType");

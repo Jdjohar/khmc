@@ -3,6 +3,8 @@ import Select from 'react-select';
 import Topbar from '../component/TopNavBar';
 import SideNavbar from '../component/SideNavbar';
 import { useNavigate, useParams } from 'react-router-dom';
+import jsPDF from 'jspdf';
+import JsBarcode from 'jsbarcode';
 
 const LablogsP = () => {
   const [loading, setLoading] = useState(true);
@@ -48,6 +50,8 @@ const LablogsP = () => {
   const [selectedReffby, setSelectedReffby] = useState([]);
   const [selectedTestbyUser, setSelectedTestbyUser] = useState([]);
   const [incentiveTypeData, setIncentiveTypeData] = useState([]);
+  const [BillNumber, setBillNumber] = useState('')
+  const [billPdfUrl, setBillPdfUrl] = useState('');
 
   const navigate = useNavigate();
 
@@ -212,6 +216,242 @@ const LablogsP = () => {
   }, [patientid]); // Add patientid as a dependency to re-fetch if it changes
 
 
+  const billnogen = async () => {
+    try {
+        // Fetch existing bills to determine the latest billNo
+        const billsResponse = await fetch('https://khmc-xdlm.onrender.com/api/labtestbills');
+        if (!billsResponse.ok) {
+            throw new Error('Failed to fetch existing bills');
+        }
+
+        const billsData = await billsResponse.json();
+        console.log(billsData, "billsData");
+
+
+        // Find the latest billNo
+        let latestBillNo = 50; // Default starting number
+        if (billsData.length > 0) {
+            // Filter and convert billNo to integers, ignoring invalid values
+            const billNumbers = billsData
+                .map(bill => parseInt(bill.billNo, 10)) // Convert to integer
+                .filter(billNo => !isNaN(billNo)); // Keep only valid numbers
+
+            if (billNumbers.length > 0) {
+                latestBillNo = Math.max(...billNumbers); // Get the maximum valid bill number
+            }
+        }
+        console.log(latestBillNo, "latestBillNo");
+
+        const nextBillNo = latestBillNo + 1; // Next bill number
+        setBillNumber(nextBillNo)
+
+    } catch (error) {
+
+    }
+
+}
+
+const uploadPdfToCloudinary = async (pdfBlob, fileName) => {
+  const formData = new FormData();
+  formData.append('file', pdfBlob, fileName); // PDF as Blob
+  formData.append('upload_preset', 'employeeApp'); // Add your unsigned Cloudinary upload preset
+
+  try {
+      const response = await fetch('https://api.cloudinary.com/v1_1/dxwge5g8f/auto/upload', {
+          method: 'POST',
+          body: formData,
+      });
+
+      if (!response.ok) {
+          throw new Error('Failed to upload PDF');
+      }
+
+      const data = await response.json();
+      return data.secure_url; // URL of uploaded PDF
+  } catch (error) {
+      console.error('Error uploading PDF to Cloudinary:', error);
+      throw error;
+  }
+};
+const createLabTestBill = async (patientData, tests) => {
+  console.log(patientData, "jsdkjdffd dfklldfn fdf");
+  console.log(tests, "jsdksdf");
+
+  setLoading(true);
+
+  try {
+
+      // Prepare bill details
+      const total = tests.reduce((sum, test) => sum + test.Rate, 0);
+      const billDetails = {
+          patientId: patientData._id,
+          billNo: BillNumber,
+          patientName: patientData.patientName,
+          mobile: patientData.mobile,
+          email: patientData.email || '',
+          total: total,
+          received: patientData.received || total, // Received amount if available, otherwise total
+          refund: patientData.refund || 0,
+          discount: patientData.discount || 0,
+          paymentType: patientData.payment || 0,
+          tests: patientData.tests,
+          date: new Date(),
+
+      };
+
+      // Send bill to labtestbills API
+      const response = await fetch('https://khmc-xdlm.onrender.com/api/labtestbills', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(billDetails)
+      });
+
+      if (!response.ok) {
+          const errorMessage = await response.text();
+          throw new Error(`Failed to create bill: ${errorMessage}`);
+      }
+
+      console.log('Bill created and uploaded to Cloudinary successfully!');
+  } catch (error) {
+      console.error('Error creating lab test bill:', error);
+      alert(`Error: ${error.message}`);
+  } finally {
+      setLoading(false);
+  }
+};
+function numberToWords(num) {
+  const belowTwenty = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten",
+      "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen",
+      "eighteen", "nineteen"];
+  const tens = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
+  const thousands = ["", "thousand"];
+
+  if (num === 0) return "zero";
+
+  const convert = (n) => {
+      if (n < 20) return belowTwenty[n];
+      else if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 !== 0 ? " " + belowTwenty[n % 10] : "");
+      else if (n < 1000) return belowTwenty[Math.floor(n / 100)] + " hundred" + (n % 100 !== 0 ? " " + convert(n % 100) : "");
+      else return belowTwenty[Math.floor(n / 1000)] + " thousand" + (n % 1000 !== 0 ? " " + convert(n % 1000) : "");
+  };
+
+  return convert(num).trim();
+}
+
+const generateLabTestBillPdf = (patientData, selectedtests) => {
+  console.log(selectedtests, "tests generateLabPDF");
+
+  // Filter tests based on selected test IDs
+  const selectedTestDetails = tests.filter(test => selectedtests.includes(test._id));
+
+  // Log the selected test details
+  console.log(selectedTestDetails, "selectedTestDetails");
+
+
+
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const centerX = pageWidth / 2;
+
+  // Header
+  doc.setFontSize(14).setFont('bold');
+  doc.text('KAISHVI PATHOLOGY', centerX, 20, { align: 'center' });
+  doc.setFontSize(10).setFont('normal');
+  doc.text('Nehru Nagar, Ward No.:1, Pharenda Road, Maharajganj (U.P.)', centerX, 28, { align: 'center' });
+  doc.text('E-mail: info@kaishvihospital.com   www.kaishvihospital.com', centerX, 34, { align: 'center' });
+  doc.text('Mob.No: 8948150069', centerX, 40, { align: 'center' });
+
+  // Barcode placeholder
+  doc.text('100037915', pageWidth - 40, 40, { align: 'right' });
+
+  // Patient Info Section
+  const leftColumnX = 10; // Start of left column
+  const rightColumnX = centerX + 10; // Start of right column
+  let currentY = 50;
+  const rowHeight = 6; // Row height
+
+  // Patient Info Data
+  const patientInfo = [
+      { label: "Patient Name:", value: patientData.patientName },
+      { label: "Age/Sex:", value: `${patientData.age || ''}/${patientData.category || ''}` },
+      { label: "Ref. By:", value: patientData.reffby || '' },
+      { label: "UHID:", value: patientData.uhid || '-' },
+      { label: "Registration No.:", value: patientData.labReg || '' },
+      { label: "Transaction Id:", value: patientData.sno || '' },
+      { label: "Collection Date:", value: patientData.sampledate || '' },
+      { label: "Reporting Date:", value: patientData.reportDate || '-' }
+  ];
+
+  // Split data into two columns, with equal parts
+  const midIndex = Math.ceil(patientInfo.length / 2);
+  const leftColumnData = patientInfo.slice(0, midIndex);
+  const rightColumnData = patientInfo.slice(midIndex);
+
+  // Print left column details
+  leftColumnData.forEach((info, index) => {
+      const rowY = currentY + (index * rowHeight);
+      doc.text(info.label, leftColumnX, rowY);
+      doc.text(String(info.value), leftColumnX + 40, rowY);
+  });
+
+  // Print right column details, continuing from the same level as the left column ends
+  rightColumnData.forEach((info, index) => {
+      const rowY = currentY + (index * rowHeight);
+      doc.text(info.label, rightColumnX, rowY);
+      doc.text(String(info.value), rightColumnX + 40, rowY);
+  });
+
+  currentY += leftColumnData.length * rowHeight + 2;
+
+  // Table Header
+  doc.setFillColor(200, 200, 200);
+  doc.rect(10, currentY, pageWidth - 20, 7, 'F');
+  doc.setFont('bold');
+  doc.text('SL', 12, currentY + 5);
+  doc.text('Investigation', 30, currentY + 5);
+  doc.text('Charges', 160, currentY + 5, { align: 'right' });
+  currentY += 10;
+
+  // Lab Test Rows
+  doc.setFont('normal');
+  let totalAmount = 0;
+  selectedTestDetails.forEach((test, index) => {
+      const amount = test.Rate;
+      console.log(amount,"inner test");
+      
+      doc.text(String(index + 1), 12, currentY);
+      doc.text(String(test.TestName), 30, currentY);
+      doc.text(String(amount.toFixed(2)), 160, currentY, { align: 'right' });
+      totalAmount += amount;
+      currentY += 7;
+  });
+
+  // Total Amount Section
+  currentY += 5;
+  doc.setFont('bold');
+  doc.text('Total Amount :', 140, currentY, { align: 'right' });
+  console.log(totalAmount,"totalAmount totalAmount");
+  
+  doc.text(String(totalAmount.toFixed(2)), 160, currentY, { align: 'right' });
+
+  // Received Amount Section
+  currentY += 7;
+  doc.text('Received :', 140, currentY, { align: 'right' });
+  doc.text(String(totalAmount.toFixed(2)), 160, currentY, { align: 'right' });
+
+  // Footer with thanks message
+  currentY += 15;
+  doc.setFontSize(10).setFont('normal');
+  doc.text(`Received with thanks a sum of : ${numberToWords(totalAmount.toLocaleString('en-IN'))} Only`, leftColumnX, currentY);
+
+  // Footer Created & Printed By
+  currentY += 10;
+  // doc.text('Created By : lab, Printed By : Jashandeep', leftColumnX, currentY);
+  doc.text('Authorised Signatory', pageWidth - 40, currentY, { align: 'right' });
+
+  return doc.output('blob'); // Return as blob for Cloudinary or other usage
+};
+
 
   // Handle input changes for form fields
   const handleChange = (e) => {
@@ -371,7 +611,8 @@ const LablogsP = () => {
   // Handle form submission (add or update lab)
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    const billPdfBlob = generateLabTestBillPdf(formData, formData.tests);
+    const doc = []
     if (selectedLabId) {
       // Update lab log
       try {
@@ -396,6 +637,20 @@ const LablogsP = () => {
     } else {
       // Add new lab log
       try {
+
+         // Upload Bill PDF to Cloudinary
+         const billPdfUrl = await uploadPdfToCloudinary(billPdfBlob, `bill_${new Date().toISOString()}.pdf`);
+         setBillPdfUrl(billPdfUrl);
+
+         doc.push({
+             url: billPdfUrl,
+             documentType: 'billReceipt',
+             uploadedAt: new Date(),
+         });
+         console.log("billPdfUrl PDF uploaded:", billPdfUrl);
+         console.log("doc PDF uploaded:", doc);
+
+
         const response = await fetch('https://khmc-xdlm.onrender.com/api/labentry', {
           method: 'POST',
           headers: {
@@ -405,6 +660,7 @@ const LablogsP = () => {
             ...formData, // Send the formData without _id
             sno: sno,
             labId: labs[0]._id,
+            documents: doc,
             labReg: LabReg.nextLabReg,
           }),
         });
@@ -412,6 +668,9 @@ const LablogsP = () => {
         if (response.ok) {
           const newLabEntry = await response.json(); // Get the new lab entry object containing _id
           alert('Lab log submitted successfully!');
+
+          const receiptPdfUrlLocal = URL.createObjectURL(billPdfBlob);
+          window.open(receiptPdfUrlLocal, '_blank');
 
           // Validate necessary data
           if (!selectedTestbyUser) {

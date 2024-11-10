@@ -39,6 +39,7 @@ import {
   LablogResult,
   LablogResultP,
   LablogEntryP,
+  LablogResultPEdit,
 
 
 } from './screens/CommanMaster/index'
@@ -83,6 +84,7 @@ function App() {
     <Route exact path='/master/labloglistp' element={<LablogEntryP />}/>
     <Route exact path='/master/lablogresult/:id' element={<LablogResult />}/>
     <Route exact path='/master/lablogresultp/:id' element={<LablogResultP />}/>
+    <Route exact path='/master/lablogresultpedit/:id' element={<LablogResultPEdit />}/>
     <Route exact path='/master/testname/:id?' element={<TestName />}/>
     <Route exact path='/master/testlist' element={<LabTestList />}/>
     <Route exact path='/master/testEdit/:id' element={<LabTestEdit />}/>
