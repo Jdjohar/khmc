@@ -530,18 +530,11 @@ const LablogResult = () => {
             const billPdfUrl = await uploadPdfToCloudinary(billPdfBlob, `bill_${id}.pdf`);
 
             // Create documents array with URLs and document types
-            const documents = [
-                {
+            const newdocuments =  {
                     url: prescriptionPdfUrl,
                     documentType: 'testreport',
                     uploadedAt: new Date(),
-                },
-                {
-                    url: billPdfUrl,
-                    documentType: 'testbill',
-                    uploadedAt: new Date(),
                 }
-            ];
             // First, submit the form data with a POST request
             const response = await fetch('https://khmc-xdlm.onrender.com/api/testResult', {
                 method: 'POST',
@@ -551,14 +544,21 @@ const LablogResult = () => {
                 body: JSON.stringify({
                     ...formData,
                     TestlablogId: id, // Assuming 'id' is the correct identifier
-                    documents
+                    newdocuments
                 })
             });
+            console.log(prescriptionPdfUrl,"prescriptionPdfUrl");
+            console.log(newdocuments,"newdocuments");
+            
 
             if (response.ok) {
                 const newTest = await response.json();
                 alert('Comment submitted successfully!');
                 console.log("After submission:", newTest);
+
+              
+                const documents = [...PatienttestDetailR.documents, newdocuments]
+
 
                 // Now, send the PUT request to update the result field after successful POST
                 const updateResult = await fetch(`https://khmc-xdlm.onrender.com/api/UpdateResultlabEntry/${id}`, {
@@ -568,6 +568,7 @@ const LablogResult = () => {
                     },
                     body: JSON.stringify({ result: true, documents:documents  }) // Update 'result' to true
                 });
+
 
                 // Check if the result update was successful
                 if (updateResult.ok) {

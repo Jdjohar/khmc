@@ -116,6 +116,8 @@ const IncentiveList = () => {
                                                     </tr>
                                                 </thead>
                                                 <tbody id="incentive-table-body">
+
+                                                    {console.log(incentiveReports,"dsf")}
                                                     {incentiveReports.map((report) => (
                                                         <tr key={report._id}>
                                                             <td>
@@ -146,7 +148,7 @@ const IncentiveList = () => {
                                                             <td>{getIncentiveTypeName(report.TesttypeId)}</td>
                                                             <td>{getReffByName(report.Reffby)}</td>
                                                             <td>{getTestName(report.testid)}</td>
-                                                            <td>{report.amount}</td>
+                                                            <td>{report.incAmount}</td>
                                                         </tr>
                                                     ))}
                                                 </tbody>

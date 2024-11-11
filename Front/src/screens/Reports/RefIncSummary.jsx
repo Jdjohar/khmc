@@ -277,7 +277,7 @@ const RefIncSummary = () => {
                                                         {/* <th>Paid Amount</th> Changed to Paid Amount */}
                                                         <th>Due</th>
                                                         <th>Ref. By</th>
-                                                        <th>Test Name</th>
+                                                        <th>Test/Service Name</th>
                                                         <th>Inc Amount</th>
                                                         <th>Incentive Status</th>
                                                         <th>Actions</th>
@@ -309,7 +309,7 @@ const RefIncSummary = () => {
 
                                                             <td>{report.due || '0'}</td>
                                                             <td>{getReffByName(report.Reffby || 'No Data')}</td>
-                                                            <td>{getTestName(report.testid || 'No Data')}</td>
+                                                            <td>{getTestName(report.testid) === "Unknown Test" ? report.servicename : getTestName(report.testid) || "ds"}</td>
 
                                                             {/* Paid Amount Input */}
                                                             <td>

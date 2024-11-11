@@ -195,7 +195,7 @@ const LablogEntry = () => {
                                                                                 <li className="dropdown-item">
                                                                                 <Link
                                                                                         to={
-                                                                                            labtest?.documents?.find(doc => doc.documentType === 'testbill')?.url || '#'
+                                                                                            labtest?.documents?.find(doc => doc.documentType === 'billReceipt')?.url || '#'
                                                                                         }
                                                                                         className="text-dark text-decoration-none"
                                                                                     >

@@ -110,6 +110,7 @@ const PatientReg = () => {
     const [btnLoading, setbtnLoading] = useState('')
     const [Gender, setGender] = useState('')
     const [BillNumber, setBillNumber] = useState('')
+    const [ConsFeeInc, setConsFeeInc] = useState('')
     const [Department, setDepartment] = useState([])
     const [Doctor, setDoctor] = useState([])
     const [Reffby, setReffby] = useState([])
@@ -447,6 +448,7 @@ const getCurrentDateTime = () => {
     const handleDoctorChange = (e) => {
         const selectedDoctorName = e.target.value;
         console.log(Doctor, selectedDoctorName);
+        setConsFeeInc(Doctor[0].incentiveonvisit);
         
         // Find the selected doctor object based on the selected name
         const selectedDoctorObj = Doctor.find(doctor => doctor.doctorname === selectedDoctorName);
@@ -571,7 +573,7 @@ const getCurrentDateTime = () => {
         doc.rect(leftMargin, currentY, pageWidth - 20, 7); // Border around each row
         doc.setFont('normal');
         doc.text(`1`, leftMargin + 2, currentY + 5);
-        doc.text(`Consultaion Fee`, leftMargin + 20, currentY + 5);
+        doc.text(`${selectedFormData.visitType == "Emergency" ? "Emergency Fee" : "Consultaion Fee"}`, leftMargin + 20, currentY + 5);
         doc.text(`1`, leftMargin + 80, currentY + 5);
         doc.text(applyFee, leftMargin + 120, currentY + 5);
         // doc.text(applyFee, leftMargin + 120, currentY + 5);
@@ -589,11 +591,16 @@ const getCurrentDateTime = () => {
         currentY += 4;
         doc.text(`Refund: 0`, leftMargin + 120, currentY);
         currentY += 4;
+const abc = selectedFormData.visitType == "Emergency" ? selectedFormData.emergencyfee : selectedFormData.consfee;
+console.log(selectedFormData.visitType,"abc");
 
         // Amount in Words
-        const totalInWords = numberToWords(selectedFormData.total);
+        // const totalInWords = numberToWords(selectedFormData);
+    //     const totalInWords = selectedFormData.visitType == "Emergency" ? selectedFormData.emergencyfee : selectedFormData.consfee;
+    //    console.log(numberToWords(selectedFormData));
+       
         doc.setFont('normal');
-        doc.text(`Amount Payable in words: ${totalInWords}`, leftMargin, currentY);
+        doc.text(`Amount Payable in words: ${numberToWords(applyFee)}`, leftMargin, currentY);
       
         currentY += 5; // Add margin before the signature
         doc.setFont('bold');
@@ -698,6 +705,7 @@ const getCurrentDateTime = () => {
 
     useEffect(() => {
 
+console.log(selectedDoctor, "selectedDoctor sdds");
 
         const fetchData = async () => {
             try {
@@ -908,77 +916,6 @@ const getCurrentDateTime = () => {
             setbtnLoading(false);
         }
     }
-    // Handle form submission
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-    //     setbtnLoading(true);
-
-    //     // Select form data based on patient type
-    //     const selectedFormData = patientType === 'new' ? formData : OldformData;
-
-    //     try {
-    //         // Generate PDFs
-    //         const prescriptionPdfBlob = generatePrescriptionPdf(selectedFormData);
-    //         const tokenPdfBlob = generateTokenPdf(selectedFormData);
-    //         const receiptPdfBlob = generateReceiptPdf(selectedFormData);
-
-    //         // Upload PDFs to Cloudinary
-    //         const prescriptionPdfUrl = await uploadPdfToCloudinary(prescriptionPdfBlob, 'prescription.pdf');
-    //         const tokenPdfUrl = await uploadPdfToCloudinary(tokenPdfBlob, 'token.pdf');
-    //         const receiptPdfUrl = await uploadPdfToCloudinary(receiptPdfBlob, 'token.pdf');
-
-    //         console.log(selectedFormData, "selectedFormData");
-    //         // Create documents array with URLs and document types
-    //         const documents = [
-    //             {
-    //                 url: prescriptionPdfUrl,
-    //                 documentType: 'prescription',
-    //                 uploadedAt: new Date(),
-    //             },
-    //             {
-    //                 url: tokenPdfUrl,
-    //                 documentType: 'token',
-    //                 uploadedAt: new Date(),
-    //             },
-    //             {
-    //                 url: receiptPdfUrl,
-    //                 documentType: 'receipt',
-    //                 uploadedAt: new Date(),
-    //             },
-    //         ];
-
-
-
-    //         // Submit form data with Cloudinary URLs
-    //         const response = await fetch('https://khmc-xdlm.onrender.com/api/patients', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             body: JSON.stringify({
-    //                 ...selectedFormData,
-    //                 documents,
-    //             }),
-    //         });
-
-    //         if (response.ok) {
-    //             const patientData = await response.json();
-    //             console.log("patientData", patientData);
-    //             createBill(patientData.data._id)
-    //             // await createBill(patientId);
-    //             alert('Patient data submitted successfully!');
-    //             // navigate("/master/patientlist");
-    //         } else {
-    //             alert('Failed to submit patient data');
-    //         }
-    //     } catch (error) {
-    //         console.error('Error submitting patient data:', error);
-    //     }
-    //     finally {
-    //         setbtnLoading(false)
-    //     }
-    // };
-
     const handleSubmit1 = async (e) => {
         e.preventDefault();
         setbtnLoading(true);
@@ -1136,6 +1073,35 @@ const getCurrentDateTime = () => {
 
                     }),
                 });
+                const formatDate = (date) => {
+                    return new Date(date).toISOString().split("T")[0];
+                  };
+
+                const consulatedInc = {   Reffby:selectedReffby._id,
+                        patientName:formData.patientName,
+                        date:formatDate(formData.date),
+                        regno: formData.uhid,
+                        amount: formData.visitType == 'Emergency' ? selectedDoctor.emergencyfee : selectedDoctor.consfee,
+                        incstatus:false,
+                        incAmount:ConsFeeInc,
+                        Reffto:selectedDoctor.doctorname,
+                        servicename: formData.visitType == 'Emergency' ? "Emergency Fee" : "Consultant Fee"
+                    }
+                
+                    const incentiveResponse = await fetch('https://khmc-xdlm.onrender.com/api/incentiveReport', {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(consulatedInc  // Correctly attach the new lab entry's _id
+                            ),
+                      });
+        
+                      if (!incentiveResponse.ok) {
+                        console.error(`Failed to submit incentive report for testId`);
+                      }
+
+
 
                  // Open the generated PDFs in new tabs
             const prescriptionPdfUrlLocal = URL.createObjectURL(prescriptionPdfBlob);
@@ -1169,6 +1135,7 @@ const getCurrentDateTime = () => {
         const selectedReffbyObj = Reffby.find(doctor => doctor.doctorName === selectedReffbyName);
     
         console.log(selectedReffbyObj, "selectedReffbyObj");
+     
     
         patientType === 'new'
         ?
@@ -1312,6 +1279,7 @@ const getCurrentDateTime = () => {
                                                                         id="mobilenumber"
                                                                         name="mobile"
                                                                         onChange={findhandleChange}
+                                                                        
                                                                         placeholder="Enter Mobile Number"
                                                                     />
                                                                 </div>
@@ -1667,6 +1635,7 @@ const getCurrentDateTime = () => {
                                                                     <select value={OldformData.visitType}
                                                                         name='visitType'
                                                                         onChange={oldhandleChange}
+                                                                        required
                                                                         className='form-control'>
                                                                         <option value=''>Select Type</option>
                                                                         <option value='Regular'>Regular</option>
@@ -1773,6 +1742,7 @@ const getCurrentDateTime = () => {
                                                                 // value={formData.mobile || '2525'}
                                                                 value={formData['mobile']}
                                                                 onChange={handleChange}
+                                                                required
                                                                 id="mobilenumber"
                                                                 placeholder="Enter Mobile Number" />
                                                         </div>
@@ -1850,6 +1820,7 @@ const getCurrentDateTime = () => {
                                                                         value={formData.status}
                                                                         onChange={handleChange}
                                                                         name='status'
+                                                                        required
                                                                         id="status">
                                                                         <option >Select</option>
                                                                         <option value="Mr">Mr.</option>
@@ -1884,6 +1855,7 @@ const getCurrentDateTime = () => {
                                                                         className="form-select"
                                                                         value={formData.gStatus}
                                                                         name='gStatus'
+                                                                        required
                                                                         onChange={handleChange}
                                                                         id="status">
                                                                         <option value=''>Select</option>
@@ -1902,6 +1874,7 @@ const getCurrentDateTime = () => {
                                                                         className="form-control"
                                                                         id="GuardianName"
                                                                         name='guardianName'
+                                                                        required
                                                                         value={formData.guardianName}
                                                                         onChange={handleChange}
                                                                         placeholder="Enter Guardian Name" />
@@ -1950,6 +1923,7 @@ const getCurrentDateTime = () => {
                                                                 value={formData.gender}
                                                                 onChange={handleChange}
                                                                 name='gender'
+                                                                required
                                                                 className='form-control'
                                                             >
                                                                 <option value=''>Select Gender</option>
@@ -1988,6 +1962,7 @@ const getCurrentDateTime = () => {
                                                                         className="form-select"
                                                                         value={formData.agetype}
                                                                         name='agetype'
+                                                                        required
                                                                         onChange={handleChange}
                                                                         id="status">
                                                                         <option value=''>Select</option>
@@ -2002,6 +1977,7 @@ const getCurrentDateTime = () => {
                                                                         className="form-control"
                                                                         value={formData.age}
                                                                         name='age'
+                                                                        required
                                                                         onChange={handleChange}
                                                                         id="age" placeholder="Enter Age" />
                                                                 </div>
@@ -2016,6 +1992,7 @@ const getCurrentDateTime = () => {
                                                                 // onChange={handleChange}
                                                                 onChange={handleReffbyChange}
                                                                 name='refBy'
+                                                                required
                                                                 className='form-control'>
                                                                 <option value=''>Select Reff</option>
                                                                 {Reffby.map((item) => (
@@ -2033,6 +2010,7 @@ const getCurrentDateTime = () => {
                                                                 value={formData.type}
                                                                 onChange={handleChange}
                                                                 name='type'
+                                                                required
                                                                 className='form-control'>
                                                                 <option value=''>Select Type</option>
                                                                 <option value='Indoor'>Indoor</option>
@@ -2061,6 +2039,7 @@ const getCurrentDateTime = () => {
                                                             <select
                                                                 value={formData.refTo}
                                                                 name='refTo'
+                                                                required
                                                                 onChange={handleDoctorChange}
                                                                 className='form-control'>
                                                                 <option value=''>Select Type</option>
@@ -2110,6 +2089,7 @@ const getCurrentDateTime = () => {
                                                             <select value={formData.visitType}
                                                                 name='visitType'
                                                                 onChange={handleChange}
+                                                                required
                                                                 className='form-control'>
                                                                 <option value=''>Select Type</option>
                                                                 <option value='Regular'>Regular</option>
@@ -2125,6 +2105,7 @@ const getCurrentDateTime = () => {
                                                                 value={formData.paymentType}
                                                                 onChange={handleChange}
                                                                 name='paymentType'
+                                                                required
                                                                 className='form-control'>
                                                                 <option value=''>Select Type</option>
                                                                 <option value='cash'>Cash</option>

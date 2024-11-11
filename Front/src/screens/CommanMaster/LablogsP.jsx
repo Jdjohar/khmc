@@ -212,7 +212,7 @@ const LablogsP = () => {
     // Call the async functions
     fetchPatientDetails(); // Fetch patient details if patientid is available
     fetchData(); // Fetch other lab-related data
-
+    billnogen();
   }, [patientid]); // Add patientid as a dependency to re-fetch if it changes
 
 
@@ -668,7 +668,7 @@ const generateLabTestBillPdf = (patientData, selectedtests) => {
         if (response.ok) {
           const newLabEntry = await response.json(); // Get the new lab entry object containing _id
           alert('Lab log submitted successfully!');
-
+          createLabTestBill()
           const receiptPdfUrlLocal = URL.createObjectURL(billPdfBlob);
           window.open(receiptPdfUrlLocal, '_blank');
 

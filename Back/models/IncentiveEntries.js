@@ -6,7 +6,7 @@ const IncentiveEntriesSchema = new Schema({
     TesttypeId: {
         type: Schema.Types.ObjectId,
         ref: 'IncentiveType',  // Referencing TestName model
-        required: true
+        required: false
     },
     Reffby: {
         type: String
@@ -15,6 +15,9 @@ const IncentiveEntriesSchema = new Schema({
         type: String
     },
     testid: {
+        type: String
+    },
+    servicename: {
         type: String
     },
     amount: {
